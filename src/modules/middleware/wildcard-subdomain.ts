@@ -25,40 +25,71 @@ const PUBLIC_FILES = new Set(['/favicon.ico', '/robots.txt', '/sitemap.xml'])
 // Sufixos para desenvolvimento local com wildcard
 const LOCAL_WILDCARD_SUFFIXES = ['.lvh.me', '.localhost', '.nip.io']
 
+/**
+ * Normaliza o header host removendo a porta
+ */
 function normalizeHost(hostHeader: string | null): string {
   return (hostHeader ?? '').split(':')[0].toLowerCase()
 }
+
+/**
+ * Verifica se o caminho deve ser ignorado pelo middleware
+ */
 function isBypassedPath(pathname: string): boolean {
   if (PUBLIC_PATH_PREFIXES.some((p) => pathname.startsWith(p))) return true
   if (PUBLIC_FILES.has(pathname)) return true
   if (STATIC_FILE_REGEX.test(pathname)) return true
   return false
 }
+
+/**
+ * Verifica se o hostname termina com algum dos sufixos fornecidos
+ */
 function hasAnySuffix(hostname: string, suffixes: string[]): boolean {
   return suffixes.some((s) => hostname.endsWith(s))
 }
+
+/**
+ * Extrai o primeiro label (subdomínio) do hostname
+ */
 function firstLabel(hostname: string): string {
   return hostname.split('.')[0]
 }
+
+/**
+ * Extrai o workspace do hostname baseado no subdomínio
+ */
 function extractWorkspaceFromHost(hostname: string): string | null {
   if (!hostname) return null
 
+  // Para desenvolvimento local com wildcard
   if (hasAnySuffix(hostname, LOCAL_WILDCARD_SUFFIXES)) {
     return firstLabel(hostname)
   }
+
+  // Se for o domínio raiz, não há workspace
   if (hostname === ROOT_DOMAIN) return null
 
+  // Se terminar com o domínio raiz, extrai o subdomínio
   if (hostname.endsWith(`.${ROOT_DOMAIN}`)) {
     const labels = hostname.split('.')
+
+    // Se tem apenas 2 labels (ex: reglo.co), não há workspace
     if (labels.length === 2) return null
 
-    const first = labels[0]
-    if (first === 'www') {
-      if (labels.length === 3) return null
-      if (labels.length >= 4) return labels[1]
+    // Se tem 3 labels, verifica se o primeiro não é 'www'
+    if (labels.length === 3) {
+      const firstLabel = labels[0]
+      // Se o primeiro label for 'www', não há workspace
+      if (firstLabel === 'www') return null
+      // Se não é 'www', retorna o primeiro label como workspace
+      return firstLabel
     }
-    return first
+
+    // Se tem mais de 3 labels, não deveria chegar aqui (já tratado no middleware)
+    return null
   }
+
   return null
 }
 
@@ -70,22 +101,38 @@ export function handleWildcardSubdomain(req: NextRequest): NextResponse | null {
   console.log('[Middleware] handleWildcardSubdomain')
 
   const pathname = req.nextUrl.pathname
+
+  // Bypass para arquivos estáticos e rotas públicas
   if (isBypassedPath(pathname)) {
     return NextResponse.next()
   }
 
   const host = normalizeHost(req.headers.get('host'))
 
-  // >>> ajuste do WWW: redireciona www.{algo}.reglo.co -> {algo}.reglo.co
-  if (host.startsWith('www.') && host.endsWith(`.${ROOT_DOMAIN}`)) {
-    const url = req.nextUrl.clone()
-    url.hostname = host.replace(/^www\./, '')
-    return NextResponse.redirect(url, 301)
+  // Se for www.reglo.co, trata como domínio raiz
+  if (host === `www.${ROOT_DOMAIN}`) {
+    console.log('[Middleware] www subdomain detected, treating as root domain')
+    return NextResponse.next()
   }
-  // <<< fim do ajuste
+
+  // Se for www.{workspace}.reglo.co, redireciona para {workspace}.reglo.co
+  if (host.startsWith('www.') && host.endsWith(`.${ROOT_DOMAIN}`)) {
+    const labels = host.split('.')
+    if (labels.length === 4) {
+      // www.workspace.reglo.co
+      const workspace = labels[1]
+      const redirectUrl = new URL(req.url)
+      redirectUrl.host = `${workspace}.${ROOT_DOMAIN}`
+      console.log(
+        `[Middleware] Redirecting www.${workspace}.${ROOT_DOMAIN} to ${workspace}.${ROOT_DOMAIN}`
+      )
+      return NextResponse.redirect(redirectUrl)
+    }
+  }
 
   const workspace = extractWorkspaceFromHost(host)
-  console.log('[Middleware] host:', host, 'workspace:', workspace)
+
+  console.log('[Middleware] workspace', workspace)
 
   if (workspace && RESERVED_SUBDOMAINS.has(workspace)) {
     console.log(`[Middleware] RESERVED_SUBDOMAINS.has(${workspace})`)
@@ -94,6 +141,7 @@ export function handleWildcardSubdomain(req: NextRequest): NextResponse | null {
     return NextResponse.rewrite(url)
   }
 
+  // Se encontrou um workspace válido (não reservado), reescreve a URL
   if (workspace && !RESERVED_SUBDOMAINS.has(workspace)) {
     console.log(
       `[Middleware] workspace && !RESERVED_SUBDOMAINS.has(${workspace})`
@@ -104,5 +152,6 @@ export function handleWildcardSubdomain(req: NextRequest): NextResponse | null {
   }
 
   console.log('[Middleware] return NextResponse.next()')
+
   return NextResponse.next()
 }
