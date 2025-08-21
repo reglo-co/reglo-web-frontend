@@ -1,9 +1,8 @@
 import { NavMain } from '@/components/nav-main'
 import { NavProjects } from '@/components/nav-projects'
 import { NavUser } from '@/modules/user/components'
-import { TeamSwitcher } from '@/components/team-switcher'
 import { getUserMinimalAction } from '@/modules/user/actions/get-user-minimal'
-import { getProjectUserListAction } from '@/modules/project/actions/project-user-list'
+import { TeamSwitch } from '@/modules/tenant/components'
 
 import {
   Sidebar,
@@ -17,16 +16,15 @@ export async function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const user = await getUserMinimalAction()
-  const projects = await getProjectUserListAction()
 
   if (!user) {
     return null
   }
 
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={projects} />
+        <TeamSwitch />
       </SidebarHeader>
       <SidebarContent>
         <NavMain />

@@ -22,8 +22,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+import { getTenantUrl } from '../helpers'
 
-export function TeamSwitcher({ teams }: { teams: ProjectMinimal[] }) {
+export function TeamSwitchUi({ teams }: { teams: ProjectMinimal[] }) {
   const { tenant } = useTenant()
   const { isMobile } = useSidebar()
 
@@ -40,7 +41,7 @@ export function TeamSwitcher({ teams }: { teams: ProjectMinimal[] }) {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-12"
             >
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                 <Image
@@ -70,7 +71,7 @@ export function TeamSwitcher({ teams }: { teams: ProjectMinimal[] }) {
             {teams.map((team, index) => (
               <DropdownMenuItem key={team.name} className="gap-2 p-2">
                 <LinkWithLoading
-                  href={`/${team.slug}`}
+                  href={getTenantUrl(team.slug, '/')}
                   className="flex w-full items-center gap-2"
                 >
                   <div className="flex size-6 items-center justify-center rounded-md border">

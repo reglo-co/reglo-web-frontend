@@ -6,13 +6,15 @@ const ROOT_DOMAIN = (
 ).toLowerCase()
 
 // Subdomínios reservados que não devem ser tratados como tenants
-const RESERVED_SUBDOMAINS = new Set([
+export const RESERVED_SUBDOMAINS = new Set([
   'www',
   'api',
   'admin',
   'email',
-  'reglo',
   'auth',
+  'localhost',
+  'lvh.me',
+  'nip.io',
 ])
 
 // Configurações para bypass de arquivos estáticos
@@ -90,6 +92,12 @@ export function handleWildcardSubdomain(req: NextRequest): NextResponse | null {
 
   const host = normalizeHost(req.headers.get('host'))
   const tenant = extractTenantFromHost(host)
+
+  if (tenant && RESERVED_SUBDOMAINS.has(tenant)) {
+    const url = req.nextUrl.clone()
+    url.pathname = '/404'
+    return NextResponse.rewrite(url)
+  }
 
   // Se encontrou um tenant válido (não reservado), reescreve a URL
   if (tenant && !RESERVED_SUBDOMAINS.has(tenant)) {

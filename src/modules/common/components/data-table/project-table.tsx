@@ -45,6 +45,11 @@ interface ProjectTableProps {
 
 export function ProjectTable({ projects, className }: ProjectTableProps) {
   const handleRowClick = (project: ProjectMinimal) => {
+    // Verificar se window está disponível (não está durante SSR)
+    if (typeof window === 'undefined') {
+      return
+    }
+
     window.location.href = `/${project.slug}`
   }
 

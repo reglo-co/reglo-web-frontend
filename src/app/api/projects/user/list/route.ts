@@ -17,7 +17,7 @@ export async function GET() {
           plan: 'Starter',
         },
         {
-          slug: 'nodal',
+          slug: 'reglo',
           name: 'Reglo',
           avatar: 'https://picsum.photos/301/301',
           plan: 'Enterprise',
