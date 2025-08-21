@@ -90,7 +90,7 @@ export function handleWildcardSubdomain(req: NextRequest): NextResponse | null {
   // Bypass para arquivos estáticos e rotas públicas
   if (isBypassedPath(pathname)) {
     console.log('[Middleware] isBypassedPath')
-    return null
+    return NextResponse.next()
   }
 
   const host = normalizeHost(req.headers.get('host'))
