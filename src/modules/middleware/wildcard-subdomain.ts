@@ -83,17 +83,23 @@ function extractWorkspaceFromHost(hostname: string): string | null {
  * Redireciona subdomínios para rotas com workspace
  */
 export function handleWildcardSubdomain(req: NextRequest): NextResponse | null {
+  console.log('[Middleware] handleWildcardSubdomain')
+
   const pathname = req.nextUrl.pathname
 
   // Bypass para arquivos estáticos e rotas públicas
   if (isBypassedPath(pathname)) {
+    console.log('[Middleware] isBypassedPath')
     return null
   }
 
   const host = normalizeHost(req.headers.get('host'))
   const workspace = extractWorkspaceFromHost(host)
 
+  console.log('[Middleware] workspace', workspace)
+
   if (workspace && RESERVED_SUBDOMAINS.has(workspace)) {
+    console.log('[Middleware] RESERVED_SUBDOMAINS.has(workspace)')
     const url = req.nextUrl.clone()
     url.pathname = '/404'
     return NextResponse.rewrite(url)
@@ -101,10 +107,13 @@ export function handleWildcardSubdomain(req: NextRequest): NextResponse | null {
 
   // Se encontrou um workspace válido (não reservado), reescreve a URL
   if (workspace && !RESERVED_SUBDOMAINS.has(workspace)) {
+    console.log('[Middleware] workspace && !RESERVED_SUBDOMAINS.has(workspace)')
     const url = req.nextUrl.clone()
     url.pathname = `/workspaces/${workspace}${pathname}`
     return NextResponse.rewrite(url)
   }
+
+  console.log('[Middleware] return null')
 
   return null
 }
