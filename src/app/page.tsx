@@ -28,7 +28,7 @@ export default function Home() {
             <div className="flex w-full items-center justify-between">
               <Link href="/">
                 <Image
-                  src="/brand/nodal-icon-letter-black.svg"
+                  src="/brand/reglo-icon-lettering.png"
                   alt="Reglo"
                   width={80}
                   height={0}

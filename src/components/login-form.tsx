@@ -18,7 +18,7 @@ export function LoginForm({
             <div className="relative flex items-center justify-center gap-4">
               <Link href="/">
                 <Image
-                  src="/brand/nodal-icon-letter-black.svg"
+                  src="/brand/reglo-icon-lettering.png"
                   alt="Reglo"
                   className="w-20 cursor-pointer pb-4 transition hover:opacity-50 active:scale-90 md:pb-8"
                   width={100}

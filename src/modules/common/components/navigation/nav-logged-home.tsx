@@ -22,7 +22,7 @@ export function NavLoggedHome() {
     <div className="sticky top-0 left-0 flex h-16 w-full items-center justify-between bg-transparent px-6">
       <Link href="/">
         <Image
-          src="/brand/nodal-icon-letter-black.svg"
+          src="/brand/reglo-icon-lettering.png"
           alt="Reglo"
           width={80}
           height={0}
