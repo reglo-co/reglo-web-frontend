@@ -2,42 +2,20 @@
 
 import type { TenantParams } from '@/typings'
 import { notFound } from 'next/navigation'
-import { cookies } from 'next/headers'
-
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL
+import { api } from '@/lib/api'
 
 async function tenantExistsValidation(tenant: string) {
-  const tenant_exists_url = new URL(`/api/tenants/${tenant}/exists`, APP_URL)
+  const result = await api(`/api/tenants/${tenant}/exists`)
 
-  const result = await fetch(tenant_exists_url)
-
-  const { exists } = await result.json()
-
-  if (!exists) {
+  if (!result.exists) {
     notFound()
   }
 }
 
 async function tenantHasAccessValidation(tenant: string) {
-  const cookieStore = await cookies()
+  const result = await api(`/api/tenants/${tenant}/has-access`)
 
-  const tenant_has_access_url = new URL(
-    `/api/tenants/${tenant}/has-access`,
-    APP_URL
-  )
-
-  const result = await fetch(tenant_has_access_url, {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-      cookie: cookieStore.toString(),
-    },
-    cache: 'no-store',
-  })
-
-  const { hasAccess } = await result.json()
-
-  if (!hasAccess) {
+  if (!result.hasAccess) {
     notFound()
   }
 }

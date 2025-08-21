@@ -94,7 +94,7 @@ export function handleWildcardSubdomain(req: NextRequest): NextResponse | null {
   // Se encontrou um tenant válido (não reservado), reescreve a URL
   if (tenant && !RESERVED_SUBDOMAINS.has(tenant)) {
     const url = req.nextUrl.clone()
-    url.pathname = `/sites/${tenant}${pathname}`
+    url.pathname = `/tenants/${tenant}${pathname}`
     return NextResponse.rewrite(url)
   }
 
