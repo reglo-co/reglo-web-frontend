@@ -1,8 +1,7 @@
 import { NavMain } from '@/components/nav-main'
-import { NavProjects } from '@/components/nav-projects'
+import { NavWorkspaces } from '@/components/nav-workspaces'
 import { NavUser } from '@/modules/user/components'
 import { getUserMinimalAction } from '@/modules/user/actions/get-user-minimal'
-import { TeamSwitch } from '@/modules/tenant/components'
 
 import {
   Sidebar,
@@ -11,6 +10,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar'
+import { WorkspaceSwitch } from '@/modules/workspaces/components'
 
 export async function AppSidebar({
   ...props
@@ -24,11 +24,11 @@ export async function AppSidebar({
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
-        <TeamSwitch />
+        <WorkspaceSwitch />
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
-        <NavProjects />
+        <NavWorkspaces />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

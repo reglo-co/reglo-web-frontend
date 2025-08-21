@@ -5,7 +5,7 @@ const ROOT_DOMAIN = (
   process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? 'reglo.co'
 ).toLowerCase()
 
-// Subdomínios reservados que não devem ser tratados como tenants
+// Subdomínios reservados que não devem ser tratados como workspaces
 export const RESERVED_SUBDOMAINS = new Set([
   'www',
   'api',
@@ -57,9 +57,9 @@ function firstLabel(hostname: string): string {
 }
 
 /**
- * Extrai o tenant do hostname baseado no subdomínio
+ * Extrai o workspace do hostname baseado no subdomínio
  */
-function extractTenantFromHost(hostname: string): string | null {
+function extractWorkspaceFromHost(hostname: string): string | null {
   if (!hostname) return null
 
   // Para desenvolvimento local com wildcard
@@ -67,7 +67,7 @@ function extractTenantFromHost(hostname: string): string | null {
     return firstLabel(hostname)
   }
 
-  // Se for o domínio raiz, não há tenant
+  // Se for o domínio raiz, não há workspace
   if (hostname === ROOT_DOMAIN) return null
 
   // Se terminar com o domínio raiz, extrai o subdomínio
@@ -80,7 +80,7 @@ function extractTenantFromHost(hostname: string): string | null {
 
 /**
  * Middleware para resolução de subdomínio dinâmico
- * Redireciona subdomínios para rotas com tenant
+ * Redireciona subdomínios para rotas com workspace
  */
 export function handleWildcardSubdomain(req: NextRequest): NextResponse | null {
   const pathname = req.nextUrl.pathname
@@ -91,18 +91,18 @@ export function handleWildcardSubdomain(req: NextRequest): NextResponse | null {
   }
 
   const host = normalizeHost(req.headers.get('host'))
-  const tenant = extractTenantFromHost(host)
+  const workspace = extractWorkspaceFromHost(host)
 
-  if (tenant && RESERVED_SUBDOMAINS.has(tenant)) {
+  if (workspace && RESERVED_SUBDOMAINS.has(workspace)) {
     const url = req.nextUrl.clone()
     url.pathname = '/404'
     return NextResponse.rewrite(url)
   }
 
-  // Se encontrou um tenant válido (não reservado), reescreve a URL
-  if (tenant && !RESERVED_SUBDOMAINS.has(tenant)) {
+  // Se encontrou um workspace válido (não reservado), reescreve a URL
+  if (workspace && !RESERVED_SUBDOMAINS.has(workspace)) {
     const url = req.nextUrl.clone()
-    url.pathname = `/tenants/${tenant}${pathname}`
+    url.pathname = `/workspaces/${workspace}${pathname}`
     return NextResponse.rewrite(url)
   }
 

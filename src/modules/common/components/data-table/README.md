@@ -183,4 +183,4 @@ export function UserTable({ users, className }: UserTableProps) {
 
 ## Exemplo Prático: Tabela de Projetos
 
-Veja o arquivo `project-table.tsx` para um exemplo completo de implementação específica para projetos.
+Veja o arquivo `workspace-table.tsx` para um exemplo completo de implementação específica para projetos.

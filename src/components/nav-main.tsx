@@ -1,7 +1,7 @@
 'use client'
 
 import { Home, ScrollText, Hash, Users } from 'lucide-react'
-import { LinkWithTenant } from '@/modules/common/components'
+import { LinkWithWorkspace } from '@/modules/common/components'
 
 import {
   SidebarGroup,
@@ -40,14 +40,14 @@ export function NavMain() {
       <SidebarGroupLabel>Plataforma</SidebarGroupLabel>
       <SidebarMenu>
         {NAV_MAIN_ITEMS.map((item) => (
-          <LinkWithTenant href={item.url} key={item.title}>
+          <LinkWithWorkspace href={item.url} key={item.title}>
             <SidebarMenuItem>
               <SidebarMenuButton tooltip={item.title}>
                 {item.icon && <item.icon strokeWidth={1.5} />}
                 <span>{item.title}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
-          </LinkWithTenant>
+          </LinkWithWorkspace>
         ))}
       </SidebarMenu>
     </SidebarGroup>

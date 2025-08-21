@@ -8,7 +8,7 @@
 
 ### 🆕 **What's New**
 
-- Project start
+- Workspace start
 - Configured **Next.js 15**, **Tailwind CSS**, and **TypeScript**
 - Added **Clerk** for authentication
 - Set up **Firebase** for backend and database

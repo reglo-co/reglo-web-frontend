@@ -9,7 +9,7 @@ import { WorkspaceTable } from '@/modules/common/components/data-table'
 import { getWorkspaceUserListAction } from '@/modules/workspaces/actions/workspace-user-list'
 import type { WorkspaceMinimal } from '@/modules/workspaces/typings'
 
-export default function InicioPage() {
+export default function Page() {
   const [workspaces, setWorkspaces] = useState<WorkspaceMinimal[]>([])
 
   useEffect(() => {
