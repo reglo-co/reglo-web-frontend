@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 
-export function Page() {
+function Page() {
   return (
     <div className="flex flex-col gap-10 px-8 py-6">
       <div className="flex w-full justify-between">

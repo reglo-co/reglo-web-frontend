@@ -1,7 +1,9 @@
 import type {
   ColumnDef,
+  Column,
   SortingState,
   VisibilityState,
+  Table,
 } from '@tanstack/react-table'
 
 export interface DataTableProps<TData, TValue> {
@@ -19,19 +21,19 @@ export interface DataTableProps<TData, TValue> {
 }
 
 export interface DataTableColumnHeaderProps<TData, TValue> {
-  column: ColumnDef<TData, TValue>
+  column: Column<TData, TValue>
   title: string
   className?: string
 }
 
 export interface DataTablePaginationProps {
-  table: any
+  table: Table<any>
   pageSizeOptions?: number[]
   className?: string
 }
 
 export interface DataTableToolbarProps {
-  table: any
+  table: Table<any>
   searchKey?: string
   searchPlaceholder?: string
   showHeader?: boolean

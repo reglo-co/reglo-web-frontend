@@ -16,7 +16,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 
-export function Page() {
+function Page() {
   const { elementos, excluirElemento, carregando } = useElementos()
   const [excluindo, setExcluindo] = useState<string | null>(null)
 
@@ -29,7 +29,7 @@ export function Page() {
     try {
       await excluirElemento(id)
     } catch (error) {
-      alert('Erro ao excluir elemento')
+      console.error(error)
     } finally {
       setExcluindo(null)
     }

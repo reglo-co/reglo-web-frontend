@@ -18,7 +18,6 @@ export function HeroTyped({
   useEffect(() => {
     const w = words[i] || ''
     const done = txt === w
-    const empty = txt === ''
 
     const t = setTimeout(
       () => {

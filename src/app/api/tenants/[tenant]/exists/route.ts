@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 
 type Params = {
-  params: { tenant: string }
+  params: Promise<{ tenant: string }>
 }
 
 export async function GET(_request: Request, { params }: Params) {

@@ -124,7 +124,7 @@ export function UserTable({ users, className }: UserTableProps) {
         showToolbar={true}
         pageSize={10}
         onRowClick={handleRowClick}
-        emptyMessage="Nenhum usuário encontrado"
+        emptyBlock={<div>Nenhum usuário encontrado</div>}
       />
     </div>
   )

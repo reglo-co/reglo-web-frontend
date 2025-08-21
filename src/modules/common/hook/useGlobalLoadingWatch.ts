@@ -8,5 +8,5 @@ export function useGlobalLoadingWatch() {
 
   useEffect(() => {
     stop()
-  }, [])
+  }, [stop])
 }
