@@ -115,5 +115,5 @@ export function handleWildcardSubdomain(req: NextRequest): NextResponse | null {
 
   console.log('[Middleware] return null')
 
-  return null
+  return NextResponse.next()
 }
