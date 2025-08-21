@@ -89,7 +89,6 @@ export function handleWildcardSubdomain(req: NextRequest): NextResponse | null {
 
   // Bypass para arquivos estáticos e rotas públicas
   if (isBypassedPath(pathname)) {
-    console.log('[Middleware] isBypassedPath')
     return NextResponse.next()
   }
 
@@ -99,7 +98,7 @@ export function handleWildcardSubdomain(req: NextRequest): NextResponse | null {
   console.log('[Middleware] workspace', workspace)
 
   if (workspace && RESERVED_SUBDOMAINS.has(workspace)) {
-    console.log('[Middleware] RESERVED_SUBDOMAINS.has(workspace)')
+    console.log(`[Middleware] RESERVED_SUBDOMAINS.has(${workspace})`)
     const url = req.nextUrl.clone()
     url.pathname = '/404'
     return NextResponse.rewrite(url)
@@ -107,13 +106,15 @@ export function handleWildcardSubdomain(req: NextRequest): NextResponse | null {
 
   // Se encontrou um workspace válido (não reservado), reescreve a URL
   if (workspace && !RESERVED_SUBDOMAINS.has(workspace)) {
-    console.log('[Middleware] workspace && !RESERVED_SUBDOMAINS.has(workspace)')
+    console.log(
+      `[Middleware] workspace && !RESERVED_SUBDOMAINS.has(${workspace})`
+    )
     const url = req.nextUrl.clone()
     url.pathname = `/workspaces/${workspace}${pathname}`
     return NextResponse.rewrite(url)
   }
 
-  console.log('[Middleware] return null')
+  console.log('[Middleware] return NextResponse.next()')
 
   return NextResponse.next()
 }
