@@ -7,7 +7,7 @@ const ROOT_DOMAIN = (
 
 // Subdomínios reservados que não devem ser tratados como workspaces
 export const RESERVED_SUBDOMAINS = new Set([
-  'www',
+  'www', // www.reglo.co deve ser tratado como domínio raiz
   'api',
   'admin',
   'email',
@@ -72,7 +72,24 @@ function extractWorkspaceFromHost(hostname: string): string | null {
 
   // Se terminar com o domínio raiz, extrai o subdomínio
   if (hostname.endsWith(`.${ROOT_DOMAIN}`)) {
-    return firstLabel(hostname)
+    const labels = hostname.split('.')
+
+    // Se tem apenas 2 labels (ex: reglo.co), não há workspace
+    if (labels.length === 2) return null
+
+    // Se tem 3 ou mais labels, verifica o primeiro
+    const firstLabel = labels[0]
+
+    // Se o primeiro label for 'www', verifica se há um segundo subdomínio
+    if (firstLabel === 'www') {
+      // Se tem 3 labels (ex: www.reglo.co), não há workspace
+      if (labels.length === 3) return null
+      // Se tem 4 ou mais labels (ex: www.workspace.reglo.co), retorna o segundo label
+      if (labels.length >= 4) return labels[1]
+    }
+
+    // Se não é 'www', retorna o primeiro label
+    return firstLabel
   }
 
   return null
@@ -95,7 +112,7 @@ export function handleWildcardSubdomain(req: NextRequest): NextResponse | null {
   const host = normalizeHost(req.headers.get('host'))
   const workspace = extractWorkspaceFromHost(host)
 
-  console.log('[Middleware] workspace', workspace)
+  console.log('[Middleware] host:', host, 'workspace:', workspace)
 
   if (workspace && RESERVED_SUBDOMAINS.has(workspace)) {
     console.log(`[Middleware] RESERVED_SUBDOMAINS.has(${workspace})`)
