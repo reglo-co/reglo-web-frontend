@@ -13,6 +13,7 @@ import {
   MoreHorizontal,
   PackagePlus,
 } from 'lucide-react'
+import { ContextMenuBarRule, ContextMenuRule } from '../components'
 
 type RuleProps = {
   title: string
@@ -25,53 +26,82 @@ type RuleProps = {
 
 function Rule({ title, description, id, comments }: RuleProps) {
   return (
-    <div
-      data-component="rule"
-      className="flex w-full cursor-pointer items-stretch gap-4 rounded-md hover:bg-zinc-50"
-    >
-      <div className="flex w-full justify-between gap-2 px-4 py-6">
-        <div className="flex gap-3">
-          <span className="text-xss mt-0.5 flex h-6 w-fit items-center justify-center rounded-md border px-2 text-zinc-400">
-            {id}
-          </span>
-          <div className="flex flex-col gap-2">
-            <h3 className="text-lg font-semibold text-zinc-700">{title}</h3>
-            <span className="flex-1text-base flex w-full font-normal text-zinc-500">
-              {description}
+    <ContextMenuRule>
+      <div
+        data-component="rule"
+        className="flex w-full cursor-pointer items-stretch gap-4 rounded-md hover:bg-zinc-50"
+      >
+        <div className="flex w-full justify-between gap-2 px-4 py-6">
+          <div className="flex gap-3">
+            <span className="text-xss mt-0.5 flex h-6 w-fit items-center justify-center rounded-md border px-2 text-zinc-400">
+              {id}
             </span>
+            <div className="flex flex-col gap-2">
+              <h3 className="text-lg font-semibold text-zinc-700">{title}</h3>
+              <span className="flex-1text-base flex w-full font-normal text-zinc-500">
+                {description}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-1 hover:bg-black/5"
+            >
+              <MessageCircle className="text-zinc-500" />
+              <span className="text-xs text-zinc-500">2</span>
+            </Button>
+            <ContextMenuBarRule>
+              <Button variant="ghost" size="sm" className="hover:bg-black/5">
+                <MoreHorizontal />
+              </Button>
+            </ContextMenuBarRule>
           </div>
         </div>
-        <Button variant="ghost" size="sm">
-          <MoreHorizontal />
-        </Button>
       </div>
-    </div>
+    </ContextMenuRule>
   )
 }
 
 function FolderRule({ title, id }: { title: string; id: string }) {
   return (
-    <div
-      data-component="folder-rule"
-      className="flex w-full cursor-pointer items-stretch gap-4 rounded-md hover:bg-zinc-50"
-    >
-      <div className="flex w-full justify-between gap-2 px-4 py-6">
-        <div className="flex w-full items-center gap-2">
-          <span className="text-xss flex h-6 w-fit items-center justify-center rounded-md border px-2 text-zinc-400">
-            {id}
-          </span>
-          <div className="flex flex-col gap-2">
-            <Button variant="outline" size="sm">
-              <Boxes strokeWidth={1} />
-              <span>{title}</span>
+    <ContextMenuRule>
+      <div
+        data-component="folder-rule"
+        className="flex w-full cursor-pointer items-stretch gap-4 rounded-md hover:bg-zinc-50"
+      >
+        <div className="flex w-full justify-between gap-2 px-4 py-6">
+          <div className="flex w-full items-center gap-2">
+            <span className="text-xss flex h-6 w-fit items-center justify-center rounded-md border px-2 text-zinc-400">
+              {id}
+            </span>
+            <div className="flex flex-col gap-2">
+              <Button variant="outline" size="sm">
+                <Boxes strokeWidth={1} />
+                <span>{title}</span>
+              </Button>
+            </div>
+          </div>
+          <div className="flex">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-1 hover:bg-black/5"
+            >
+              <MessageCircle className="text-zinc-500" />
+              <span className="text-xs text-zinc-500">2</span>
             </Button>
+            <ContextMenuBarRule>
+              <Button variant="ghost" size="sm" className="hover:bg-black/5">
+                <MoreHorizontal />
+              </Button>
+            </ContextMenuBarRule>
           </div>
         </div>
-        <Button variant="ghost" size="sm">
-          <MoreHorizontal />
-        </Button>
       </div>
-    </div>
+    </ContextMenuRule>
   )
 }
 
