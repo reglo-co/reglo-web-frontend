@@ -14,6 +14,11 @@ import {
   PackagePlus,
 } from 'lucide-react'
 import { ContextMenuBarRule, ContextMenuRule } from '../components'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 type RuleProps = {
   title: string
@@ -33,9 +38,17 @@ function Rule({ title, description, id, comments }: RuleProps) {
       >
         <div className="flex w-full justify-between gap-2 px-4 py-6">
           <div className="flex gap-3">
-            <span className="text-xss mt-0.5 flex h-6 w-fit items-center justify-center rounded-md border px-2 text-zinc-400">
-              {id}
-            </span>
+            <div>
+              <Tooltip>
+                <TooltipTrigger>
+                  <span className="text-xss flex h-6 w-fit cursor-default items-center justify-center rounded-md border px-2 text-zinc-400 hover:bg-black/5">
+                    {id}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>Copiar</TooltipContent>
+              </Tooltip>
+            </div>
+
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-semibold text-zinc-700">{title}</h3>
               <span className="flex-1text-base flex w-full font-normal text-zinc-500">
