@@ -4,19 +4,13 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu'
-import {
-  BookOpen,
-  FolderOpenDot,
-  FolderPlus,
-  PackagePlus,
-  Trash,
-} from 'lucide-react'
+import { FolderOpenDot, FolderPlus, PackagePlus, Trash } from 'lucide-react'
 import type { PropsWithChildren } from 'react'
 
 export function ContextMenuRule({ children }: PropsWithChildren) {
   return (
     <ContextMenu>
-      <ContextMenuTrigger>{children}</ContextMenuTrigger>
+      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuItem>
           <FolderOpenDot />

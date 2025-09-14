@@ -1,35 +1,39 @@
+'use client'
+
+import { useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Card, CardDescription } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { ContextMenuBarRule, ContextMenuRule } from '../components'
+import SortableList from '@/modules/common/components/drag-and-drop/sortable'
+import { GripAndHover } from '@/modules/common/components/drag-and-drop'
 
 import {
   Box,
   Boxes,
-  ChevronRight,
-  Dot,
   FolderPlus,
   MessageCircle,
   MoreHorizontal,
   PackagePlus,
 } from 'lucide-react'
-import { ContextMenuBarRule, ContextMenuRule } from '../components'
+
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 
-type RuleProps = {
+type RulePrimitive = {
+  type: 'rule' | 'folder'
   title: string
-  description: string
   id: string
-  comments: {
-    quantity: number
-  }
 }
 
-function Rule({ title, description, id, comments }: RuleProps) {
+type RuleProps = RulePrimitive & {
+  description: string
+}
+
+function Rule({ title, description, id }: RuleProps) {
   return (
     <ContextMenuRule>
       <div
@@ -78,7 +82,7 @@ function Rule({ title, description, id, comments }: RuleProps) {
   )
 }
 
-function FolderRule({ title, id }: { title: string; id: string }) {
+function FolderRule({ title, id }: RulePrimitive) {
   return (
     <ContextMenuRule>
       <div
@@ -118,7 +122,45 @@ function FolderRule({ title, id }: { title: string; id: string }) {
   )
 }
 
+function RuleOrFolder({ item }: { item: RuleOrFolderRuleProps }) {
+  return item.type === 'rule' ? <Rule {...item} /> : <FolderRule {...item} />
+}
+
+type RuleOrFolderRuleProps =
+  | (RulePrimitive & { type: 'rule' } & { description: string })
+  | (RulePrimitive & { type: 'folder' })
+
 export function RulePage() {
+  const [items, setItems] = useState<RuleOrFolderRuleProps[]>([
+    {
+      type: 'rule',
+      title: 'Login obrigatório para dashboard',
+      id: 'rule-1',
+      description:
+        'O usuário deve estar logado para acessar o dashboard principal do sistema.',
+    },
+
+    {
+      type: 'folder',
+      title: 'Autenticação',
+      id: 'folder-1',
+    },
+
+    {
+      type: 'rule',
+      title: 'Carrinho de compras',
+      id: 'rule-2',
+      description:
+        'O usuário deve ter um carrinho de compras para adicionar produtos.',
+    },
+    {
+      type: 'rule',
+      title: 'Timeout de sessão',
+      id: 'rule-3',
+      description: 'A sessão do usuário expira após 30 minutos de inatividade.',
+    },
+  ])
+
   return (
     <div className="flex flex-1 flex-col">
       <section
@@ -195,20 +237,15 @@ export function RulePage() {
 
       <div className="flex flex-1 flex-col gap-4 bg-white p-4">
         <div className="flex w-full flex-col">
-          <Rule
-            title="Login obrigatório para dashboard"
-            description="O usuário deve estar logado para acessar o dashboard principal do sistema."
-            id="#e62n48f"
-            comments={{ quantity: 1 }}
-          />
-
-          <FolderRule title="Autenticação" id="#e62n48f" />
-
-          <Rule
-            title="Timeout de sessão"
-            description="A sessão do usuário expira após 30 minutos de inatividade."
-            id="#e62n48f"
-            comments={{ quantity: 1 }}
+          <SortableList<RuleOrFolderRuleProps>
+            items={items}
+            onChange={setItems}
+            className="space-y-3"
+            renderItem={({ item, isDragging, handleProps }) => (
+              <GripAndHover isDragging={isDragging} handleProps={handleProps}>
+                <RuleOrFolder item={item} />
+              </GripAndHover>
+            )}
           />
         </div>
       </div>
