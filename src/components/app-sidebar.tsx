@@ -1,5 +1,4 @@
 import { NavMain } from '@/components/nav-main'
-import { NavWorkspaces } from '@/components/nav-workspaces'
 import { NavUser } from '@/modules/user/components'
 import { getUserMinimalAction } from '@/modules/user/actions/get-user-minimal'
 
@@ -28,7 +27,6 @@ export async function AppSidebar({
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
-        <NavWorkspaces />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />
