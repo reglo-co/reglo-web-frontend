@@ -40,7 +40,7 @@ function Rule({ title, description, id }: RuleProps) {
         data-component="rule"
         className="flex w-full cursor-pointer items-stretch gap-4 rounded-md hover:bg-zinc-50"
       >
-        <div className="flex w-full justify-between gap-2 px-4 py-6">
+        <div className="flex w-full justify-between gap-2 px-4 py-4">
           <div className="flex gap-3">
             <div>
               <Tooltip>
@@ -96,7 +96,7 @@ function FolderRule({ title, id }: RulePrimitive) {
         data-component="folder-rule"
         className="flex w-full cursor-pointer items-stretch gap-4 rounded-md hover:bg-zinc-50"
       >
-        <div className="flex w-full justify-between gap-2 px-4 py-6">
+        <div className="flex w-full justify-between gap-2 px-4 py-4">
           <div className="flex w-full items-center gap-2">
             <span className="text-xss flex h-6 w-fit items-center justify-center rounded-md border px-2 text-zinc-400">
               {id}
