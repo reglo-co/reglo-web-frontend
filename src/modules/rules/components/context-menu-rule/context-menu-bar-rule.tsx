@@ -1,20 +1,19 @@
+import { PropsWithChildren } from 'react'
+import { FolderOpenDot, FolderPlus, PackagePlus, Trash } from 'lucide-react'
+
 import {
   Menubar,
   MenubarContent,
   MenubarItem,
   MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
   MenubarTrigger,
 } from '@/components/ui/menubar'
-import { FolderOpenDot, FolderPlus, PackagePlus, Trash } from 'lucide-react'
-import { PropsWithChildren } from 'react'
 
 export function ContextMenuBarRule({ children }: PropsWithChildren) {
   return (
     <Menubar>
       <MenubarMenu>
-        <MenubarTrigger>{children}</MenubarTrigger>
+        <MenubarTrigger asChild>{children}</MenubarTrigger>
         <MenubarContent>
           <MenubarItem>
             <FolderOpenDot />

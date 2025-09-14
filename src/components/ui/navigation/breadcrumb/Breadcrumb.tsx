@@ -10,7 +10,7 @@ export function Breadcrumb({ ...props }: React.ComponentProps<'nav'>) {
   return (
     <section
       data-name="breadcrumb"
-      className="flex h-16 shrink-0 items-center gap-2 border-b px-4"
+      className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b bg-white px-4"
     >
       <SidebarTrigger className="-ml-1" />
       <Separator

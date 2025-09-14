@@ -71,8 +71,15 @@ function Rule({ title, description, id }: RuleProps) {
               <span className="text-xs text-zinc-500">2</span>
             </Button>
             <ContextMenuBarRule>
-              <Button variant="ghost" size="sm" className="hover:bg-black/5">
-                <MoreHorizontal />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hover:bg-black/5"
+                asChild
+              >
+                <span>
+                  <MoreHorizontal />
+                </span>
               </Button>
             </ContextMenuBarRule>
           </div>
@@ -111,8 +118,15 @@ function FolderRule({ title, id }: RulePrimitive) {
               <span className="text-xs text-zinc-500">2</span>
             </Button>
             <ContextMenuBarRule>
-              <Button variant="ghost" size="sm" className="hover:bg-black/5">
-                <MoreHorizontal />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hover:bg-black/5"
+                asChild
+              >
+                <span>
+                  <MoreHorizontal />
+                </span>
               </Button>
             </ContextMenuBarRule>
           </div>
@@ -135,7 +149,7 @@ export function RulePage() {
     {
       type: 'rule',
       title: 'Login obrigatório para dashboard',
-      id: 'rule-1',
+      id: '#e62n48f',
       description:
         'O usuário deve estar logado para acessar o dashboard principal do sistema.',
     },
@@ -143,20 +157,44 @@ export function RulePage() {
     {
       type: 'folder',
       title: 'Autenticação',
-      id: 'folder-1',
+      id: '#ea2nf8f',
     },
 
     {
       type: 'rule',
       title: 'Carrinho de compras',
-      id: 'rule-2',
+      id: '#e72nf8f',
       description:
         'O usuário deve ter um carrinho de compras para adicionar produtos.',
     },
     {
       type: 'rule',
       title: 'Timeout de sessão',
-      id: 'rule-3',
+      id: '#e82nf8f',
+      description: 'A sessão do usuário expira após 30 minutos de inatividade.',
+    },
+
+    {
+      type: 'folder',
+      title: 'Autenticação',
+      id: '#e92nf8f',
+    },
+    {
+      type: 'rule',
+      title: 'Timeout de sessão',
+      id: '#e02nf8f',
+      description: 'A sessão do usuário expira após 30 minutos de inatividade.',
+    },
+    {
+      type: 'rule',
+      title: 'Timeout de sessão',
+      id: '#e12nf8f',
+      description: 'A sessão do usuário expira após 30 minutos de inatividade.',
+    },
+    {
+      type: 'rule',
+      title: 'Timeout de sessão',
+      id: '#e22nf8f',
       description: 'A sessão do usuário expira após 30 minutos de inatividade.',
     },
   ])
@@ -165,7 +203,7 @@ export function RulePage() {
     <div className="flex flex-1 flex-col">
       <section
         data-name="title"
-        className="flex shrink-0 items-center gap-4 border-b bg-white px-4 py-5"
+        className="sticky top-16 z-10 flex shrink-0 items-center gap-4 border-b bg-white px-4 py-5"
       >
         <div className="flex w-full flex-1 flex-col gap-1 pl-4">
           <div className="flex w-full items-center justify-between">
@@ -240,7 +278,6 @@ export function RulePage() {
           <SortableList<RuleOrFolderRuleProps>
             items={items}
             onChange={setItems}
-            className="space-y-3"
             renderItem={({ item, isDragging, handleProps }) => (
               <GripAndHover isDragging={isDragging} handleProps={handleProps}>
                 <RuleOrFolder item={item} />
