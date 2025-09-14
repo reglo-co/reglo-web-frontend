@@ -1,6 +1,6 @@
 'use client'
 
-import { Home, ScrollText, Hash, Users } from 'lucide-react'
+import { Home, ScrollText, Hash, Users, Bell } from 'lucide-react'
 import { LinkWithWorkspace } from '@/modules/common/components'
 
 import {
@@ -16,6 +16,11 @@ const NAV_MAIN_ITEMS = [
     title: 'Início',
     url: '/',
     icon: Home,
+  },
+  {
+    title: 'Notificações',
+    url: '/notificacoes',
+    icon: Bell,
   },
   {
     title: 'Refinamentos',
