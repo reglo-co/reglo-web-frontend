@@ -22,6 +22,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import Link from 'next/link'
 
 type RulePrimitive = {
   type: 'rule' | 'folder'
@@ -34,9 +35,12 @@ type RuleProps = RulePrimitive & {
 }
 
 function Rule({ title, description, id }: RuleProps) {
+  const solidId = id.replace('#', '')
+
   return (
     <ContextMenuRule>
-      <div
+      <Link
+        href={`/rules/${solidId}`}
         data-component="rule"
         className="flex w-full cursor-pointer items-stretch gap-4 rounded-md hover:bg-zinc-50"
       >
@@ -84,29 +88,31 @@ function Rule({ title, description, id }: RuleProps) {
             </ContextMenuBarRule>
           </div>
         </div>
-      </div>
+      </Link>
     </ContextMenuRule>
   )
 }
 
 function FolderRule({ title, id }: RulePrimitive) {
+  const solidId = id.replace('#', '')
+
   return (
     <ContextMenuRule>
       <div
         data-component="folder-rule"
-        className="flex w-full cursor-pointer items-stretch gap-4 rounded-md hover:bg-zinc-50"
+        className="flex w-full items-stretch gap-4 rounded-md hover:bg-zinc-50"
       >
         <div className="flex w-full justify-between gap-2 px-4 py-4">
           <div className="flex w-full items-center gap-2">
             <span className="text-xss flex h-6 w-fit items-center justify-center rounded-md border px-2 text-zinc-400">
               {id}
             </span>
-            <div className="flex flex-col gap-2">
+            <Link href={`/rules/${solidId}`} className="flex flex-col gap-2">
               <Button variant="outline" size="sm">
                 <Boxes strokeWidth={1} />
                 <span>{title}</span>
               </Button>
-            </div>
+            </Link>
           </div>
           <div className="flex">
             <Button

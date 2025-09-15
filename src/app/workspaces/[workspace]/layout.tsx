@@ -4,10 +4,16 @@ import { protectWorkspace } from '@/modules/workspaces/actions'
 import type { WorkspaceParams } from '@/typings'
 import type { PropsWithChildren } from 'react'
 
+type LayoutProps = PropsWithChildren &
+  WorkspaceParams & {
+    modals: React.ReactNode
+  }
+
 export default async function Layout({
   children,
   params,
-}: PropsWithChildren & WorkspaceParams) {
+  modals,
+}: LayoutProps) {
   await protectWorkspace(params)
 
   return (
@@ -16,6 +22,7 @@ export default async function Layout({
         <AppSidebar />
         <SidebarInset>{children}</SidebarInset>
       </div>
+      {modals}
     </SidebarProvider>
   )
 }
