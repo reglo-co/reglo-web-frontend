@@ -17,7 +17,7 @@ export function GripAndHover({ children, isDragging, handleProps }: Props) {
         <Button
           variant="ghost"
           size="icon"
-          className="cursor-grab text-gray-300 opacity-0 group-hover:opacity-100 hover:bg-gray-100 hover:text-gray-500 active:cursor-grabbing"
+          className="hidden cursor-grab text-gray-300 opacity-0 group-hover:opacity-100 hover:bg-gray-100 hover:text-gray-500 active:cursor-grabbing md:block"
           {...handleProps}
         >
           <GripVertical className="h-5 w-5" />

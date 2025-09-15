@@ -44,8 +44,8 @@ function Rule({ title, description, id }: RuleProps) {
         data-component="rule"
         className="flex w-full cursor-pointer items-stretch gap-4 rounded-md hover:bg-zinc-50"
       >
-        <div className="flex w-full justify-between gap-2 px-4 py-4">
-          <div className="flex gap-3">
+        <div className="flex w-full flex-col justify-between gap-2 px-4 py-4 md:flex-row">
+          <div className="flex flex-col gap-3 md:flex-row">
             <div>
               <Tooltip>
                 <TooltipTrigger>
@@ -258,11 +258,17 @@ export function RulePage() {
               <div className="flex gap-3">
                 <div className="flex items-center gap-2 text-zinc-400">
                   <Boxes strokeWidth={1.5} className="size-3.5 text-zinc-400" />
-                  <span className="text-xs">2 grupos</span>
+                  <span className="flex gap-1 text-xs">
+                    <span>2</span>
+                    <span className="hidden sm:block">grupos</span>
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-zinc-400">
                   <Box className="size-3 text-zinc-400" />
-                  <span className="text-xs">6 regras</span>
+                  <span className="flex gap-1 text-xs">
+                    <span>6</span>
+                    <span className="hidden sm:block">regras</span>
+                  </span>
                 </div>
               </div>
             </div>
@@ -279,7 +285,7 @@ export function RulePage() {
         </div>
       </section>
 
-      <div className="flex flex-1 flex-col gap-4 bg-white p-4">
+      <div className="flex flex-1 flex-col gap-4 bg-white md:p-4">
         <div className="flex w-full flex-col">
           <SortableList<RuleOrFolderRuleProps>
             items={items}
