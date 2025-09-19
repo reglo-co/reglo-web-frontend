@@ -13,7 +13,7 @@ export function GripAndHover({ children, isDragging, handleProps }: Props) {
       data-is-dragging={isDragging}
       className="data-[is-dragging=true]:ring-opacity-50 group w-full rounded-md transition-all duration-200 data-[is-dragging=false]:opacity-100 data-[is-dragging=true]:relative data-[is-dragging=true]:z-[9999] data-[is-dragging=true]:opacity-90 data-[is-dragging=true]:shadow-lg data-[is-dragging=true]:ring-2 data-[is-dragging=true]:ring-black/50"
     >
-      <div className="flex w-full items-center rounded-md border border-transparent bg-white p-3 hover:bg-zinc-50">
+      <div className="flex w-full items-center rounded-md border border-transparent bg-white">
         <Button
           variant="ghost"
           size="icon"

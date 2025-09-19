@@ -32,76 +32,93 @@ type RulePrimitive = {
 
 type RuleProps = RulePrimitive & {
   description: string
+  isFirst?: boolean
 }
 
-function Rule({ title, description, id }: RuleProps) {
+function RuleWrapper({
+  children,
+  isFirst = false,
+}: {
+  children: React.ReactNode
+  isFirst?: boolean
+}) {
+  return (
+    <div
+      data-has-border={!isFirst}
+      className="flex w-full cursor-pointer items-stretch gap-4 border-zinc-50 hover:bg-zinc-50 data-[has-border=true]:border-t"
+    >
+      {children}
+    </div>
+  )
+}
+
+function Rule({ title, description, id, isFirst = false }: RuleProps) {
   const solidId = id.replace('#', '')
 
   return (
     <ContextMenuRule>
-      <Link
-        href={`/rules/${solidId}`}
-        data-component="rule"
-        className="flex w-full cursor-pointer items-stretch gap-4 rounded-md hover:bg-zinc-50"
-      >
-        <div className="flex w-full flex-col justify-between gap-2 px-4 py-4 md:flex-row">
-          <div className="flex flex-col gap-3 md:flex-row">
-            <div>
-              <Tooltip>
-                <TooltipTrigger>
-                  <span className="text-xss flex h-6 w-fit cursor-default items-center justify-center rounded-md border px-2 text-zinc-400 hover:bg-black/5">
-                    {id}
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent>Copiar</TooltipContent>
-              </Tooltip>
+      <Link href={`/rules/${solidId}`} data-component="rule" className="w-full">
+        <RuleWrapper isFirst={isFirst}>
+          <div className="flex w-full flex-col justify-between gap-2 px-4 py-4 md:flex-row">
+            <div className="flex flex-col gap-3 md:flex-row">
+              <div>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <span className="text-xss flex h-6 w-fit cursor-default items-center justify-center rounded-md border px-2 text-zinc-400 hover:bg-black/5">
+                      {id}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>Copiar</TooltipContent>
+                </Tooltip>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <h3 className="text-lg font-semibold text-zinc-700">{title}</h3>
+                <span className="flex-1text-base flex w-full font-normal text-zinc-500">
+                  {description}
+                </span>
+              </div>
             </div>
 
-            <div className="flex flex-col gap-2">
-              <h3 className="text-lg font-semibold text-zinc-700">{title}</h3>
-              <span className="flex-1text-base flex w-full font-normal text-zinc-500">
-                {description}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="flex items-center gap-1 hover:bg-black/5"
-            >
-              <MessageCircle className="text-zinc-500" />
-              <span className="text-xs text-zinc-500">2</span>
-            </Button>
-            <ContextMenuBarRule>
+            <div className="flex">
               <Button
                 variant="ghost"
                 size="sm"
-                className="hover:bg-black/5"
-                asChild
+                className="flex items-center gap-1 hover:bg-black/5"
               >
-                <span>
-                  <MoreHorizontal />
-                </span>
+                <MessageCircle className="text-zinc-500" />
+                <span className="text-xs text-zinc-500">2</span>
               </Button>
-            </ContextMenuBarRule>
+              <ContextMenuBarRule>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="hover:bg-black/5"
+                  asChild
+                >
+                  <span>
+                    <MoreHorizontal />
+                  </span>
+                </Button>
+              </ContextMenuBarRule>
+            </div>
           </div>
-        </div>
+        </RuleWrapper>
       </Link>
     </ContextMenuRule>
   )
 }
 
-function FolderRule({ title, id }: RulePrimitive) {
+function FolderRule({
+  title,
+  id,
+  isFirst = false,
+}: RulePrimitive & { isFirst?: boolean }) {
   const solidId = id.replace('#', '')
 
   return (
     <ContextMenuRule>
-      <div
-        data-component="folder-rule"
-        className="flex w-full items-stretch gap-4 rounded-md hover:bg-zinc-50"
-      >
+      <RuleWrapper isFirst={isFirst}>
         <div className="flex w-full justify-between gap-2 px-4 py-4">
           <div className="flex w-full items-center gap-2">
             <span className="text-xss flex h-6 w-fit items-center justify-center rounded-md border px-2 text-zinc-400">
@@ -137,22 +154,33 @@ function FolderRule({ title, id }: RulePrimitive) {
             </ContextMenuBarRule>
           </div>
         </div>
-      </div>
+      </RuleWrapper>
     </ContextMenuRule>
   )
 }
 
-function RuleOrFolder({ item }: { item: RuleOrFolderRuleProps }) {
-  return item.type === 'rule' ? <Rule {...item} /> : <FolderRule {...item} />
+function RuleOrFolder({
+  item,
+  index,
+}: {
+  item: RuleOrFolderRuleProps
+  index: number
+}) {
+  return item.type === 'rule' ? (
+    <Rule {...item} isFirst={index === 0} />
+  ) : (
+    <FolderRule {...item} isFirst={index === 0} />
+  )
 }
 
 type RuleOrFolderRuleProps =
-  | (RulePrimitive & { type: 'rule' } & { description: string })
-  | (RulePrimitive & { type: 'folder' })
+  | (RulePrimitive & { type: 'rule' } & { description: string; index: number })
+  | ((RulePrimitive & { type: 'folder' }) & { index: number })
 
 export function RulePage() {
   const [items, setItems] = useState<RuleOrFolderRuleProps[]>([
     {
+      index: 0,
       type: 'rule',
       title: 'Login obrigatório para dashboard',
       id: '#e62n48f',
@@ -161,12 +189,14 @@ export function RulePage() {
     },
 
     {
+      index: 1,
       type: 'folder',
       title: 'Autenticação',
       id: '#ea2nf8f',
     },
 
     {
+      index: 2,
       type: 'rule',
       title: 'Carrinho de compras',
       id: '#e72nf8f',
@@ -174,6 +204,7 @@ export function RulePage() {
         'O usuário deve ter um carrinho de compras para adicionar produtos.',
     },
     {
+      index: 3,
       type: 'rule',
       title: 'Timeout de sessão',
       id: '#e82nf8f',
@@ -181,23 +212,27 @@ export function RulePage() {
     },
 
     {
+      index: 4,
       type: 'folder',
       title: 'Autenticação',
       id: '#e92nf8f',
     },
     {
+      index: 5,
       type: 'rule',
       title: 'Timeout de sessão',
       id: '#e02nf8f',
       description: 'A sessão do usuário expira após 30 minutos de inatividade.',
     },
     {
+      index: 6,
       type: 'rule',
       title: 'Timeout de sessão',
       id: '#e12nf8f',
       description: 'A sessão do usuário expira após 30 minutos de inatividade.',
     },
     {
+      index: 7,
       type: 'rule',
       title: 'Timeout de sessão',
       id: '#e22nf8f',
@@ -290,10 +325,18 @@ export function RulePage() {
           <SortableList<RuleOrFolderRuleProps>
             items={items}
             onChange={setItems}
-            renderItem={({ item, isDragging, handleProps }) => (
-              <GripAndHover isDragging={isDragging} handleProps={handleProps}>
-                <RuleOrFolder item={item} />
-              </GripAndHover>
+            renderItem={({
+              item,
+              isDragging,
+              handleProps,
+              setNodeRef,
+              style,
+            }) => (
+              <div ref={setNodeRef} style={style}>
+                <GripAndHover isDragging={isDragging} handleProps={handleProps}>
+                  <RuleOrFolder item={item} index={item.index} />
+                </GripAndHover>
+              </div>
             )}
           />
         </div>
