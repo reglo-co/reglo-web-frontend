@@ -24,7 +24,7 @@ export function NavListItem({
       href={href}
       hasWorkspace={hasWorkspace}
       className={cn(
-        'group/link hover:bg-rg-gray-1 rg-transition flex h-12 items-center gap-3 rounded-md p-3',
+        'group/link hover:bg-rg-gray-0 rg-transition flex h-12 items-center gap-3 rounded-md p-3',
         className
       )}
     >
