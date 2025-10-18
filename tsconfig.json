@@ -17,7 +17,8 @@
     "paths": {
       "@common/*": ["./src/modules/common/*"],
       "@common/ui/*": ["./src/modules/common/components/ui*"],
-      "@workspaces/*": ["./src/modules/workspaces/*"]
+      "@workspaces/*": ["./src/modules/workspaces/*"],
+      "@plans/*": ["./src/modules/plans/*"]
     },
     "plugins": [
       {

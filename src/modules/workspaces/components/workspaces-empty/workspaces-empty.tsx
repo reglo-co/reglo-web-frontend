@@ -1,13 +1,25 @@
+'use client'
+
 import { LogoRegloSymbol } from '@common/components/icons'
 import { Button, Input } from '@common/components/ui'
+import { useModal } from '@common/stores/modal.store'
 import { useWorkspaces } from '@workspaces/hooks'
 import { PlusIcon } from 'lucide-react'
 
 export function WorkspacesEmpty() {
   const workspaces = useWorkspaces()
+  const modal = useModal()
 
   if (workspaces.length > 0) {
     return null
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      event.stopPropagation()
+      modal.open('create-workspace')
+    }
   }
 
   return (
@@ -28,6 +40,7 @@ export function WorkspacesEmpty() {
           inputClassName="text-lg"
           placeholder="Nome do projeto..."
           autoFocus
+          onKeyDown={handleKeyDown}
           iconLeft={
             <LogoRegloSymbol
               width={20}
@@ -36,7 +49,13 @@ export function WorkspacesEmpty() {
             />
           }
           iconRight={
-            <Button variant="default" size="icon" className="size-7" rounded>
+            <Button
+              variant="default"
+              size="icon"
+              className="size-7"
+              rounded
+              onClick={() => modal.open('create-workspace')}
+            >
               <PlusIcon className="size-4" />
             </Button>
           }

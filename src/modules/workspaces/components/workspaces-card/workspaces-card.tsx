@@ -11,7 +11,7 @@ type WorkspacesCardProps = {
 export function WorkspacesCard({ name, href }: WorkspacesCardProps) {
   return (
     <Navigation.link href={href}>
-      <Card className="group/workspace-card hover:border-rg-gray-5 rg-transition flex min-h-46 cursor-pointer flex-row border-2 border-transparent">
+      <Card className="group/workspace-card hover:border-rg-gray-3 rg-transition flex min-h-46 cursor-pointer flex-row border-2 border-transparent">
         <span className="line-clamp-3 max-h-25 w-full text-lg sm:text-xl sm:leading-9">
           {name}
         </span>

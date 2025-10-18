@@ -1,5 +1,6 @@
 import { Header } from '@common/components/header'
 import { Workspaces } from '@workspaces/components'
+import { ModalWorkspacesCreate } from '@workspaces/modals/index'
 import { Fragment } from 'react'
 
 export default function Page() {
@@ -11,6 +12,8 @@ export default function Page() {
         <Workspaces.Empty />
         <Workspaces.List />
       </div>
+
+      <ModalWorkspacesCreate />
     </Fragment>
   )
 }

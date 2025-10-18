@@ -112,6 +112,10 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+
+  button[data-slot='dialog-close'] {
+    @apply cursor-pointer;
+  }
 }
 
 @layer components {
@@ -144,4 +148,12 @@ body {
 }
 @utility heading-1 {
   @apply text-3xl font-medium tracking-wide;
+}
+
+@utility heading-2 {
+  @apply text-2xl font-medium tracking-wide;
+}
+
+@utility label-base-1 {
+  @apply text-base font-normal tracking-wide;
 }
