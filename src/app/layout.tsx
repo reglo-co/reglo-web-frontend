@@ -1,13 +1,13 @@
-import type { Metadata } from 'next';
-import type { PropsWithChildren } from 'react';
-import { ABeeZee } from 'next/font/google';
-import '@/modules/common/styles/globals.css';
+import '@common/styles/globals.css'
+import type { Metadata } from 'next'
+import { ABeeZee } from 'next/font/google'
+import type { PropsWithChildren } from 'react'
 
 const abeeZee = ABeeZee({
   variable: '--font-abee-zee',
   weight: '400',
   subsets: ['latin'],
-});
+})
 
 export const metadata: Metadata = {
   title: 'Reglo',
@@ -28,12 +28,12 @@ export const metadata: Metadata = {
       url: '/favicon/light.svg',
     },
   ],
-};
+}
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
-    <html lang='pt-BR'>
+    <html lang="pt-BR">
       <body className={`${abeeZee.variable} antialiased`}>{children}</body>
     </html>
-  );
+  )
 }

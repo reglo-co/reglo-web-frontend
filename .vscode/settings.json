@@ -1,9 +1,14 @@
 {
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.importModuleSpecifierEnding": "index",
+  "javascript.preferences.importModuleSpecifierEnding": "index",
+  "typescript.updateImportsOnFileMove.enabled": "always",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.organizeImports": "explicit"
+    "source.organizeImports": true
   },
   "eslint.validate": [
     "javascript",
@@ -11,7 +16,6 @@
     "typescript",
     "typescriptreact"
   ],
-  "typescript.preferences.importModuleSpecifier": "relative",
   "typescript.suggest.autoImports": true,
   "emmet.includeLanguages": {
     "typescript": "html",

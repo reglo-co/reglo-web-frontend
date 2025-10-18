@@ -9,24 +9,13 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 })
 
+/** @type {import('eslint').Linter.FlatConfig[]} */
 const eslintConfig = [
-  ...compat.extends('next/core-web-vitals', 'next/typescript', 'prettier'),
+  ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
-    plugins: {
-      prettier: (await import('eslint-plugin-prettier')).default,
-    },
     rules: {
-      'prettier/prettier': 'error',
+      'react-hooks/exhaustive-deps': 'off',
     },
-  },
-  {
-    ignores: [
-      'node_modules/**',
-      '.next/**',
-      'out/**',
-      'build/**',
-      'next-env.d.ts',
-    ],
   },
 ]
 
