@@ -33,7 +33,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="pt-BR">
-      <body className={`${abeeZee.variable} antialiased`}>{children}</body>
+      <body className={`${abeeZee.variable} tracking-wide antialiased`}>
+        {children}
+      </body>
     </html>
   )
 }

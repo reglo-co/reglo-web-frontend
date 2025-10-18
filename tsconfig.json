@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@common/*": ["./src/modules/common/*"],
-      "@common/ui/*": ["./src/modules/common/components/ui*"]
+      "@common/ui/*": ["./src/modules/common/components/ui*"],
+      "@workspaces/*": ["./src/modules/workspaces/*"]
     },
     "plugins": [
       {

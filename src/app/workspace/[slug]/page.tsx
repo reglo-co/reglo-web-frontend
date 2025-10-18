@@ -1,10 +1,3 @@
-import { Header } from '@common/components/header'
-import { Fragment } from 'react'
-
 export default function Page() {
-  return (
-    <Fragment>
-      <Header />
-    </Fragment>
-  )
+  return <div className="rg-max-container">Page</div>
 }

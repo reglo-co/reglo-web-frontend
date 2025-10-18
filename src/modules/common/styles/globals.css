@@ -22,6 +22,9 @@
   --color-rg-gray-7: #444444;
   --color-rg-gray-8: #222222;
 
+  --color-rg-label: #000000;
+  --color-rg-label-support: #808080;
+
   --font-sans: var(--font-abee-zee);
 
   /* ------------------------------------------------------------------------ */
@@ -98,6 +101,8 @@ body {
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  --header-height: 72px;
 }
 
 @layer base {
@@ -112,6 +117,31 @@ body {
 @layer components {
 }
 
+@utility page-height {
+  @apply h-[calc(100vh-var(--header-height))];
+}
+
 @utility rg-transition {
   @apply transition-all duration-200 ease-in-out;
+}
+
+@utility rg-max-container {
+  @apply mx-auto w-full max-w-7xl px-4;
+}
+
+@utility rg-container {
+  @apply w-full max-w-4xl;
+}
+
+@utility rg-container-medium {
+  @apply w-full max-w-2xl;
+}
+
+/* headings */
+
+@utility heading-biggest {
+  @apply text-4xl font-bold tracking-wide;
+}
+@utility heading-1 {
+  @apply text-3xl font-medium tracking-wide;
 }
