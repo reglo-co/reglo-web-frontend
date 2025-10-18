@@ -1,34 +1,39 @@
-import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
-import type { PropsWithChildren } from 'react'
+import type { Metadata } from 'next';
+import type { PropsWithChildren } from 'react';
+import { ABeeZee } from 'next/font/google';
+import '@/modules/common/styles/globals.css';
 
-import './globals.css'
-import { GlobalLoading } from '@/modules/common/components/global-loading/'
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const abeeZee = ABeeZee({
+  variable: '--font-abee-zee',
+  weight: '400',
   subsets: ['latin'],
-})
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-})
+});
 
 export const metadata: Metadata = {
   title: 'Reglo',
-  description: 'Reglo',
-}
+  description: 'Gerencie suas regras de forma fácil e eficiente',
+  icons: [
+    {
+      rel: 'icon',
+      url: '/favicon/light.svg',
+      media: '(prefers-color-scheme: light)',
+    },
+    {
+      rel: 'icon',
+      url: '/favicon/dark.svg',
+      media: '(prefers-color-scheme: dark)',
+    },
+    {
+      rel: 'icon',
+      url: '/favicon/light.svg',
+    },
+  ],
+};
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} overflow-x-hidden scroll-smooth antialiased`}
-      >
-        {children}
-        <GlobalLoading />
-      </body>
+    <html lang='pt-BR'>
+      <body className={`${abeeZee.variable} antialiased`}>{children}</body>
     </html>
-  )
+  );
 }
