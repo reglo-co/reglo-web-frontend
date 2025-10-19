@@ -2,7 +2,7 @@
 
 import { Button } from '@common/components/ui/button'
 import { useModal } from '@common/stores/modal.store'
-import { Workspaces } from '@workspaces/components/index'
+import { Workspaces } from '@workspaces/components'
 import { useWorkspaces } from '@workspaces/hooks'
 import { PlusIcon } from 'lucide-react'
 
@@ -36,16 +36,19 @@ export function WorkspacesList() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+      <div className="xss:grid-cols-2 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <Workspaces.Card
+          name="SIS - Porto Seguro Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
+          href="/workspace/sis-porto-seguro"
+        />
         <Workspaces.Card
           name="SIS - Porto Seguro"
           href="/workspace/sis-porto-seguro"
         />
         <Workspaces.Card
-          name="Quem disse berenise?"
-          href="/workspace/quem-disse-berenise"
+          name="SIS - Porto Seguro"
+          href="/workspace/sis-porto-seguro"
         />
-        <Workspaces.Card name="Vibra" href="/workspace/vibra" />
       </div>
     </div>
   )

@@ -1,5 +1,6 @@
 'use client'
 
+import { cn } from '@common/lib/utils'
 import { PropsWithClassname } from '@common/types/common.types'
 import Link, { LinkProps } from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -15,6 +16,7 @@ export function LinkWorkspace({
   href,
   children,
   hasWorkspace = false,
+  className,
   ...props
 }: LinkWorkspaceProps) {
   const pathname = usePathname()
@@ -28,7 +30,11 @@ export function LinkWorkspace({
     : href // caso não esteja dentro de um workspace
 
   return (
-    <Link href={hasWorkspace ? fullHref : href} {...props}>
+    <Link
+      href={hasWorkspace ? fullHref : href}
+      className={cn('flex', className)}
+      {...props}
+    >
       {children}
     </Link>
   )

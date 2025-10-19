@@ -1,6 +1,6 @@
 import { Header } from '@common/components/header'
 import { Workspaces } from '@workspaces/components'
-import { ModalWorkspacesCreate } from '@workspaces/modals/index'
+import { ModalWorkspacesCreate } from '@workspaces/modals'
 import { Fragment } from 'react'
 
 export default function Page() {

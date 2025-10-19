@@ -1,11 +1,8 @@
-import { Navigation } from '@common/components/navigation/index'
+import { Navigation } from '@common/components/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
   Button,
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +15,7 @@ import {
   PopoverTrigger,
 } from '@common/components/ui'
 
+import { AvatarIcon } from '@common/components/avatar-icon/avatar-icon'
 import {
   Bolt,
   CreditCard,
@@ -80,10 +78,7 @@ export function Header({ withoutMenu = false }: { withoutMenu?: boolean }) {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Avatar className="rg-transition hover:cursor-pointer hover:opacity-80">
-              <AvatarImage src="https://github.com/shadcn.png" alt="Avatar" />
-              <AvatarFallback className="text-xs">CN</AvatarFallback>
-            </Avatar>
+            <AvatarIcon src="https://github.com/shadcn.png" alt="Avatar" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" side="bottom" className="min-w-48">
             <DropdownMenuLabel className="flex items-center gap-2">

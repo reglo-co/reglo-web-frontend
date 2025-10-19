@@ -1,4 +1,6 @@
+import { cn } from '@common/lib/utils'
 import { ModalType, useModal } from '@common/stores/modal.store'
+import { DialogContentProps, DialogProps } from '@radix-ui/react-dialog'
 import { PropsWithChildren } from 'react'
 
 import {
@@ -11,7 +13,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@common/components/ui'
-import { DialogProps } from '@radix-ui/react-dialog'
 
 type ModalRootProps = PropsWithChildren & DialogProps & { name: ModalType }
 
@@ -35,10 +36,40 @@ function ModalRoot({ children, name, onOpenChange, ...props }: ModalRootProps) {
   )
 }
 
+function ModalContent({ children, className, ...props }: DialogContentProps) {
+  return (
+    <DialogContent
+      className={cn('flex max-h-10/12 max-w-10/12 flex-col', className)}
+      {...props}
+    >
+      {children}
+    </DialogContent>
+  )
+}
+
+function ModalBody({
+  children,
+  className,
+  ...props
+}: PropsWithChildren & { className?: string }) {
+  return (
+    <div
+      className={cn(
+        'flex flex-1 flex-col gap-4 overflow-x-hidden overflow-y-auto px-4',
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+}
+
 export const Modal = {
   root: ModalRoot,
   trigger: DialogTrigger,
-  content: DialogContent,
+  content: ModalContent,
+  body: ModalBody,
   header: DialogHeader,
   title: DialogTitle,
   description: DialogDescription,

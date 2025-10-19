@@ -2,12 +2,14 @@
 
 import { LogoRegloSymbol } from '@common/components/icons/logo-reglo-symbol'
 import { Modal } from '@common/components/modal'
-import { Button } from '@common/components/ui/button'
-import { Input } from '@common/components/ui/input'
 import { useSteps } from '@common/hooks/steps.hook'
-import { Plans } from '@plans/components/index'
-import { ArrowLeft, ShoppingBasket } from 'lucide-react'
 import { useState } from 'react'
+
+import {
+  WorkspaceCreateStep1,
+  WorkspaceCreateStep2,
+  WorkspaceCreateStep3,
+} from '@workspaces/modals/modal-workspaces-create/steps'
 
 export function ModalWorkspacesCreate() {
   const { Step, nextStep, previousStep, goToStep } = useSteps()
@@ -35,79 +37,25 @@ export function ModalWorkspacesCreate() {
         </Modal.header>
 
         <Step step={0}>
-          <div className="flex flex-col gap-8">
-            <span className="text-rg-label label-base-1">
-              Projetos disponíveis para uso:
-            </span>
-
-            <div className="grid grid-cols-2 gap-4">
-              <Plans.CardSelect
-                name="PROJETO DIAMANTE"
-                users={10}
-                storage={20}
-                quantity={3}
-                isSelected={selectedPlan === 'PROJETO DIAMANTE'}
-                onClick={togglePlan('PROJETO DIAMANTE')}
-              />
-              <Plans.CardSelect
-                name="PROJETO OURO"
-                users={5}
-                storage={10}
-                quantity={1}
-                isSelected={selectedPlan === 'PROJETO OURO'}
-                onClick={togglePlan('PROJETO OURO')}
-              />
-            </div>
-          </div>
-          <Modal.footer className="!justify-between">
-            <Button
-              variant="ghost"
-              size="default"
-              className="flex items-center gap-2 uppercase"
-              rounded
-            >
-              <ShoppingBasket className="size-4" />
-              Comprar projeto
-            </Button>
-            <Button
-              variant="default"
-              size="default"
-              className="uppercase"
-              disabled={!selectedPlan}
-              onClick={nextStep}
-              rounded
-            >
-              Escolher
-            </Button>
-          </Modal.footer>
+          <WorkspaceCreateStep1
+            nextStep={nextStep}
+            selectedPlan={selectedPlan}
+            togglePlan={togglePlan}
+          />
         </Step>
 
         <Step step={1}>
-          <div className="flex flex-col gap-8 pt-6">
-            <Input placeholder="Nome do projeto" />
-            <Input placeholder="Slug" />
-          </div>
-          <Modal.footer className="!justify-between">
-            <Button
-              variant="ghost"
-              size="default"
-              className="flex items-center gap-2 uppercase"
-              onClick={previousStep}
-              rounded
-            >
-              <ArrowLeft className="size-4" />
-              Voltar
-            </Button>
-            <Button
-              variant="default"
-              size="default"
-              className="uppercase"
-              onClick={nextStep}
-              rounded
-            >
-              Escolher
-            </Button>
-          </Modal.footer>
+          <WorkspaceCreateStep2
+            previousStep={previousStep}
+            nextStep={nextStep}
+          />
+        </Step>
+
+        <Step step={2}>
+          <WorkspaceCreateStep3
+            goToStep={goToStep}
+            previousStep={previousStep}
+          />
         </Step>
       </Modal.content>
     </Modal.root>
