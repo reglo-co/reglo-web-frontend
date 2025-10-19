@@ -5,8 +5,9 @@ import {
   VerifyInputStatus,
 } from '@common/components/verify-input/verify-input'
 import { Helpers } from '@common/helpers'
+import { useDebounce } from '@common/hooks'
 import { ArrowLeft } from 'lucide-react'
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 type WorkspaceCreateStep2Props = {
   previousStep: () => void
@@ -19,11 +20,34 @@ export function WorkspaceCreateStep2({
 }: WorkspaceCreateStep2Props) {
   const [name, setName] = useState('')
   const [slug, setSlug] = useState('')
-  const [verifyInputStatus] = useState<VerifyInputStatus>('success')
+  const [verifyInputStatus, setVerifyInputStatus] =
+    useState<VerifyInputStatus>('neutral')
+
+  // Debounce para slug com delay de 500ms
+  const debouncedSlug = useDebounce(slug, 500)
+
+  // Executa a validação quando os valores debounced mudarem
+  useEffect(() => {
+    validateSlug()
+  }, [debouncedSlug])
 
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     setName(e.target.value)
     setSlug(Helpers.toSlug(e.target.value))
+  }
+
+  function validateSlug() {
+    setVerifyInputStatus('loading')
+    const isSuccess = Math.random() < 0.5
+
+    if (debouncedSlug.length === 0) {
+      setVerifyInputStatus('neutral')
+      return
+    }
+
+    setTimeout(() => {
+      setVerifyInputStatus(isSuccess ? 'success' : 'invalid')
+    }, 1000)
   }
 
   function handleSlugChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -57,6 +81,7 @@ export function WorkspaceCreateStep2({
         <Input
           value={name}
           onChange={handleNameChange}
+          className="!text-lg font-medium tracking-wide"
           placeholder="Nome do projeto"
           maxLength={28}
         />

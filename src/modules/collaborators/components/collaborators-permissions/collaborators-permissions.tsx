@@ -37,7 +37,7 @@ export function CollaboratorsPermissions() {
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="xs:flex-row flex flex-col items-center justify-center gap-3 sm:justify-start">
       <AvatarIcon
         className="size-9 cursor-default"
         src="https://github.com/shadcn.pngs"
@@ -52,7 +52,7 @@ export function CollaboratorsPermissions() {
         maxLength={320}
       />
       <Select defaultValue="viewer">
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="xs:w-[180px] w-full">
           <SelectValue placeholder="Permissões" />
         </SelectTrigger>
         <SelectContent>

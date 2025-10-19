@@ -36,7 +36,7 @@ export function WorkspaceCreateStep3({
     <Fragment>
       <Modal.body>
         <span className="text-rg-label-support text-sm">
-          Adicione os colaboradores e suas permissões para o projeto:
+          Adicione colaboradores ao seu projeto e defina suas permissões:
         </span>
         <Collaborators.Control limit={3} />
       </Modal.body>

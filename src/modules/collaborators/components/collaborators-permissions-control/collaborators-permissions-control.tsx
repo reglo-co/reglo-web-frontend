@@ -26,15 +26,15 @@ export function CollaboratorsPermissionsControl({ limit }: ControlProps) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-4 overflow-y-auto pt-4">
+    <div className="flex flex-col gap-10 sm:gap-4">
+      <div className="xs:gap-4 flex flex-col gap-16 overflow-y-auto pt-4">
         {collaborators.map((_, index) => (
           <Collaborators.Permissions key={`collaborator-${index}`} />
         ))}
       </div>
 
       {collaborators.length < limit && (
-        <div className="flex justify-end">
+        <div className="xs:justify-end flex justify-center">
           <Button
             onClick={addCollaborator}
             variant="default"

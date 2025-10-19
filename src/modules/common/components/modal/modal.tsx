@@ -39,7 +39,10 @@ function ModalRoot({ children, name, onOpenChange, ...props }: ModalRootProps) {
 function ModalContent({ children, className, ...props }: DialogContentProps) {
   return (
     <DialogContent
-      className={cn('flex max-h-10/12 max-w-10/12 flex-col', className)}
+      className={cn(
+        'flex max-h-10/12 max-w-10/12 flex-col p-4 sm:p-8',
+        className
+      )}
       {...props}
     >
       {children}
@@ -55,7 +58,7 @@ function ModalBody({
   return (
     <div
       className={cn(
-        'flex flex-1 flex-col gap-4 overflow-x-hidden overflow-y-auto px-4',
+        'flex flex-1 flex-col gap-4 overflow-x-hidden overflow-y-auto sm:px-4',
         className
       )}
       {...props}
