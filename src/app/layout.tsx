@@ -1,3 +1,5 @@
+import { ptBR } from '@clerk/localizations'
+import { ClerkProvider } from '@clerk/nextjs'
 import '@common/styles/globals.css'
 import type { Metadata } from 'next'
 import { ABeeZee } from 'next/font/google'
@@ -32,10 +34,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
-    <html lang="pt-BR">
-      <body className={`${abeeZee.variable} tracking-wide antialiased`}>
-        {children}
-      </body>
-    </html>
+    <ClerkProvider localization={ptBR} waitlistUrl="/waitlist">
+      <html lang="pt-BR">
+        <body className={`${abeeZee.variable} tracking-wide antialiased`}>
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }

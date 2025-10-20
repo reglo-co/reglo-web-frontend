@@ -15,11 +15,12 @@ import {
   PopoverTrigger,
 } from '@common/components/ui'
 
-import { AvatarIcon } from '@common/components/avatar-icon/avatar-icon'
+import { UserButton } from '@clerk/nextjs'
 import {
   Bolt,
   CreditCard,
   LayoutGrid,
+  Loader2,
   LogOut,
   StretchHorizontal,
   UserRound,
@@ -78,7 +79,14 @@ export function Header({ withoutMenu = false }: { withoutMenu?: boolean }) {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <AvatarIcon src="https://github.com/shadcn.png" alt="Avatar" />
+            <UserButton
+              fallback={
+                <Loader2
+                  strokeWidth={1.75}
+                  className="text-rg-gray-3 size-7 animate-spin"
+                />
+              }
+            />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" side="bottom" className="min-w-48">
             <DropdownMenuLabel className="flex items-center gap-2">
@@ -104,15 +112,15 @@ export function Header({ withoutMenu = false }: { withoutMenu?: boolean }) {
               </Navigation.link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Navigation.link
-                href="/logout"
-                className="flex items-center gap-2"
-              >
+            <Navigation.link
+              href="/sign-out"
+              className="flex w-full items-center gap-2"
+            >
+              <DropdownMenuItem className="w-full">
                 <LogOut className="size-4" />
                 Sair
-              </Navigation.link>
-            </DropdownMenuItem>
+              </DropdownMenuItem>
+            </Navigation.link>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
