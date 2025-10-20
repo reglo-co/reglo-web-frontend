@@ -29,7 +29,7 @@ export function HeaderHero() {
           <Logo.lettering width={84} height={24} />
         </Link>
 
-        <nav>
+        <nav className="hidden sm:flex">
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
