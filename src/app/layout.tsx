@@ -35,8 +35,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <ClerkProvider localization={ptBR} waitlistUrl="/waitlist">
-      <html lang="pt-BR">
-        <body className={`${abeeZee.variable} tracking-wide antialiased`}>
+      <html lang="pt-BR" className="scroll-smooth">
+        <body
+          className={`${abeeZee.variable} scroll-smooth tracking-wide antialiased`}
+        >
           {children}
         </body>
       </html>

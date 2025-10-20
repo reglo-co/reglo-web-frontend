@@ -122,8 +122,18 @@ body {
   * {
     @apply border-border outline-ring/50;
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground scroll-smooth;
+  }
+
+  /* Aplicar scroll smooth em todos os elementos scrolláveis */
+  * {
+    scroll-behavior: smooth;
   }
 
   button[data-slot='dialog-close'] {
@@ -140,6 +150,11 @@ body {
 
 @utility rg-transition {
   @apply transition-all duration-200 ease-in-out;
+}
+
+@utility rg-scroll-smooth {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 @utility rg-max-container {

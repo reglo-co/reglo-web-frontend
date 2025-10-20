@@ -1,5 +1,7 @@
 export * from './avatar-icon'
+export * from './footer'
 export * from './header'
+export * from './hero'
 export * from './icons'
 export * from './info-card'
 export * from './modal'
