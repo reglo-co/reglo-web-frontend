@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type ModalType = 'create-workspace'
+export type ModalType = 'create-workspace' | 'kanban-item-details'
 
 type ModalStore = {
   name: ModalType | null

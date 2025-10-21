@@ -58,7 +58,7 @@ function ModalBody({
   return (
     <div
       className={cn(
-        'flex flex-1 flex-col gap-4 overflow-x-hidden overflow-y-auto sm:px-4',
+        'flex flex-1 flex-col gap-4 overflow-x-hidden overflow-y-auto',
         className
       )}
       {...props}

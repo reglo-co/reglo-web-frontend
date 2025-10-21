@@ -16,10 +16,12 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
+      "@/*": ["./src/*"],
       "@common/*": ["./src/modules/common/*"],
       "@common/ui/*": ["./src/modules/common/components/ui*"],
       "@workspaces/*": ["./src/modules/workspaces/*"],
-      "@plans/*": ["./src/modules/plans/*"]
+      "@plans/*": ["./src/modules/plans/*"],
+      "@kanban/*": ["./src/modules/kanban/*"]
     },
     "plugins": [
       {

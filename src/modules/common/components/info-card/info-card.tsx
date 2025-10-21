@@ -1,5 +1,6 @@
 'use client'
 
+import { cn } from '@/modules/common/lib/utils'
 import { Card, CardContent } from '@common/components'
 import { cva } from 'class-variance-authority'
 import { PropsWithChildren, ReactNode } from 'react'
@@ -28,6 +29,7 @@ type InfoCardProps = PropsWithChildren & {
   type?: 'select' | 'hover' | 'default'
   active?: boolean
   cursor?: 'pointer' | 'default'
+  leading?: 'default' | 'small'
   onClick?: () => void
 }
 
@@ -38,6 +40,7 @@ export function InfoCard({
   type = 'default',
   active = false,
   cursor = 'default',
+  leading = 'default',
   children,
   onClick,
 }: InfoCardProps) {
@@ -56,7 +59,14 @@ export function InfoCard({
           data-section="info"
           className="flex h-full flex-1 flex-col justify-between gap-8"
         >
-          <span className="line-clamp-3 max-h-20 flex-1 text-lg leading-7 sm:max-h-26 sm:text-xl sm:leading-9">
+          <span
+            className={cn(
+              'line-clamp-3 max-h-20 flex-1 text-lg sm:max-h-26 sm:text-xl',
+              leading === 'small'
+                ? 'leading-6 sm:leading-7'
+                : 'leading-7 sm:leading-9'
+            )}
+          >
             {title}
           </span>
           {children && <div className="flex flex-col gap-2">{children}</div>}

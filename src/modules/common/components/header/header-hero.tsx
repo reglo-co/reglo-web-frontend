@@ -18,7 +18,7 @@ export function HeaderHero() {
     >
       <div className="rg-max-container rg-transition flex h-full items-center justify-between">
         <Link
-          href="/"
+          href="#start"
           className="group/logo flex items-center hover:opacity-80"
         >
           <Logo.symbol
@@ -33,20 +33,20 @@ export function HeaderHero() {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuLink href="#start">Início</NavigationMenuLink>
+                <NavigationMenuLink href="/#start">Início</NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuLink href="#what-we-are">
+                <NavigationMenuLink href="/#what-we-are">
                   O que é a Reglo?
                 </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuLink href="#features">
+                <NavigationMenuLink href="/#features">
                   Recursos
                 </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuLink href="#features">
+                <NavigationMenuLink href="/kanban">
                   Nosso Kanban
                 </NavigationMenuLink>
               </NavigationMenuItem>
