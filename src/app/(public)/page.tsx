@@ -1,44 +1,8 @@
 'use client'
 
 import { Footer, HeaderHero, Hero } from '@common/components'
-import { useEffect } from 'react'
-
-export async function testFirestore() {
-  try {
-    // 👤 Cria ou atualiza dados do usuário autenticado
-    const saveResponse = await fetch('/api/user-data', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: 'Hello Firestore!' }),
-    })
-
-    if (!saveResponse.ok) {
-      throw new Error('Erro ao salvar dados no Firestore')
-    }
-
-    console.log('✅ Dados salvos com sucesso')
-
-    // 📖 Busca os dados do usuário autenticado
-    const getResponse = await fetch('/api/user-data')
-    if (!getResponse.ok) {
-      throw new Error('Erro ao buscar dados do Firestore')
-    }
-
-    const userData = await getResponse.json()
-    console.log('📄 Dados do Firestore:', userData)
-
-    return userData
-  } catch (error) {
-    console.error('🔥 Erro no testFirestore:', error)
-    throw error
-  }
-}
 
 export default function Home() {
-  useEffect(() => {
-    testFirestore()
-  }, [])
-
   return (
     <div id="start" className="rg-max-container flex w-full flex-col">
       <HeaderHero />
