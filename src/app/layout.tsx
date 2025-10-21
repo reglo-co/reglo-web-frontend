@@ -1,5 +1,6 @@
 import { ptBR } from '@clerk/localizations'
 import { ClerkProvider } from '@clerk/nextjs'
+import { Providers } from '@common/providers'
 import '@common/styles/globals.css'
 import type { Metadata } from 'next'
 import { ABeeZee } from 'next/font/google'
@@ -39,7 +40,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
         <body
           className={`${abeeZee.variable} scroll-smooth tracking-wide antialiased`}
         >
-          {children}
+          <Providers>{children}</Providers>
         </body>
       </html>
     </ClerkProvider>
