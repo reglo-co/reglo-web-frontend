@@ -1,8 +1,6 @@
 import { auth } from '@clerk/nextjs/server'
 import { Response } from '@common/helpers'
-import { FirebaseStore } from '@common/lib/firebase'
-
-const store = new FirebaseStore()
+import { getServerFirestore } from '@common/lib/firebase/get-server-firestore'
 
 export async function GET() {
   try {
@@ -12,13 +10,20 @@ export async function GET() {
       return Response.unauthorized('Not authenticated')
     }
 
-    const result = await store.get('users', userId)
+    const db = getServerFirestore()
+    const docRef = db.collection('users').doc(userId)
+    const docSnap = await docRef.get()
 
-    if (result.ok) {
-      return Response.ok(result.data)
+    if (!docSnap.exists) {
+      return Response.notFound('User not found')
     }
 
-    return Response.internalServerError(result.error.message)
+    const data = {
+      id: docSnap.id,
+      ...docSnap.data(),
+    }
+
+    return Response.ok(data)
   } catch (error) {
     console.error('GET /user-data error:', error)
     return Response.internalServerError('Internal Server Error')
@@ -34,13 +39,11 @@ export async function POST(req: Request) {
     }
 
     const data = await req.json()
-    const result = await store.set('users', userId, data)
+    const db = getServerFirestore()
+    const docRef = db.collection('users').doc(userId)
+    await docRef.set(data)
 
-    if (result.ok) {
-      return Response.ok({ success: true })
-    }
-
-    return Response.internalServerError(result.error.message)
+    return Response.ok({ success: true })
   } catch (error) {
     console.error('POST /user-data error:', error)
     return Response.internalServerError()

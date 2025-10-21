@@ -1,8 +1,6 @@
 import { Response } from '@/modules/common/helpers'
-import { FirebaseStore } from '@/modules/common/lib/firebase'
+import { getServerFirestore } from '@/modules/common/lib/firebase/get-server-firestore'
 import { auth } from '@clerk/nextjs/server'
-
-const store = new FirebaseStore()
 
 export async function GET() {
   try {
@@ -14,15 +12,18 @@ export async function GET() {
       return Response.unauthorized('Not authenticated')
     }
 
-    const result = await store.query('users_workspaces', {
-      where: [['userId', '==', userId]],
-    })
+    const db = getServerFirestore()
+    const querySnapshot = await db
+      .collection('users_workspaces')
+      .where('userId', '==', userId)
+      .get()
 
-    if (result.ok) {
-      return Response.ok(result.data)
-    }
+    const documents = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }))
 
-    return Response.internalServerError(result.error.message)
+    return Response.ok(documents)
   } catch (error) {
     console.error('GET /users/workspaces/list error:', error)
     return Response.internalServerError('Internal Server Error')

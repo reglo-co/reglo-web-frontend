@@ -1,5 +1,5 @@
 import { cn } from '@common/lib/utils'
-import { KanbanData } from '../../types/kanban.types'
+import { KanbanData } from '../../types'
 import { KanbanColumn } from '../kanban-column'
 
 interface KanbanBoardProps {

@@ -1,7 +1,7 @@
 import { InfoCard, LogoRegloSymbol } from '@common/components'
 import { useModal } from '@common/stores/modal.store'
 import { useKanban } from '../../stores/kanban.store'
-import { KanbanItem } from '../../types/kanban.types'
+import { KanbanItem } from '../../types'
 
 interface KanbanCardProps {
   item: KanbanItem

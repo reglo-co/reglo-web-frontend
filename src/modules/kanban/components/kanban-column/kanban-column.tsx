@@ -1,5 +1,5 @@
 import { cn } from '@common/lib/utils'
-import { KanbanColumn as KanbanColumnType } from '../../types/kanban.types'
+import { KanbanColumn as KanbanColumnType } from '../../types'
 import { KanbanCard } from '../kanban-card'
 
 interface KanbanColumnProps {

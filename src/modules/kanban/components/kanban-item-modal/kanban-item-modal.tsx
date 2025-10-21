@@ -1,4 +1,4 @@
-import { Logo } from '@/modules/common/components'
+import { LogoRegloSymbol } from '@common/components'
 import { Modal } from '@common/components/modal'
 import {
   Badge,
@@ -23,7 +23,7 @@ export function KanbanItemModal() {
       <Modal.content className="max-w-2xl">
         <Modal.header>
           <Modal.title className="flex items-center gap-2 text-xl font-semibold">
-            <Logo.symbol className="text-rg-primary mt-0.5" />
+            <LogoRegloSymbol className="text-rg-primary mt-0.5" />
             {selectedItem.title}
           </Modal.title>
         </Modal.header>

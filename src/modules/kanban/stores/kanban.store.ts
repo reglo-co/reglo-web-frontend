@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { KanbanItem } from '../types/kanban.types'
+import { KanbanItem } from '../types'
 
 type KanbanStore = {
   selectedItem: KanbanItem | null
