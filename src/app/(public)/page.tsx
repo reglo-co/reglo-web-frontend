@@ -9,7 +9,7 @@ export default function Home() {
       <Hero
         heading="Centralize suas regras de negócio"
         description="Centralize regras, decisões e condições do seu negócio de forma estruturada. Mantenha tudo documentado, atualizado e acessível apenas para quem precisa."
-        badge="Potencialize o seu projeto"
+        badge="Potencialize o seu time"
         buttons={{
           secondary: {
             text: 'Entrar na lista de espera',

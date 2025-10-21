@@ -10,6 +10,7 @@ type LinkWorkspaceProps = PropsWithClassname & {
   href: string
   children: ReactNode
   hasWorkspace?: boolean
+  target?: string
 } & Omit<LinkProps, 'href'>
 
 export function LinkWorkspace({
@@ -17,6 +18,7 @@ export function LinkWorkspace({
   children,
   hasWorkspace = false,
   className,
+  target,
   ...props
 }: LinkWorkspaceProps) {
   const pathname = usePathname()
@@ -33,6 +35,7 @@ export function LinkWorkspace({
     <Link
       href={hasWorkspace ? fullHref : href}
       className={cn('flex', className)}
+      target={target}
       {...props}
     >
       {children}

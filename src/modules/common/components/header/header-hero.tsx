@@ -18,7 +18,7 @@ export function HeaderHero() {
     >
       <div className="rg-max-container rg-transition flex h-full items-center justify-between">
         <Link
-          href="#start"
+          href="/#start"
           className="group/logo flex items-center hover:opacity-80"
         >
           <Logo.symbol
