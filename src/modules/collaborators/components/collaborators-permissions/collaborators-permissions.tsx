@@ -1,3 +1,4 @@
+import { useWorkspaceModalStore } from '@/modules/workspaces/store'
 import { AvatarIcon } from '@common/components'
 import { Mail, UserPen, UserSearch, UserStar } from 'lucide-react'
 
@@ -9,14 +10,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@common/components/ui'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent } from 'react'
 
 function EmailIcon() {
   return <Mail strokeWidth={1.25} className="text-rg-gray-5 size-3.5" />
 }
 
-export function CollaboratorsPermissions() {
-  const [email, setEmail] = useState('')
+interface CollaboratorsPermissionsProps {
+  index: number
+}
+
+export function CollaboratorsPermissions({
+  index,
+}: CollaboratorsPermissionsProps) {
+  const { collaborators, updateCollaborator } = useWorkspaceModalStore()
+  const collaborator = collaborators[index]
 
   function handleEmailChange(event: ChangeEvent<HTMLInputElement>) {
     const inputValue = event.target.value
@@ -33,7 +41,11 @@ export function CollaboratorsPermissions() {
     const maxLength = 320
     const truncatedValue = inputValue.slice(0, maxLength)
 
-    setEmail(truncatedValue)
+    updateCollaborator(index, { email: truncatedValue })
+  }
+
+  function handlePermissionChange(permission: 'admin' | 'editor' | 'viewer') {
+    updateCollaborator(index, { permission })
   }
 
   return (
@@ -47,11 +59,14 @@ export function CollaboratorsPermissions() {
         iconLeft={<EmailIcon />}
         placeholder="E-mail do colaborador..."
         className="h-9"
-        value={email}
+        value={collaborator?.email || ''}
         onChange={handleEmailChange}
         maxLength={320}
       />
-      <Select defaultValue="viewer">
+      <Select
+        value={collaborator?.permission || 'viewer'}
+        onValueChange={handlePermissionChange}
+      >
         <SelectTrigger className="xs:w-[180px] w-full">
           <SelectValue placeholder="Permissões" />
         </SelectTrigger>

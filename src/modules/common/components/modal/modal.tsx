@@ -30,7 +30,12 @@ function ModalRoot({ children, name, onOpenChange, ...props }: ModalRootProps) {
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange} {...props}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={handleOpenChange}
+      modal={true}
+      {...props}
+    >
       {children}
     </Dialog>
   )

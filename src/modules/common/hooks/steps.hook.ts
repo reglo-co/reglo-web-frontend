@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useState } from 'react'
+import { PropsWithChildren, useCallback, useEffect, useState } from 'react'
 
 type StepProps = PropsWithChildren & {
   step: number
@@ -12,27 +12,21 @@ export function useSteps(initialStep: number = 0) {
     setIsClient(true)
   }, [])
 
-  function nextStep() {
-    setCurrentStep(currentStep + 1)
-  }
+  const nextStep = useCallback(() => {
+    setCurrentStep((prev) => prev + 1)
+  }, [])
 
-  function previousStep() {
-    if (currentStep <= 0) return
-    setCurrentStep(currentStep - 1)
-  }
+  const previousStep = useCallback(() => {
+    setCurrentStep((prev) => (prev <= 0 ? prev : prev - 1))
+  }, [])
 
-  function goToStep(step: number) {
+  const goToStep = useCallback((step: number) => {
     if (step < 0) return
     setCurrentStep(step)
-  }
+  }, [])
 
-  return {
-    currentStep,
-    nextStep,
-    previousStep,
-    goToStep,
-    Step: ({ children, step }: StepProps) => {
-      // Durante a hidratação, renderiza o step inicial para evitar inconsistências
+  const Step = useCallback(
+    ({ children, step }: StepProps) => {
       if (!isClient) {
         return step === initialStep ? children : null
       }
@@ -40,5 +34,8 @@ export function useSteps(initialStep: number = 0) {
       if (step !== currentStep) return null
       return children
     },
-  }
+    [currentStep, initialStep, isClient]
+  )
+
+  return { currentStep, nextStep, previousStep, goToStep, Step }
 }

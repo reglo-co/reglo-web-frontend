@@ -1,11 +1,13 @@
 'use client'
 
+import { useWorkspaceCreate } from '@/modules/workspaces/hooks'
+import { useWorkspaceModalStore } from '@/modules/workspaces/store'
 import { LogoRegloSymbol } from '@common/components/icons/logo-reglo-symbol'
 import { Modal } from '@common/components/modal'
 import { Button } from '@common/components/ui'
 import { useModal } from '@common/stores'
 import { ArrowLeft } from 'lucide-react'
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 import { Collaborators } from 'src/modules/collaborators/components'
 
 type WorkspaceCreateStep3Props = {
@@ -18,27 +20,23 @@ export function WorkspaceCreateStep3({
   goToStep,
 }: WorkspaceCreateStep3Props) {
   const modal = useModal()
-  const [isLoading, setIsLoading] = useState(false)
+  const { clear } = useWorkspaceModalStore()
+  const { createWorkspace, isLoading } = useWorkspaceCreate()
 
-  function handleCreateWorkspace() {
-    setIsLoading(true)
-    setTimeout(() => {
+  async function handleCreateWorkspace() {
+    const response = await createWorkspace()
+
+    if (response.slug) {
       modal.close()
-
-      setTimeout(() => {
-        setIsLoading(false)
-        goToStep(0)
-      }, 500)
-    }, 5000)
+      setTimeout(() => goToStep(0), 500)
+      clear()
+    }
   }
 
   return (
     <Fragment>
       <Modal.body>
-        <span className="text-rg-label-support text-sm">
-          Adicione colaboradores ao seu projeto e defina suas permissões:
-        </span>
-        <Collaborators.Control limit={3} />
+        <Collaborators.Control />
       </Modal.body>
 
       <Modal.footer className="!justify-between">

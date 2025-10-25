@@ -50,7 +50,6 @@ export function WorkspacesEmpty() {
           className="w-full"
           inputClassName="text-lg"
           placeholder="Nome do projeto..."
-          autoFocus
           value={name}
           onChange={handleChange}
           onKeyDown={handleKeyDown}

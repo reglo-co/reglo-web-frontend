@@ -42,7 +42,7 @@ export function WorkspaceCreateStep1({ nextStep }: WorkspaceCreateStep1Props) {
         {!canCreateWorkspace && !isLoading && (
           <div className="flex flex-col items-center justify-center gap-3 pt-10 pb-4">
             <span className="text-rg-label label-base-1 text-lg">
-              Nenhum plano disponível para uso
+              Nenhum projeto disponível no seu plano
             </span>
             <span className="text-rg-label-support text-sm">
               Faça o upgrade para continuar criando projetos
@@ -75,6 +75,7 @@ export function WorkspaceCreateStep1({ nextStep }: WorkspaceCreateStep1Props) {
           size="default"
           className="uppercase"
           onClick={nextStep}
+          disabled={!canCreateWorkspace}
           rounded
         >
           Escolher

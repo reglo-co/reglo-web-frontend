@@ -10,6 +10,7 @@ export type FirebaseCollectionName =
   | 'plans'
   | 'workspaces_plans'
   | 'users_workspaces'
+  | 'workspaces'
 
 export class FirebaseCollection {
   private readonly collection: CollectionReference<DocumentData>
@@ -22,6 +23,8 @@ export class FirebaseCollection {
 
   async create(data: DocumentData) {
     const docRef = await this.collection.add(data)
+    // Adiciona o ID automático como campo dentro do documento
+    await docRef.update({ id: docRef.id })
     return docRef.id
   }
 

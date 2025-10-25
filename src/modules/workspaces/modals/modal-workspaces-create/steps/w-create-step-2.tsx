@@ -1,14 +1,11 @@
 import { useWorkspaceModalStore } from '@/modules/workspaces/store'
 import { Modal } from '@common/components/modal/modal'
 import { Button, Input } from '@common/components/ui'
-import {
-  VerifyInput,
-  VerifyInputStatus,
-} from '@common/components/verify-input/verify-input'
-import { Helper } from '@common/helpers'
-import { useDebounce } from '@common/hooks'
 import { ArrowLeft } from 'lucide-react'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment } from 'react'
+
+import { useWorkspaceSlugAvailable } from '@/modules/workspaces/hooks'
+import { VerifyInput } from '@common/components/verify-input/verify-input'
 
 type WorkspaceCreateStep2Props = {
   previousStep: () => void
@@ -19,37 +16,11 @@ export function WorkspaceCreateStep2({
   previousStep,
   nextStep,
 }: WorkspaceCreateStep2Props) {
-  const { name, setName } = useWorkspaceModalStore()
-  const [slug, setSlug] = useState('')
-
-  const [verifyInputStatus, setVerifyInputStatus] =
-    useState<VerifyInputStatus>('neutral')
-
-  // Debounce para slug com delay de 500ms
-  const debouncedSlug = useDebounce(slug, 500)
-
-  // Executa a validação quando os valores debounced mudarem
-  useEffect(() => {
-    validateSlug()
-  }, [debouncedSlug])
+  const { name, setName, slug, setSlug } = useWorkspaceModalStore()
+  const { available } = useWorkspaceSlugAvailable()
 
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     setName(e.target.value)
-    setSlug(Helper.toSlug(e.target.value))
-  }
-
-  function validateSlug() {
-    setVerifyInputStatus('loading')
-    const isSuccess = Math.random() < 0.5
-
-    if (debouncedSlug.length === 0) {
-      setVerifyInputStatus('neutral')
-      return
-    }
-
-    setTimeout(() => {
-      setVerifyInputStatus(isSuccess ? 'success' : 'invalid')
-    }, 1000)
   }
 
   function handleSlugChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -88,7 +59,7 @@ export function WorkspaceCreateStep2({
           maxLength={28}
         />
         <div className="flex items-center pl-2">
-          <VerifyInput status={verifyInputStatus} />
+          <VerifyInput status={available} />
           <span className="text-rg-gray-500 text-rg-label-support text-xs">
             reglo.co/workspace/
           </span>
@@ -116,7 +87,7 @@ export function WorkspaceCreateStep2({
           size="default"
           className="uppercase"
           onClick={nextStep}
-          disabled={verifyInputStatus !== 'success'}
+          disabled={available !== 'success'}
           rounded
         >
           Escolher

@@ -1,5 +1,5 @@
 import { Response } from '@/modules/common/helpers'
-import { getServerFirestore } from '@/modules/common/lib/firebase/get-server-firestore'
+import { FirebaseCollection } from '@/modules/common/lib/firebase'
 import { auth } from '@clerk/nextjs/server'
 
 export async function GET() {
@@ -10,18 +10,30 @@ export async function GET() {
       return Response.unauthorized('Not authenticated')
     }
 
-    const db = getServerFirestore()
-    const querySnapshot = await db
-      .collection('users_workspaces')
-      .where('userId', '==', userId)
-      .get()
+    console.log('userId', userId)
 
-    const documents = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }))
+    const usersWorkspacesCollection = new FirebaseCollection('users_workspaces')
+    const workspacesCollection = new FirebaseCollection('workspaces')
 
-    return Response.ok(documents)
+    const usersWorkspaces = await usersWorkspacesCollection.query
+      .equal('userId', userId)
+      .build()
+
+    console.log('usersWorkspaces', usersWorkspaces)
+
+    const workspaceIds = usersWorkspaces.map(
+      (userWorkspace) => userWorkspace.workspaceId
+    )
+
+    console.log('workspaceIds', workspaceIds)
+
+    const workspaces = await workspacesCollection.query
+      .in('id', workspaceIds)
+      .build()
+
+    console.log('workspaces', workspaces)
+
+    return Response.ok(workspaces)
   } catch (error) {
     console.error('GET /users/workspaces/list error:', error)
     return Response.internalServerError('Internal Server Error')

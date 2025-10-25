@@ -40,8 +40,8 @@ export function WorkspacesList() {
         {workspaces.list.map((workspace) => (
           <Workspaces.Card
             key={workspace.id}
-            name="SIS - Porto Seguro"
-            href="/workspace/sis-porto-seguro"
+            name={workspace.name.toUpperCase()}
+            href={`/workspace/${workspace.slug}`}
           />
         ))}
       </div>

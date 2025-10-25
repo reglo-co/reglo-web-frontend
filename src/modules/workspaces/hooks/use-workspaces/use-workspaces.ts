@@ -15,6 +15,8 @@ export function useWorkspacesList() {
     },
   })
 
+  console.log('data', data)
+
   return {
     list: data || [],
     length: data?.length || 0,
