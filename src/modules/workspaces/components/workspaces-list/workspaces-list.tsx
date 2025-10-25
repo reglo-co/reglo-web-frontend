@@ -3,14 +3,14 @@
 import { Button } from '@common/components/ui/button'
 import { useModal } from '@common/stores/modal.store'
 import { Workspaces } from '@workspaces/components'
-import { useWorkspaces } from '@workspaces/hooks'
+import { useWorkspacesList } from '@workspaces/hooks'
 import { PlusIcon } from 'lucide-react'
 
 export function WorkspacesList() {
-  const workspaces = useWorkspaces()
+  const workspaces = useWorkspacesList()
   const modal = useModal()
 
-  if (workspaces.length === 0) {
+  if (workspaces.length === 0 || workspaces.isLoading) {
     return null
   }
 
@@ -37,18 +37,13 @@ export function WorkspacesList() {
       </div>
 
       <div className="xss:grid-cols-2 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Workspaces.Card
-          name="SIS - Porto Seguro Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
-          href="/workspace/sis-porto-seguro"
-        />
-        <Workspaces.Card
-          name="SIS - Porto Seguro"
-          href="/workspace/sis-porto-seguro"
-        />
-        <Workspaces.Card
-          name="SIS - Porto Seguro"
-          href="/workspace/sis-porto-seguro"
-        />
+        {workspaces.list.map((workspace) => (
+          <Workspaces.Card
+            key={workspace.id}
+            name="SIS - Porto Seguro"
+            href="/workspace/sis-porto-seguro"
+          />
+        ))}
       </div>
     </div>
   )

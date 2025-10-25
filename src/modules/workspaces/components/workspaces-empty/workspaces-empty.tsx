@@ -1,18 +1,20 @@
 'use client'
 
+import { useWorkspaceModalStore } from '@/modules/workspaces/store'
 import { useUser } from '@clerk/nextjs'
 import { LogoRegloSymbol } from '@common/components/icons'
 import { Button, Input } from '@common/components/ui'
 import { useModal } from '@common/stores/modal.store'
-import { useWorkspaces } from '@workspaces/hooks'
+import { useWorkspacesList } from '@workspaces/hooks'
 import { PlusIcon } from 'lucide-react'
 
 export function WorkspacesEmpty() {
   const { user } = useUser()
-  const workspaces = useWorkspaces()
+  const { name, setName } = useWorkspaceModalStore()
+  const workspaces = useWorkspacesList()
   const modal = useModal()
 
-  if (workspaces.length > 0) {
+  if (workspaces.length > 0 || workspaces.isLoading) {
     return null
   }
 
@@ -20,8 +22,13 @@ export function WorkspacesEmpty() {
     if (event.key === 'Enter') {
       event.preventDefault()
       event.stopPropagation()
+
       modal.open('create-workspace')
     }
+  }
+
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setName(event.target.value)
   }
 
   return (
@@ -44,6 +51,8 @@ export function WorkspacesEmpty() {
           inputClassName="text-lg"
           placeholder="Nome do projeto..."
           autoFocus
+          value={name}
+          onChange={handleChange}
           onKeyDown={handleKeyDown}
           iconLeft={
             <LogoRegloSymbol

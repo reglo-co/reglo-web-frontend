@@ -1,4 +1,4 @@
-import { Result } from '@/modules/common/lib/firebase/result.types'
+import { Result } from '@/modules/common/helpers/result.types'
 
 export interface UserWorkspace {
   id: string
@@ -17,8 +17,6 @@ export async function getUserWorkspaceList(): Promise<
     }
 
     const data = await response.json()
-
-    console.log('response', data)
 
     // Verifica se a resposta tem a estrutura esperada
     if (!Array.isArray(data)) {

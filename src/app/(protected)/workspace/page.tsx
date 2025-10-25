@@ -11,6 +11,7 @@ export default function Page() {
       <div className="rg-max-container rg-container-medium page-height flex flex-col items-center">
         <Workspaces.Empty />
         <Workspaces.List />
+        <Workspaces.Skeleton />
       </div>
 
       <ModalWorkspacesCreate />

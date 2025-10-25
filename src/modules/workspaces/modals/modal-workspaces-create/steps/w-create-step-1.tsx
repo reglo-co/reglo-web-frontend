@@ -1,46 +1,64 @@
+import { Plans } from '@/modules/plans/components'
+import { useUserPlanAvailables } from '@/modules/plans/hooks'
+import { useWorkspaceModalStore } from '@/modules/workspaces/store'
 import { Modal } from '@common/components/modal'
-import { Button } from '@common/components/ui'
-import { Plans } from '@plans/components'
+import { Button, Skeleton } from '@common/components/ui'
 import { CircleFadingArrowUp } from 'lucide-react'
 import { Fragment } from 'react'
 
 type WorkspaceCreateStep1Props = {
   nextStep: () => void
-  selectedPlan: string | null
-  togglePlan: (plan: string) => () => void
 }
 
-export function WorkspaceCreateStep1({
-  nextStep,
-  selectedPlan,
-  togglePlan,
-}: WorkspaceCreateStep1Props) {
+export function WorkspaceCreateStep1({ nextStep }: WorkspaceCreateStep1Props) {
+  const { plan, togglePlan } = useWorkspaceModalStore()
+  const { list, total, isLoading } = useUserPlanAvailables()
+  const canCreateWorkspace = total > 0
+
   return (
     <Fragment>
       <Modal.body>
-        <span className="text-rg-label label-base-1">
-          Projetos disponíveis para uso:
-        </span>
+        {canCreateWorkspace && !isLoading && (
+          <>
+            <span className="text-rg-label label-base-1">
+              Projetos disponíveis para uso:
+            </span>
 
-        <div className="xs:grid-cols-2 grid grid-cols-1 gap-4 pt-2">
-          <Plans.CardSelect
-            name="PROJETO DIAMANTE"
-            users={10}
-            storage={20}
-            quantity={3}
-            isSelected={selectedPlan === 'PROJETO DIAMANTE'}
-            onClick={togglePlan('PROJETO DIAMANTE')}
-          />
+            <div className="xs:grid-cols-2 grid grid-cols-1 gap-4 pt-2">
+              {list.map((available) => (
+                <Plans.CardSelect
+                  name={available.planId.toUpperCase()}
+                  users={available.usersPerWorkspace}
+                  quantity={available.quantity}
+                  isSelected={plan === available.planId}
+                  onClick={() => togglePlan(available.planId)}
+                  key={available.planId}
+                />
+              ))}
+            </div>
+          </>
+        )}
 
-          <Plans.CardSelect
-            name="PROJETO OURO"
-            users={5}
-            storage={10}
-            quantity={1}
-            isSelected={selectedPlan === 'PROJETO OURO'}
-            onClick={togglePlan('PROJETO OURO')}
-          />
-        </div>
+        {!canCreateWorkspace && !isLoading && (
+          <div className="flex flex-col items-center justify-center gap-3 pt-10 pb-4">
+            <span className="text-rg-label label-base-1 text-lg">
+              Nenhum plano disponível para uso
+            </span>
+            <span className="text-rg-label-support text-sm">
+              Faça o upgrade para continuar criando projetos
+            </span>
+          </div>
+        )}
+
+        {isLoading && (
+          <div className="flex w-full flex-col gap-8">
+            <Skeleton className="h-5 w-60 rounded-lg" />
+            <div className="xs:grid-cols-2 grid grid-cols-1 gap-4">
+              <Skeleton className="h-42 w-full rounded-lg" />
+              <Skeleton className="h-42 w-full rounded-lg" />
+            </div>
+          </div>
+        )}
       </Modal.body>
       <Modal.footer className="!justify-between">
         <Button
@@ -56,7 +74,6 @@ export function WorkspaceCreateStep1({
           variant="default"
           size="default"
           className="uppercase"
-          disabled={!selectedPlan}
           onClick={nextStep}
           rounded
         >

@@ -1,11 +1,10 @@
 import { InfoCard } from '@common/components'
 import { LogoRegloSymbol } from '@common/components/icons'
-import { Cylinder, Users } from 'lucide-react'
+import { Users } from 'lucide-react'
 
 type PlanCardSelectProps = {
   name: string
   users: number
-  storage: number
   quantity: number
   isSelected: boolean
   onClick: () => void
@@ -14,14 +13,13 @@ type PlanCardSelectProps = {
 export function PlanCardSelect({
   name,
   users,
-  storage,
   quantity,
   isSelected,
   onClick,
 }: PlanCardSelectProps) {
   return (
     <InfoCard
-      title={name}
+      title={name.toUpperCase()}
       type="select"
       active={isSelected}
       cursor="pointer"
@@ -42,10 +40,6 @@ export function PlanCardSelect({
       <span className="text-rg-label-support flex items-center gap-2 text-xs">
         <Users className="size-3" />
         {users}
-      </span>
-      <span className="text-rg-label-support flex items-center gap-2 text-xs">
-        <Cylinder className="size-3" />
-        {storage}MB
       </span>
     </InfoCard>
   )

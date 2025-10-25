@@ -3,8 +3,8 @@
 import { LogoRegloSymbol } from '@common/components/icons/logo-reglo-symbol'
 import { Modal } from '@common/components/modal'
 import { useSteps } from '@common/hooks/steps.hook'
-import { useState } from 'react'
 
+import { useWorkspaceModalStore } from '@/modules/workspaces/store'
 import {
   WorkspaceCreateStep1,
   WorkspaceCreateStep2,
@@ -12,16 +12,12 @@ import {
 } from '@workspaces/modals/modal-workspaces-create/steps'
 
 export function ModalWorkspacesCreate() {
+  const { clear } = useWorkspaceModalStore()
   const { Step, nextStep, previousStep, goToStep } = useSteps()
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
-
-  function togglePlan(plan: string) {
-    return () => setSelectedPlan(selectedPlan === plan ? null : plan)
-  }
 
   function onOpenChange(open: boolean) {
     if (!open) {
-      setSelectedPlan(null)
+      clear()
       goToStep(0)
     }
   }
@@ -37,11 +33,7 @@ export function ModalWorkspacesCreate() {
         </Modal.header>
 
         <Step step={0}>
-          <WorkspaceCreateStep1
-            nextStep={nextStep}
-            selectedPlan={selectedPlan}
-            togglePlan={togglePlan}
-          />
+          <WorkspaceCreateStep1 nextStep={nextStep} />
         </Step>
 
         <Step step={1}>

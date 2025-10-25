@@ -1,10 +1,11 @@
+import { useWorkspaceModalStore } from '@/modules/workspaces/store'
 import { Modal } from '@common/components/modal/modal'
 import { Button, Input } from '@common/components/ui'
 import {
   VerifyInput,
   VerifyInputStatus,
 } from '@common/components/verify-input/verify-input'
-import { Helpers } from '@common/helpers'
+import { Helper } from '@common/helpers'
 import { useDebounce } from '@common/hooks'
 import { ArrowLeft } from 'lucide-react'
 import { Fragment, useEffect, useState } from 'react'
@@ -18,8 +19,9 @@ export function WorkspaceCreateStep2({
   previousStep,
   nextStep,
 }: WorkspaceCreateStep2Props) {
-  const [name, setName] = useState('')
+  const { name, setName } = useWorkspaceModalStore()
   const [slug, setSlug] = useState('')
+
   const [verifyInputStatus, setVerifyInputStatus] =
     useState<VerifyInputStatus>('neutral')
 
@@ -33,7 +35,7 @@ export function WorkspaceCreateStep2({
 
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     setName(e.target.value)
-    setSlug(Helpers.toSlug(e.target.value))
+    setSlug(Helper.toSlug(e.target.value))
   }
 
   function validateSlug() {

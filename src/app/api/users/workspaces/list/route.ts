@@ -6,8 +6,6 @@ export async function GET() {
   try {
     const { userId } = await auth()
 
-    console.log('userId', userId)
-
     if (!userId) {
       return Response.unauthorized('Not authenticated')
     }
