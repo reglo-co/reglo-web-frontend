@@ -15,6 +15,7 @@ import {
 export async function GET() {
   // Verificar autenticação
   const { userId } = await auth()
+
   if (!userId) {
     return Response.unauthorized('Not authenticated')
   }

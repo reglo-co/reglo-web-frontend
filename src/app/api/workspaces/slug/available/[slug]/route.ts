@@ -1,11 +1,18 @@
 import { Response } from '@/modules/common/helpers'
-import { FirebaseCollection } from '@/modules/common/lib/firebase/firebase-collection'
+import { FirebaseCollection } from '@/modules/common/lib/firebase'
+import { NextRequest } from 'next/server'
 
 export async function GET(
-  _: Request,
-  { params }: { params: { slug: string } }
+  _: NextRequest,
+  {
+    params,
+  }: {
+    params: Promise<{
+      slug: string
+    }>
+  }
 ) {
-  const { slug } = await params
+  const slug = (await params).slug
 
   const workspacesCollection = new FirebaseCollection('workspaces')
 

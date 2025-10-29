@@ -1,9 +1,9 @@
-import { getServerFirestore } from '@/modules/common/lib/firebase'
 import {
   CollectionReference,
   DocumentData,
   Query,
 } from 'firebase-admin/firestore'
+import { getFirebaseAdminDb } from './firebase-admin'
 
 export type FirebaseCollectionName =
   | 'subscriptions'
@@ -17,14 +17,15 @@ export class FirebaseCollection {
   public readonly query: FirebaseCollectionQuery
 
   constructor(collectionName: FirebaseCollectionName) {
-    this.collection = getServerFirestore().collection(collectionName)
+    this.collection = getFirebaseAdminDb().collection(collectionName)
     this.query = new FirebaseCollectionQuery(this.collection)
   }
 
   async create(data: DocumentData) {
-    const docRef = await this.collection.add(data)
-    // Adiciona o ID automático como campo dentro do documento
-    await docRef.update({ id: docRef.id })
+    // Gera um ID único e cria o documento com o ID incluído
+    const docRef = this.collection.doc()
+    const docData = { ...data, id: docRef.id }
+    await docRef.set(docData)
     return docRef.id
   }
 
@@ -32,11 +33,6 @@ export class FirebaseCollection {
     const docRef = this.collection.doc(id)
     const doc = await docRef.get()
     return doc.data()
-  }
-
-  async all() {
-    const docs = await this.collection.get()
-    return docs.docs.map((doc) => doc.data())
   }
 
   async update(id: string, data: DocumentData) {
