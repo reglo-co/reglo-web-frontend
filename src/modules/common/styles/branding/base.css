@@ -1,0 +1,13 @@
+@layer base {
+  * {
+    @apply border-border scroll-smooth;
+  }
+
+  body {
+    @apply bg-background type-body text-label;
+  }
+
+  button {
+    @apply cursor-pointer;
+  }
+}

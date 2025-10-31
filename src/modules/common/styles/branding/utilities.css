@@ -1,0 +1,32 @@
+@utility page-height {
+  @apply h-[calc(100vh-var(--header-height))];
+}
+
+@utility transition-base {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+@utility scroll-smooth {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+@keyframes spin-rotate {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(90deg) scale(1.05);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+  }
+  75% {
+    transform: rotate(270deg) scale(1.05);
+  }
+}
+
+@utility animate-spin-rotate {
+  animation: spin-zoom 2s ease-in-out infinite;
+}

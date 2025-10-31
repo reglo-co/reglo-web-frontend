@@ -1,0 +1,104 @@
+@layer base {
+  body {
+    font-family: var(--font-abee-zee);
+  }
+
+  h1 {
+    @apply type-h1;
+  }
+  h2 {
+    @apply type-h2;
+  }
+  h3 {
+    @apply type-h3;
+  }
+  h4 {
+    @apply type-h4;
+  }
+  h5 {
+    @apply type-h5;
+  }
+  h6 {
+    @apply type-h6;
+  }
+  p {
+    @apply type-body;
+  }
+  small {
+    @apply type-small;
+  }
+  code {
+    @apply type-code;
+  }
+  a {
+    @apply type-link;
+  }
+}
+
+@utility type-display {
+  @apply text-5xl leading-tight font-semibold tracking-tight md:text-6xl;
+}
+
+@utility type-h1 {
+  @apply text-4xl leading-tight font-semibold tracking-tight md:text-5xl;
+}
+
+@utility type-h2 {
+  @apply text-3xl leading-tight font-semibold tracking-tight md:text-4xl;
+}
+
+@utility type-h3 {
+  @apply text-2xl leading-snug font-medium tracking-normal md:text-3xl;
+}
+
+@utility type-h4 {
+  @apply text-xl leading-snug font-medium tracking-normal md:text-2xl;
+}
+
+@utility type-h5 {
+  @apply text-lg leading-snug font-medium tracking-normal md:text-xl;
+}
+
+@utility type-h6 {
+  @apply text-base leading-snug font-medium tracking-wide md:text-lg;
+}
+
+@utility type-lead {
+  @apply text-lg leading-relaxed font-normal tracking-normal md:text-xl;
+}
+
+@utility type-body {
+  @apply text-base leading-relaxed font-normal tracking-normal;
+}
+
+@utility type-body-strong {
+  @apply text-base leading-relaxed font-semibold tracking-normal;
+}
+
+@utility type-muted {
+  @apply text-base leading-relaxed font-normal tracking-normal;
+}
+
+@utility type-small {
+  @apply text-sm leading-snug font-normal tracking-normal;
+}
+
+@utility type-micro {
+  @apply text-xs leading-snug font-normal tracking-normal;
+}
+
+@utility type-caption {
+  @apply text-xs leading-snug font-normal tracking-wide;
+}
+
+@utility type-overline {
+  @apply text-xs font-medium tracking-wider uppercase;
+}
+
+@utility type-code {
+  @apply rounded px-1 py-0.5 font-mono text-[0.9375rem] leading-snug;
+}
+
+@utility type-link {
+  @apply underline decoration-1 underline-offset-4 transition-colors hover:decoration-2 hover:opacity-80;
+}

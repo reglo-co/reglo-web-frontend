@@ -16,18 +16,24 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
+      // general
       "@/*": ["./src/*"],
-      "@common/*": ["./src/modules/common/*"],
-      "@common/ui/*": ["./src/modules/common/components/ui*"],
-      "@organizations/*": ["./src/modules/organizations/*"],
-      "@plans/*": ["./src/modules/plans/*"],
-      "@kanban/*": ["./src/modules/kanban/*"]
+
+      // common
+      "@entities/*": ["./src/modules/entities/*"],
+      "@hooks/*": ["./src/modules/common/hooks/*"],
+      "@lib/*": ["./src/modules/common/lib/*"],
+      "@providers/*": ["./src/modules/common/providers/*"],
+      "@stores/*": ["./src/modules/common/stores/*"],
+      "@styles/*": ["./src/modules/common/styles/*"],
+      "@types/*": ["./src/types/*"],
+      "@ui/*": ["./src/modules/common/ui/*"],
+
+      // modules
+      "@organizations/*": ["./src/modules/organizations/*"]
     },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+
+    "plugins": [{ "name": "next" }],
     "typeRoots": ["./node_modules/@types", "./src/types"]
   },
   "include": [
