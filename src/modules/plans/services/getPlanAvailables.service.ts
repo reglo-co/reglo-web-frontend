@@ -1,17 +1,12 @@
 import { Result } from '@/modules/common/helpers'
 import { PlanAvailable } from '@/modules/plans/types'
+import { api } from '@/modules/common/helpers/api'
 
 export type GetPlanAvailablesResponse = Result<PlanAvailable[], Error>
 
 export async function getPlanAvailables(): Promise<GetPlanAvailablesResponse> {
   try {
-    const response = await fetch('/api/me/plans/availables')
-
-    if (!response.ok) {
-      return Result.failure(new Error(`HTTP error! status: ${response.status}`))
-    }
-
-    const { data } = await response.json()
+    const data = await api.get<PlanAvailable[]>('/me/plans/availables')
 
     if (!Array.isArray(data)) {
       return Result.failure(

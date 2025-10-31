@@ -1,1 +1,1 @@
-export * from './getUserWorkspaceList/getUserWorkspaceList.service'
+export * from './getUserOrganizationList/getUserOrganizationList.service'

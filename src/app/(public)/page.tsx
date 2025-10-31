@@ -30,9 +30,9 @@ export default function Home() {
 
         <span className="text-rg-label-support text-center text-lg">
           A Reglo foi desenvolvida para dar forma e clareza às regras de negócio
-          em projetos de software. Crie projetos, envolva sua equipe e mantenha
-          tudo documentado em um espaço colaborativo que une simplicidade e
-          eficiência.
+          das organizações de software. Crie organizações, envolva sua equipe e
+          mantenha tudo documentado em um espaço colaborativo que une
+          simplicidade e eficiência.
         </span>
       </section>
 

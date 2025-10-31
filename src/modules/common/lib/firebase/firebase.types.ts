@@ -8,12 +8,12 @@ export type CollectionPlan = {
   priceMonthly: number
   priceYearly: number
   limits: {
-    workspace: number
-    usersPerWorkspace: number
+    organization: number
+    usersPerOrganization: number
   }
 }
 
-export type CollectionUserWorkspace = {
+export type CollectionUserOrganization = {
   userId: string
-  workspaceId: string
+  organizationId: string
 }

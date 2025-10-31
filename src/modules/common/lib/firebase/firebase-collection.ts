@@ -8,9 +8,9 @@ import { getFirebaseAdminDb } from './firebase-admin'
 export type FirebaseCollectionName =
   | 'subscriptions'
   | 'plans'
-  | 'workspaces_plans'
-  | 'users_workspaces'
-  | 'workspaces'
+  | 'organizations_plans'
+  | 'users_organizations'
+  | 'organizations'
 
 export class FirebaseCollection {
   private readonly collection: CollectionReference<DocumentData>

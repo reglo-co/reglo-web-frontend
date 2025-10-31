@@ -19,7 +19,7 @@
       "@/*": ["./src/*"],
       "@common/*": ["./src/modules/common/*"],
       "@common/ui/*": ["./src/modules/common/components/ui*"],
-      "@workspaces/*": ["./src/modules/workspaces/*"],
+      "@organizations/*": ["./src/modules/organizations/*"],
       "@plans/*": ["./src/modules/plans/*"],
       "@kanban/*": ["./src/modules/kanban/*"]
     },

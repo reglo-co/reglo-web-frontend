@@ -1,4 +1,4 @@
-import { useWorkspaceModalStore } from '@/modules/workspaces/store'
+import { useOrganizationModalStore } from '@organizations/store'
 import { AvatarIcon } from '@common/components'
 import { Mail, UserPen, UserSearch, UserStar } from 'lucide-react'
 
@@ -23,7 +23,7 @@ interface CollaboratorsPermissionsProps {
 export function CollaboratorsPermissions({
   index,
 }: CollaboratorsPermissionsProps) {
-  const { collaborators, updateCollaborator } = useWorkspaceModalStore()
+  const { collaborators, updateCollaborator } = useOrganizationModalStore()
   const collaborator = collaborators[index]
 
   function handleEmailChange(event: ChangeEvent<HTMLInputElement>) {

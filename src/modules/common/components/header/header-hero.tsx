@@ -1,5 +1,4 @@
 import { Logo, Navigation } from '@common/components'
-import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
 import {
@@ -55,11 +54,14 @@ export function HeaderHero() {
         </nav>
 
         <div>
-          <Navigation.link href="/workspace">
-            <Button variant="default" className="gap-3 !px-3" rounded>
-              <Logo.symbol width={12} height={12} className="size-3.5" />
-              Ir para workspace
-              <ArrowRight className="-ml-1 size-4" />
+          <Navigation.link href="/organizations">
+            <Button variant="default" size="default" className="gap-3" rounded>
+              <Logo.symbol
+                width={12}
+                height={12}
+                className="-ml-0.5 size-3.5"
+              />
+              <span className="-mt-0.5">Entrar</span>
             </Button>
           </Navigation.link>
         </div>

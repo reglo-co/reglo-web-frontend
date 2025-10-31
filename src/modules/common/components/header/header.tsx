@@ -34,7 +34,7 @@ export function Header({ withoutMenu = false }: { withoutMenu?: boolean }) {
     >
       <div className="rg-max-container flex h-full items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link href="/workspace">
+          <Link href="/organizations">
             <Image
               src="/logo-reglo-symbol.svg"
               alt="Reglo Logo"
@@ -59,15 +59,15 @@ export function Header({ withoutMenu = false }: { withoutMenu?: boolean }) {
               >
                 <Navigation.list.root>
                   <Navigation.list.item
-                    href="/workspace"
+                    href="/organizations"
                     icon={<StretchHorizontal className="size-4" />}
                   >
-                    Meus projetos
+                    Minhas organizações
                   </Navigation.list.item>
                   <Navigation.list.item
                     href="/settings"
                     icon={<Bolt className="size-4" />}
-                    hasWorkspace
+                    hasOrganization
                   >
                     Configurações
                   </Navigation.list.item>
@@ -95,7 +95,7 @@ export function Header({ withoutMenu = false }: { withoutMenu?: boolean }) {
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Navigation.link
-                href="/workspace/profile"
+                href="/organizations/profile"
                 className="flex items-center gap-2"
               >
                 <UserRound className="size-4" />
@@ -104,7 +104,7 @@ export function Header({ withoutMenu = false }: { withoutMenu?: boolean }) {
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Navigation.link
-                href="/workspace/payments"
+                href="/organizations/payments"
                 className="flex items-center gap-2"
               >
                 <CreditCard className="size-4" />

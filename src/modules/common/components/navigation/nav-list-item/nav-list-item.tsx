@@ -1,14 +1,14 @@
 import { cn } from '@common/lib/utils'
 import { PropsWithClassname } from '@common/types/common.types'
 import { PropsWithChildren, ReactNode } from 'react'
-import { LinkWorkspace } from '../link-workspace/link-workspace'
+import { LinkOrganization } from '../link-organization/link-organization'
 
 type NavListItemProps = PropsWithChildren &
   PropsWithClassname & {
     href: string
     icon?: ReactNode
     iconClassName?: string
-    hasWorkspace?: boolean
+    hasOrganization?: boolean
   }
 
 export function NavListItem({
@@ -17,12 +17,12 @@ export function NavListItem({
   className,
   icon,
   iconClassName,
-  hasWorkspace = false,
+  hasOrganization = false,
 }: NavListItemProps) {
   return (
-    <LinkWorkspace
+    <LinkOrganization
       href={href}
-      hasWorkspace={hasWorkspace}
+      hasOrganization={hasOrganization}
       className={cn(
         'group/link hover:bg-rg-gray-0 rg-transition flex h-12 items-center gap-3 rounded-md p-3',
         className
@@ -42,6 +42,6 @@ export function NavListItem({
       <span className="text-rg-gray-6 group-hover/link:text-rg-primary text-base">
         {children}
       </span>
-    </LinkWorkspace>
+    </LinkOrganization>
   )
 }

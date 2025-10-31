@@ -18,6 +18,10 @@ const infoCardVariants = cva(
         pointer: 'cursor-pointer',
         default: 'cursor-default',
       },
+      disabled: {
+        true: 'opacity-50 pointer-events-none',
+        false: '',
+      },
     },
   }
 )
@@ -31,6 +35,7 @@ type InfoCardProps = PropsWithChildren & {
   cursor?: 'pointer' | 'default'
   leading?: 'default' | 'small'
   onClick?: () => void
+  disabled?: boolean
 }
 
 export function InfoCard({
@@ -43,16 +48,18 @@ export function InfoCard({
   leading = 'default',
   children,
   onClick,
+  disabled = false,
 }: InfoCardProps) {
-  const className = infoCardVariants({ type, cursor })
+  const className = cn(infoCardVariants({ type, cursor, disabled }))
 
   return (
     <Card
       data-active={active}
+      data-disabled={disabled}
       data-type={type}
       data-slot="info-card"
       className={className}
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
     >
       <CardContent className="flex h-full w-full flex-row gap-1">
         <section

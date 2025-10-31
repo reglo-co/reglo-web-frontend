@@ -4,13 +4,13 @@ import { auth } from '@clerk/nextjs/server'
 import {
   CollectionPlan,
   CollectionSubscription,
-  CollectionUserWorkspace,
+  CollectionUserOrganization,
   FirebaseCollection,
 } from '@/modules/common/lib/firebase'
 
 /**
  * Endpoint para buscar planos disponíveis do usuário
- * Retorna a quantidade de workspaces disponíveis para cada plano
+ * Retorna a quantidade de organizações disponíveis para cada plano
  */
 export async function GET() {
   // Verificar autenticação
@@ -22,7 +22,9 @@ export async function GET() {
 
   // Inicializar coleções do Firebase
   const subscriptionsCollection = new FirebaseCollection('subscriptions')
-  const usersWorkspacesCollection = new FirebaseCollection('users_workspaces')
+  const usersOrganizationsCollection = new FirebaseCollection(
+    'users_organizations'
+  )
   const plansCollection = new FirebaseCollection('plans')
 
   try {
@@ -45,16 +47,16 @@ export async function GET() {
       userSubscriptions
     )
 
-    // Contar workspaces atuais do usuário
-    const currentWorkspaceCount = await getCurrentWorkspaceCount(
-      usersWorkspacesCollection,
+    // Contar organizações atuais do usuário
+    const currentOrganizationCount = await getCurrentOrganizationCount(
+      usersOrganizationsCollection,
       userId
     )
 
-    // Calcular workspaces disponíveis para cada plano
-    const availablePlans = calculateAvailableWorkspaces(
+    // Calcular organizações disponíveis para cada plano
+    const availablePlans = calculateAvailableOrganizations(
       userPlans,
-      currentWorkspaceCount
+      currentOrganizationCount
     )
 
     return Response.ok({
@@ -91,37 +93,37 @@ async function getPlansFromSubscriptions(
 }
 
 /**
- * Conta quantos workspaces o usuário já possui
+ * Conta quantas organizações o usuário já possui
  */
-async function getCurrentWorkspaceCount(
+async function getCurrentOrganizationCount(
   collection: FirebaseCollection,
   userId: string
 ): Promise<number> {
-  const userWorkspaces = (await collection.query
+  const userOrganizations = (await collection.query
     .equal('userId', userId)
-    .build()) as CollectionUserWorkspace[]
+    .build()) as CollectionUserOrganization[]
 
-  return userWorkspaces.length
+  return userOrganizations.length
 }
 
 /**
- * Calcula quantos workspaces estão disponíveis para cada plano
+ * Calcula quantas organizações estão disponíveis para cada plano
  */
-function calculateAvailableWorkspaces(
+function calculateAvailableOrganizations(
   plans: CollectionPlan[],
-  currentWorkspaceCount: number
+  currentOrganizationCount: number
 ) {
   const availablePlans = plans.map((plan) => {
-    const maxWorkspaces = plan.limits.workspace
-    const remainingWorkspaces = Math.max(
+    const maxOrganizations = plan.limits.organization
+    const remainingOrganizations = Math.max(
       0,
-      maxWorkspaces - currentWorkspaceCount
+      maxOrganizations - currentOrganizationCount
     )
 
     return {
       planId: plan.id,
-      quantity: remainingWorkspaces,
-      usersPerWorkspace: plan.limits.usersPerWorkspace,
+      quantity: remainingOrganizations,
+      usersPerOrganization: plan.limits.usersPerOrganization,
     }
   })
 
