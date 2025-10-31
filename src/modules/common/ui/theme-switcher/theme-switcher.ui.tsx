@@ -30,7 +30,7 @@ export function ThemeSwitcher() {
 
   return (
     <Select onValueChange={setTheme}>
-      <SelectTrigger className="gap-2">
+      <SelectTrigger className="gap-3">
         <ThemeSwitcherIcon theme={theme as Theme} />
         <span className="type-small">{themeName}</span>
       </SelectTrigger>
