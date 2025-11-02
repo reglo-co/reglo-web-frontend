@@ -1,9 +1,8 @@
 import { ApiResponse } from '@/modules/common/entities'
 import { OrganizationRepository } from '@/modules/organizations/domain/repositories'
-import { auth } from '@clerk/nextjs/server'
 
 export async function POST(request: Request) {
-  const { userId: ownerId } = await auth()
+  const ownerId = '--teste--'
   const { name, slug } = await request.json()
 
   if (!ownerId) {

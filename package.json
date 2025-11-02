@@ -14,8 +14,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@clerk/localizations": "^3.26.2",
-    "@clerk/nextjs": "^6.34.0",
+    "@auth0/nextjs-auth0": "4.11.1",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-collapsible": "^1.1.12",

@@ -1,5 +1,4 @@
-import { ptBR } from '@clerk/localizations'
-import { ClerkProvider } from '@clerk/nextjs'
+import { Auth0Provider } from '@auth0/nextjs-auth0'
 import { Providers } from '@providers/index'
 import '@styles/globals.css'
 import type { Metadata } from 'next'
@@ -35,15 +34,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
-    <ClerkProvider localization={ptBR} waitlistUrl="/waitlist">
-      <html suppressHydrationWarning lang="pt-BR">
-        <body
-          suppressHydrationWarning
-          className={`${abeeZee.variable} tracking-wide antialiased`}
-        >
+    <html suppressHydrationWarning lang="pt-BR">
+      <body
+        suppressHydrationWarning
+        className={`${abeeZee.variable} tracking-wide antialiased`}
+      >
+        <Auth0Provider>
           <Providers>{children}</Providers>
-        </body>
-      </html>
-    </ClerkProvider>
+        </Auth0Provider>
+      </body>
+    </html>
   )
 }

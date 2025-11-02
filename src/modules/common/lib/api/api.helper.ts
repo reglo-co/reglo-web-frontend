@@ -1,6 +1,5 @@
 'use server'
 
-import { getHeaderAuth } from '@/modules/common/lib/clerk'
 import type { Options } from 'ky'
 import ky from 'ky'
 
@@ -20,13 +19,7 @@ const kyInstance = ky.create({
   hooks: {
     beforeRequest: [
       async (request) => {
-        const authorization = await getHeaderAuth()
-        if (authorization) {
-          request.headers.set(
-            'authorization',
-            authorization.headers.authorization
-          )
-        }
+        request.headers.set('authorization', 'Bearer --teste--')
       },
     ],
   },

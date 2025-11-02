@@ -1,44 +1,41 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { auth0 } from '@/lib/auth0'
+import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
-const loggedArea = '/console'
-const signInArea = '/sign-in'
+function isPublicRoute(pathname: string): boolean {
+  if (pathname === '/') return true
+  if (pathname.startsWith('/auth/login')) return true
+  if (pathname.startsWith('/auth/callback')) return true
+  if (pathname.startsWith('/auth/logout')) return true
+  return false
+}
 
-const isAuthRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)'])
-const isSignOutRoute = createRouteMatcher(['/sign-out(.*)'])
-const isPublicRoute = createRouteMatcher(['/waitlist(.*)'])
-const isProtectedRoute = createRouteMatcher([
-  '/organizations(.*)',
-  '/console(.*)',
-])
+function hasSessionCookie(request: NextRequest): boolean {
+  const cookieHeader = request.headers.get('cookie') || ''
+  return cookieHeader.includes('appSession') || cookieHeader.includes('auth0')
+}
 
-export default clerkMiddleware(async (auth, req) => {
-  const { userId } = await auth()
+export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl
 
-  // Se o usuário está logado e tenta acessar páginas de auth, redireciona para organizações
-  if (userId && isAuthRoute(req)) {
-    return NextResponse.redirect(new URL(loggedArea, req.url))
+  if (isPublicRoute(pathname)) {
+    return await auth0.middleware(request)
   }
 
-  // Se o usuário está logado e tenta acessar waitlist, redireciona para organizações
-  if (userId && isPublicRoute(req)) {
-    return NextResponse.redirect(new URL(loggedArea, req.url))
+  if (!hasSessionCookie(request)) {
+    if (pathname.startsWith('/auth/login')) {
+      return await auth0.middleware(request)
+    }
+    const loginUrl = new URL('/auth/login', request.url)
+    loginUrl.searchParams.set('returnTo', pathname)
+    return NextResponse.redirect(loginUrl)
   }
 
-  // Se o usuário não está logado e tenta acessar sign-out, redireciona para sign-in
-  if (!userId && isSignOutRoute(req)) {
-    return NextResponse.redirect(new URL(signInArea, req.url))
-  }
-
-  // Protege rotas que requerem autenticação
-  if (isProtectedRoute(req)) {
-    await auth.protect()
-  }
-})
+  return await auth0.middleware(request)
+}
 
 export const config = {
   matcher: [
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    '/(api|trpc)(.*)',
+    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
   ],
 }

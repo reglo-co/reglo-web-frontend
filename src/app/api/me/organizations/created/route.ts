@@ -1,9 +1,8 @@
 import { ApiResponse } from '@/modules/common/entities'
 import { OrganizationRepository } from '@/modules/organizations/domain/repositories'
-import { auth } from '@clerk/nextjs/server'
 
 export async function GET() {
-  const { userId } = await auth()
+  const userId = '--teste--'
 
   if (!userId) {
     return ApiResponse.unauthorized('Unauthorized')
@@ -13,7 +12,6 @@ export async function GET() {
 
   try {
     const result = await repository.me.createdAll({ userId })
-    console.log('repository result', result)
 
     return ApiResponse.ok({
       list: result,

@@ -1,6 +1,5 @@
 'use client'
 
-import { useClerk, useUser } from '@clerk/nextjs'
 import Link from 'next/link'
 
 import {
@@ -45,13 +44,11 @@ import { useState } from 'react'
 
 export function NavUser() {
   const [configModal, setConfigModal] = useState(false)
-  const { user } = useUser()
-  const { signOut } = useClerk()
   const { isMobile } = useSidebar()
 
-  const name = user?.fullName ?? ''
-  const email = user?.emailAddresses[0].emailAddress ?? ''
-  const avatar = user?.imageUrl ?? ''
+  const name = '--teste--'
+  const email = '--teste--'
+  const avatar = '--teste--'
   const side = isMobile ? 'bottom' : 'right'
 
   return (
@@ -111,9 +108,7 @@ export function NavUser() {
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => signOut({ redirectUrl: '/sign-in' })}
-              >
+              <DropdownMenuItem onClick={() => null}>
                 <LogOut />
                 Sair
               </DropdownMenuItem>
