@@ -1,5 +1,4 @@
 import { useModal } from '@/modules/common/stores'
-import { DialogCreateOrganization } from '@organizations/use-cases/create-organization'
 import { ThemeSwitcher } from '@ui/index'
 import { Logo } from '@ui/logo'
 import { Button } from '@ui/primitives/button'
@@ -42,7 +41,6 @@ export function EmptyOrganizations() {
           </div>
         </EmptyContent>
       </Empty>
-      <DialogCreateOrganization />
     </Fragment>
   )
 }

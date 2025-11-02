@@ -35,17 +35,6 @@ type FormData = {
   slug: string
 }
 
-function CustomDialogHeader() {
-  return (
-    <DialogHeader>
-      <DialogTitle className="type-h4! flex items-center gap-2">
-        <Logo.Symbol className="size-5" />
-        <span>Criar organização</span>
-      </DialogTitle>
-    </DialogHeader>
-  )
-}
-
 export function DialogCreateOrganization() {
   const queryClient = useQueryClient()
   const { isOpen, toggle } = useModal()
@@ -108,7 +97,13 @@ export function DialogCreateOrganization() {
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
-        <CustomDialogHeader />
+        <DialogHeader>
+          <DialogTitle className="type-h4! flex items-center gap-3">
+            <Logo.Symbol className="size-5" />
+            <span className="type-h4! leading-none">Criar organização</span>
+          </DialogTitle>
+        </DialogHeader>
+
         <DialogDescription asChild>
           <div>
             <Activity mode={!isSuccess ? 'visible' : 'hidden'}>
@@ -155,7 +150,7 @@ export function DialogCreateOrganization() {
                     Organização criada com sucesso!
                   </EmptyTitle>
                 </EmptyHeader>
-                <EmptyContent className="pt-6">
+                <EmptyContent className="pt-6 pb-4">
                   <Link href={`/${slug}`}>
                     <Button>
                       <Logo.Symbol className="size-3.5" />
@@ -167,8 +162,8 @@ export function DialogCreateOrganization() {
             </Activity>
           </div>
         </DialogDescription>
-        <DialogFooter className="w-full">
-          <Activity mode={!isSuccess ? 'visible' : 'hidden'}>
+        <Activity mode={!isSuccess ? 'visible' : 'hidden'}>
+          <DialogFooter className="w-full">
             <div className="flex w-full justify-between">
               <DialogClose asChild>
                 <Button type="button" variant="secondary">
@@ -189,8 +184,8 @@ export function DialogCreateOrganization() {
                 <span>Criar</span>
               </Button>
             </div>
-          </Activity>
-        </DialogFooter>
+          </DialogFooter>
+        </Activity>
       </DialogContent>
     </Dialog>
   )

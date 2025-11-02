@@ -3,8 +3,10 @@
 import { HeaderConsole } from '@ui/index'
 import { Activity, Fragment } from 'react'
 
+import { DialogCreateOrganization } from '@/modules/organizations/use-cases/create-organization'
 import {
   EmptyOrganizations,
+  ListOrganizations,
   useListMyOrganizations,
 } from '@organizations/use-cases/list-my-organizations'
 
@@ -17,15 +19,14 @@ export default function Page() {
     <Fragment>
       <HeaderConsole />
 
-      <main className="page-without-header container mx-auto -mt-(--header-height) flex items-center justify-center px-6">
+      <main className="page-without-header container-xl mx-auto -mt-(--header-height) flex justify-center px-6">
         <Activity mode={showEmptyOrganizations ? 'visible' : 'hidden'}>
           <EmptyOrganizations />
         </Activity>
         <Activity mode={!showEmptyOrganizations ? 'visible' : 'hidden'}>
-          <div>
-            <h1>Organizações</h1>
-          </div>
+          <ListOrganizations />
         </Activity>
+        <DialogCreateOrganization />
       </main>
     </Fragment>
   )

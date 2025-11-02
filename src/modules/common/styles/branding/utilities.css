@@ -69,3 +69,28 @@
 @utility animate-fade-in {
   animation: fade-in 0.4s ease-in forwards;
 }
+
+@utility container-xs {
+  @apply mx-auto w-full px-4;
+  max-width: 32rem;
+}
+
+@utility container-sm {
+  @apply mx-auto w-full px-4;
+  max-width: 42rem;
+}
+
+@utility container-md {
+  @apply mx-auto w-full px-4 md:px-6;
+  max-width: 48rem;
+}
+
+@utility container-lg {
+  @apply mx-auto w-full px-4 md:px-6 lg:px-8;
+  max-width: 64rem;
+}
+
+@utility container-xl {
+  @apply mx-auto w-full px-4 md:px-6 lg:px-8 xl:px-10;
+  max-width: 80rem;
+}
