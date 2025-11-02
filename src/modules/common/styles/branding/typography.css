@@ -33,6 +33,10 @@
   a {
     @apply type-link;
   }
+
+  legend {
+    @apply type-small pb-1 font-medium;
+  }
 }
 
 @utility type-display {
@@ -84,7 +88,7 @@
 }
 
 @utility type-micro {
-  @apply text-[10px] leading-snug font-normal tracking-normal;
+  @apply text-[12px] leading-snug font-normal tracking-normal;
 }
 
 @utility type-caption {

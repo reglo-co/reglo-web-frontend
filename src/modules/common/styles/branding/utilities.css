@@ -1,5 +1,9 @@
-@utility page-height {
+@utility page-without-header {
   @apply h-[calc(100vh-var(--header-height))];
+}
+
+@utility header-height {
+  @apply h-(--header-height);
 }
 
 @utility transition-base {
@@ -28,5 +32,40 @@
 }
 
 @utility animate-spin-rotate {
-  animation: spin-zoom 2s ease-in-out infinite;
+  animation: spin-rotate 2s ease-in-out infinite;
+}
+
+@keyframes check-success {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(5deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(0.95) rotate(-2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@utility animate-check-success {
+  animation: check-success 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@utility animate-fade-in {
+  animation: fade-in 0.4s ease-in forwards;
 }

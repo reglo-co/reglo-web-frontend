@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 /**
  * Utilitário para criar respostas HTTP humanizadas
  */
-export class RestApiHelper {
+export class ApiResponse {
   /**
    * 200 - OK
    */

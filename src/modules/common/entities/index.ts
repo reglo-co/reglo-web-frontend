@@ -1,2 +1,2 @@
-export * from './rest-api.helper'
-export * from './result.helper'
+export * from './api-response.entity'
+export * from './result.entity'
