@@ -9,7 +9,7 @@ type ListMyOrganizationsResponse = {
 export async function listMyOrganizationsService(): Promise<ListMyOrganizationsResponse> {
   try {
     const response = await api.get<ListMyOrganizationsResponse>(
-      '/me/organizations/created'
+      'me/organizations/created'
     )
 
     return response

@@ -1,7 +1,7 @@
 import LoginButton from '@/components/LoginButton'
 import LogoutButton from '@/components/LogoutButton'
 import Profile from '@/components/Profile'
-import { auth0 } from '@/lib/auth0'
+import { auth0 } from '@lib/auth0'
 
 export default async function Home() {
   const session = await auth0.getSession()

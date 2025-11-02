@@ -1,17 +1,19 @@
 import { ApiResponse } from '@/modules/common/entities'
 import { OrganizationRepository } from '@/modules/organizations/domain/repositories'
+import { auth0 } from '@lib/auth0'
 
-export async function GET() {
-  const userId = '--teste--'
+export const GET = auth0.withApiAuthRequired(async function handler() {
+  const session = await auth0.getSession()
+  const ownerEmail = session?.user?.email
 
-  if (!userId) {
+  if (!ownerEmail) {
     return ApiResponse.unauthorized('Unauthorized')
   }
 
   const repository = new OrganizationRepository()
 
   try {
-    const result = await repository.me.createdAll({ userId })
+    const result = await repository.me.createdAll({ ownerEmail })
 
     return ApiResponse.ok({
       list: result,
@@ -26,4 +28,4 @@ export async function GET() {
 
     return ApiResponse.internalServerError(`[GET /me/organizations] ${error}`)
   }
-}
+})

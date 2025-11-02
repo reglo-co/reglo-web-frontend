@@ -8,9 +8,10 @@ export function useSlugAvailable(slug: string) {
   const response = useQuery({
     queryKey: ['slug-available', debouncedSlug],
     queryFn: async () => {
-      const result = await checkSlugAvailableService(debouncedSlug)
+      const result = await checkSlugAvailableService(debouncedSlug!)
       return result.getDataOrThrow()
     },
+    enabled: !!debouncedSlug,
     gcTime: 0,
     staleTime: 0,
     refetchOnMount: true,

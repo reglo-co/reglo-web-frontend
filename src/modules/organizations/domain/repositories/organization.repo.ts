@@ -2,13 +2,17 @@ import { FirebaseCollection } from '@/modules/common/lib/firebase'
 import { Organization } from '@/modules/organizations/domain/types'
 
 type MeAllParams = {
-  userId: string
+  ownerEmail: string
 }
 
 export class MeOrganizationRepository {
-  public async createdAll({ userId }: MeAllParams): Promise<Organization[]> {
+  public async createdAll({
+    ownerEmail,
+  }: MeAllParams): Promise<Organization[]> {
     const collection = new FirebaseCollection('organizations')
-    const result = await collection.query.equal('ownerId', userId).build()
+    const result = await collection.query
+      .equal('ownerEmail', ownerEmail)
+      .build()
 
     if (result.length === 0) {
       return []
@@ -27,7 +31,7 @@ export class OrganizationRepository {
 
   public async one(id: string) {}
   public async oneBySlug(slug: string) {}
-  public async allByOwnerId(ownerId: string) {}
+  public async allByOwnerEmail(ownerEmail: string) {}
   public async create(
     organization: Omit<Organization, 'id' | 'createdAt' | 'updatedAt'>
   ) {

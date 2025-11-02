@@ -1,32 +1,17 @@
 'use client'
 
-import Link from 'next/link'
-
-import {
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Settings,
-  User,
-} from 'lucide-react'
-
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '@/modules/common/ui/primitives/avatar'
+import { ChevronsUpDown } from 'lucide-react'
 
 import {
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/modules/common/ui/primitives/dropdown-menu'
 
-import { ThemeSwitcher } from '@/modules/common/ui'
+import {
+  NavUserDropdown,
+  NavUserHeader,
+  ThemeSwitcher,
+} from '@/modules/common/ui'
 import {
   Dialog,
   DialogContent,
@@ -61,58 +46,11 @@ export function NavUser() {
                 size="lg"
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
-                <Avatar className="h-8 w-8 rounded-full">
-                  <AvatarImage src={avatar} alt={name} />
-                  <AvatarFallback className="rounded-full">CN</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{name}</span>
-                  <span className="truncate text-xs">{email}</span>
-                </div>
+                <NavUserHeader />
                 <ChevronsUpDown className="ml-auto size-4" />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-              className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-              side={side}
-              align="end"
-              sideOffset={4}
-            >
-              <DropdownMenuLabel className="p-0 font-normal">
-                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                  <Avatar className="h-8 w-8 rounded-full">
-                    <AvatarImage src={avatar} alt={name} />
-                    <AvatarFallback className="rounded-full">CN</AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">{name}</span>
-                    <span className="truncate text-xs">{email}</span>
-                  </div>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <Link href="/profile">
-                  <DropdownMenuItem>
-                    <User />
-                    Minha conta
-                  </DropdownMenuItem>
-                </Link>
-                <DropdownMenuItem onClick={() => setConfigModal(true)}>
-                  <Settings />
-                  Configurações
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <CreditCard />
-                  Pagamentos
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => null}>
-                <LogOut />
-                Sair
-              </DropdownMenuItem>
-            </DropdownMenuContent>
+            <NavUserDropdown side={side} align="end" />
           </DropdownMenu>
         </SidebarMenuItem>
       </SidebarMenu>

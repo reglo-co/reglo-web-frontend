@@ -7,7 +7,7 @@ export async function createOrganizationService(
 ): Promise<Result<Organization>> {
   try {
     const response = await api.post<Organization>(
-      '/organizations/create',
+      'organizations/create',
       organization
     )
     return Result.success(response)

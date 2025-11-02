@@ -12,4 +12,6 @@ if (!process.env.AUTH0_BASE_URL && process.env.APP_BASE_URL) {
   process.env.AUTH0_BASE_URL = process.env.APP_BASE_URL
 }
 
-export const auth0 = new Auth0Client()
+export const auth0 = new Auth0Client({
+  signInReturnToPath: '/console',
+})

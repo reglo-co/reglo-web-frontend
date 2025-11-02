@@ -5,7 +5,7 @@ export interface Organization {
   name: string
   slug: string
   plan: PlanNames
-  ownerId: string
+  ownerEmail: string
   createdAt: string
   updatedAt: string
 }

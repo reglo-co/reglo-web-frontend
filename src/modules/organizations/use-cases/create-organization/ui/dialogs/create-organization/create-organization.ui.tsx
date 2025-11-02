@@ -26,6 +26,7 @@ import {
   useCreateOrganization,
   useSlugAvailable,
 } from '@/modules/organizations/use-cases/create-organization'
+import { useQueryClient } from '@tanstack/react-query'
 import { Check } from 'lucide-react'
 import Link from 'next/link'
 
@@ -46,6 +47,7 @@ function CustomDialogHeader() {
 }
 
 export function DialogCreateOrganization() {
+  const queryClient = useQueryClient()
   const { isOpen, toggle } = useModal()
   const open = isOpen('create-organization')
   const { register, handleSubmit, watch, setValue, reset } = useForm<FormData>()
@@ -95,6 +97,7 @@ export function DialogCreateOrganization() {
 
   function handleClose() {
     toggle('create-organization')
+    queryClient.invalidateQueries({ queryKey: ['list-my-organizations'] })
     setTimeout(() => {
       resetMutation()
       setSlugManuallyEdited(false)

@@ -1,11 +1,15 @@
 import { ApiResponse } from '@/modules/common/entities'
 import { OrganizationRepository } from '@/modules/organizations/domain/repositories'
+import { auth0 } from '@lib/auth0'
 
-export async function POST(request: Request) {
-  const ownerId = '--teste--'
+export const POST = auth0.withApiAuthRequired(async function handler(
+  request: Request
+) {
+  const session = await auth0.getSession()
+  const ownerEmail = session?.user?.email
   const { name, slug } = await request.json()
 
-  if (!ownerId) {
+  if (!ownerEmail) {
     return ApiResponse.unauthorized('Unauthorized')
   }
 
@@ -15,12 +19,20 @@ export async function POST(request: Request) {
     const result = await repository.create({
       name,
       slug,
-      ownerId,
+      ownerEmail,
       plan: 'starter',
     })
 
     return ApiResponse.created(result)
   } catch (error) {
-    return ApiResponse.internalServerError('Internal server error')
+    if (error instanceof Error) {
+      return ApiResponse.internalServerError(
+        `[POST /organizations/create] ${error.message}`
+      )
+    }
+
+    return ApiResponse.internalServerError(
+      `[POST /organizations/create] ${error}`
+    )
   }
-}
+})

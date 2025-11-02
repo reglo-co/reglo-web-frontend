@@ -30,6 +30,9 @@
   code {
     @apply type-code;
   }
+  span {
+    @apply type-small;
+  }
   a {
     @apply type-link;
   }
@@ -105,4 +108,28 @@
 
 @utility type-link {
   @apply underline decoration-1 underline-offset-4 transition-colors hover:decoration-2 hover:opacity-80;
+}
+
+@utility type-gap-top-1 {
+  @apply pt-0.5;
+}
+
+@utility type-gap-top-2 {
+  @apply pt-1;
+}
+
+@utility type-gap-top-3 {
+  @apply pt-1.5;
+}
+
+@utility type-gap-top-4 {
+  @apply pt-2;
+}
+
+@utility type-gap-top-5 {
+  @apply pt-2.5;
+}
+
+@utility type-gap-top-6 {
+  @apply pt-3;
 }

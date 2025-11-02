@@ -6,7 +6,7 @@ export async function checkSlugAvailableService(
 ): Promise<Result<boolean>> {
   try {
     const response = await api.get<boolean>(
-      `/organizations/slug/available/${slug}`
+      `organizations/slug/available/${slug}`
     )
 
     return Result.success(response)

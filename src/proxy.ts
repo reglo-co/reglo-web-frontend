@@ -1,4 +1,4 @@
-import { auth0 } from '@/lib/auth0'
+import { auth0 } from '@lib/auth0'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
@@ -10,25 +10,15 @@ function isPublicRoute(pathname: string): boolean {
   return false
 }
 
-function hasSessionCookie(request: NextRequest): boolean {
-  const cookieHeader = request.headers.get('cookie') || ''
-  return cookieHeader.includes('appSession') || cookieHeader.includes('auth0')
-}
-
 export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl
-
-  if (isPublicRoute(pathname)) {
+  if (isPublicRoute(request.nextUrl.pathname)) {
     return await auth0.middleware(request)
   }
 
-  if (!hasSessionCookie(request)) {
-    if (pathname.startsWith('/auth/login')) {
-      return await auth0.middleware(request)
-    }
-    const loginUrl = new URL('/auth/login', request.url)
-    loginUrl.searchParams.set('returnTo', pathname)
-    return NextResponse.redirect(loginUrl)
+  const session = await auth0.getSession()
+
+  if (!session) {
+    return NextResponse.redirect(new URL('/auth/login', request.url))
   }
 
   return await auth0.middleware(request)

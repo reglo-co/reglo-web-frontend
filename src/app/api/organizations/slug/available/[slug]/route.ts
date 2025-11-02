@@ -1,15 +1,18 @@
 import { ApiResponse } from '@/modules/common/entities'
 import { OrganizationRepository } from '@/modules/organizations/domain/repositories'
+import { auth0 } from '@lib/auth0'
 
-export async function GET(
+export const GET = auth0.withApiAuthRequired(async function handler(
   _: Request,
-  context: { params: Promise<{ slug: string }> }
+  context: { params?: Promise<Record<string, string | string[]>> }
 ) {
-  const userId = '--teste--'
-  const { slug } = await context.params
-
-  if (!userId) {
-    return ApiResponse.unauthorized('Unauthorized')
+  if (!context.params) {
+    return ApiResponse.badRequest('Missing slug parameter')
+  }
+  const params = await context.params
+  const slug = params.slug
+  if (!slug || typeof slug !== 'string') {
+    return ApiResponse.badRequest('Invalid slug parameter')
   }
 
   const repository = new OrganizationRepository()
@@ -22,4 +25,4 @@ export async function GET(
       `[GET /organizations/slug/available/${slug}] ${error}`
     )
   }
-}
+})
