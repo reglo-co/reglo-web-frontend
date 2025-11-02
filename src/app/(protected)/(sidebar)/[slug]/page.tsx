@@ -8,12 +8,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/modules/common/ui/primitives/breadcrumb'
+import { CurrentOrganization } from '@/modules/organizations/use-cases/current-organization'
 
 export default function Page() {
   return (
     <>
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
         <div className="flex items-center gap-2 px-4">
+          <CurrentOrganization />
           <Separator
             orientation="vertical"
             className="mr-2 data-[orientation=vertical]:h-4"

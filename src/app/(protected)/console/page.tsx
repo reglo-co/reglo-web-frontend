@@ -14,6 +14,7 @@ export default function Page() {
   const { total, isLoading } = useListMyOrganizations()
 
   const showEmptyOrganizations = total === 0 && !isLoading
+  const showListOrganizations = total > 0 && !isLoading
 
   return (
     <Fragment>
@@ -23,7 +24,7 @@ export default function Page() {
         <Activity mode={showEmptyOrganizations ? 'visible' : 'hidden'}>
           <EmptyOrganizations />
         </Activity>
-        <Activity mode={!showEmptyOrganizations ? 'visible' : 'hidden'}>
+        <Activity mode={showListOrganizations ? 'visible' : 'hidden'}>
           <ListOrganizations />
         </Activity>
         <DialogCreateOrganization />

@@ -30,7 +30,16 @@ export class OrganizationRepository {
   }
 
   public async one(id: string) {}
-  public async oneBySlug(slug: string) {}
+  public async oneBySlug(slug: string): Promise<Organization | null> {
+    const collection = new FirebaseCollection('organizations')
+    const result = await collection.query.equal('slug', slug).build()
+
+    if (result.length === 0) {
+      return null
+    }
+
+    return result[0] as Organization
+  }
   public async allByOwnerEmail(ownerEmail: string) {}
   public async create(
     organization: Omit<Organization, 'id' | 'createdAt' | 'updatedAt'>

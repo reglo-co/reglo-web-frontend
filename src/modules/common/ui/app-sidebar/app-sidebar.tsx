@@ -18,17 +18,6 @@ import { NavUser } from '@/modules/common/ui/nav-user/nav-user'
 import { TeamSwitcher } from '@/modules/common/ui/team-switcher/team-switcher'
 
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Badge,
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemMedia,
-  ItemTitle,
-} from '@/modules/common/ui/primitives'
-import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -109,24 +98,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <Sidebar collapsible="icon" {...props}>
         <SidebarHeader className="flex flex-col items-center justify-between gap-2">
           <TeamSwitcher teams={data.teams} />
-          <Item
-            size="sm"
-            variant="outline"
-            className="w-full items-center gap-2"
-          >
-            <ItemMedia className="">
-              <Avatar className="-mt-0.5 size-4">
-                <AvatarImage src="https://github.com/evilrabbit.png" />
-                <AvatarFallback>ER</AvatarFallback>
-              </Avatar>
-            </ItemMedia>
-            <ItemContent>
-              <ItemTitle className="type-small line-clamp-1">Lumon</ItemTitle>
-            </ItemContent>
-            <ItemActions>
-              <Badge className="type-micro!">main</Badge>
-            </ItemActions>
-          </Item>
         </SidebarHeader>
         <SidebarContent>
           <NavMain title="" items={data.navMain} />
