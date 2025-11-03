@@ -21,22 +21,17 @@ export function CurrentOrganization() {
     return null
   }
 
-  const isTypeMicro = organization.name.length > 10
-
   return (
     <Item
       size="sm"
       variant="outline"
-      className="w-54! items-center gap-2.5 px-3 py-2"
+      className="min-w-54 items-center gap-2.5 px-3 py-2"
     >
       <ItemMedia>
         <Logo.Symbol className="size-2.5" />
       </ItemMedia>
       <ItemContent>
-        <ItemTitle
-          data-micro={isTypeMicro}
-          className="data-[micro=true]:type-micro! mt-0.5 line-clamp-1"
-        >
+        <ItemTitle className="mt-0.5 line-clamp-1">
           {organization?.name}
         </ItemTitle>
       </ItemContent>
