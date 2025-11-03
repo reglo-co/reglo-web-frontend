@@ -1,6 +1,7 @@
 'use client'
 
 import { ChevronsUpDown } from 'lucide-react'
+import { useState } from 'react'
 
 import {
   DropdownMenu,
@@ -25,10 +26,11 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/modules/common/ui/primitives/sidebar'
-import { useState } from 'react'
+import { useMounted } from '@/modules/common/hooks/use-mounted'
 
 export function NavUser() {
   const [configModal, setConfigModal] = useState(false)
+  const mounted = useMounted()
   const { isMobile } = useSidebar()
 
   const name = '--teste--'
@@ -40,18 +42,25 @@ export function NavUser() {
     <>
       <SidebarMenu>
         <SidebarMenuItem>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <SidebarMenuButton
-                size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-              >
-                <NavUserHeader />
-                <ChevronsUpDown className="ml-auto size-4" />
-              </SidebarMenuButton>
-            </DropdownMenuTrigger>
-            <NavUserDropdown side={side} align="end" />
-          </DropdownMenu>
+          {mounted ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                >
+                  <NavUserHeader />
+                  <ChevronsUpDown className="ml-auto size-4" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <NavUserDropdown side={side} align="end" />
+            </DropdownMenu>
+          ) : (
+            <SidebarMenuButton size="lg" disabled>
+              <NavUserHeader />
+              <ChevronsUpDown className="ml-auto size-4" />
+            </SidebarMenuButton>
+          )}
         </SidebarMenuItem>
       </SidebarMenu>
 

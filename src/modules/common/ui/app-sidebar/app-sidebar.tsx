@@ -1,5 +1,10 @@
 'use client'
 
+import { NavMain } from '@/modules/common/ui/nav-main/nav-main'
+import { NavUser } from '@/modules/common/ui/nav-user/nav-user'
+import { TeamSwitcher } from '@/modules/common/ui/team-switcher/team-switcher'
+import * as React from 'react'
+
 import {
   AudioWaveform,
   Box,
@@ -11,11 +16,6 @@ import {
   SquareTerminal,
   Users,
 } from 'lucide-react'
-import * as React from 'react'
-
-import { NavMain } from '@/modules/common/ui/nav-main/nav-main'
-import { NavUser } from '@/modules/common/ui/nav-user/nav-user'
-import { TeamSwitcher } from '@/modules/common/ui/team-switcher/team-switcher'
 
 import {
   Sidebar,

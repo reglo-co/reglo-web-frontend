@@ -1,4 +1,11 @@
-import { apiDelete, apiGet, apiPatch, apiPost, apiPut } from './api.helper'
+import {
+  apiDelete,
+  apiGet,
+  apiPatch,
+  apiPost,
+  apiPut,
+  setServerCookieHeaderProvider,
+} from './api.helper'
 
 export const api = {
   get: apiGet,
@@ -9,3 +16,4 @@ export const api = {
 }
 
 export type { API_ENDPOINTS } from './api.helper'
+export { setServerCookieHeaderProvider }

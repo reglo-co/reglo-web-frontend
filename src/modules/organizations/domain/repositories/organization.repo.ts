@@ -20,6 +20,17 @@ export class MeOrganizationRepository {
 
     return result as Organization[]
   }
+
+  public async hasAccess(slug: string, userEmail: string) {
+    const collection = new FirebaseCollection('organizations')
+
+    const organizations = await collection.query
+      .equal('slug', slug)
+      .equal('ownerEmail', userEmail)
+      .build()
+
+    return organizations.length > 0
+  }
 }
 
 export class OrganizationRepository {
@@ -29,7 +40,6 @@ export class OrganizationRepository {
     this.me = new MeOrganizationRepository()
   }
 
-  public async one(id: string) {}
   public async oneBySlug(slug: string): Promise<Organization | null> {
     const collection = new FirebaseCollection('organizations')
     const result = await collection.query.equal('slug', slug).build()
@@ -40,7 +50,7 @@ export class OrganizationRepository {
 
     return result[0] as Organization
   }
-  public async allByOwnerEmail(ownerEmail: string) {}
+
   public async create(
     organization: Omit<Organization, 'id' | 'createdAt' | 'updatedAt'>
   ) {
@@ -59,11 +69,7 @@ export class OrganizationRepository {
       return false
     }
   }
-  public async update(
-    id: string,
-    data: Partial<Omit<Organization, 'id' | 'createdAt' | 'updatedAt'>>
-  ) {}
-  public async all() {}
+
   public async slugAvailable(slug: string) {
     const collection = new FirebaseCollection('organizations')
     const result = await collection.query.equal('slug', slug).build()

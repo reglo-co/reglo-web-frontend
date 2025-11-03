@@ -2,25 +2,55 @@ import type { Options } from 'ky'
 import ky from 'ky'
 
 export type API_ENDPOINTS =
-  | 'plans/list'
-  | 'me/organizations/created'
-  | 'me/organizations/availables'
-  | 'users/organizations/list'
   | 'organizations/create'
   | `organizations/slug/available/${string}`
-  | 'me/plans/availables'
   | `organizations/${string}`
+  | 'me/plans/availables'
+  | 'me/organizations/created'
+  | 'me/organizations/availables'
+  | `me/organizations/access/${string}`
 
 const prefixUrl = process.env.NEXT_PUBLIC_API_URL
 
+let serverCookieHeaderProvider: (() => Promise<string | undefined>) | null =
+  null
+
+export function setServerCookieHeaderProvider(
+  provider: () => Promise<string | undefined>
+) {
+  serverCookieHeaderProvider = provider
+}
+
 const kyInstance = ky.create({
   prefixUrl,
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  },
   hooks: {
-    beforeRequest: [],
+    beforeRequest: [
+      async (request) => {
+        if (typeof window !== 'undefined') return
+        let cookieHeader: string | undefined
+        if (serverCookieHeaderProvider) {
+          cookieHeader = await serverCookieHeaderProvider()
+        } else {
+          try {
+            const { cookies } = await import('next/headers')
+            const store = await cookies()
+            const all = store.getAll()
+            cookieHeader = all.length
+              ? all
+                  .map(
+                    (c: { name: string; value: string }) =>
+                      `${c.name}=${c.value}`
+                  )
+                  .join('; ')
+              : undefined
+          } catch {
+            // ignore if next/headers is not available in this context
+          }
+        }
+        if (!cookieHeader) return
+        request.headers.set('cookie', cookieHeader)
+      },
+    ],
   },
 })
 

@@ -1,5 +1,4 @@
-import { Separator } from '@/modules/common/ui/primitives/separator'
-
+import { PropsWithParams } from '@/modules/common/types/common.types'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,9 +7,22 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/modules/common/ui/primitives/breadcrumb'
+import { Separator } from '@/modules/common/ui/primitives/separator'
+import { userCanAccessOrganizationService } from '@/modules/organizations/use-cases/access/services/user-can-access-organization.service'
 import { CurrentOrganization } from '@/modules/organizations/use-cases/current-organization'
+import { notFound } from 'next/navigation'
 
-export default function Page() {
+export default async function Page({
+  params,
+}: PropsWithParams<{ slug: string }>) {
+  const { slug } = await params
+
+  const hasAccess = await userCanAccessOrganizationService(slug)
+
+  if (!hasAccess) {
+    return notFound()
+  }
+
   return (
     <>
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">

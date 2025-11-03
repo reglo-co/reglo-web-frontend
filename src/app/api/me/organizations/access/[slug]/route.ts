@@ -1,0 +1,44 @@
+import { ApiResponse } from '@/modules/common/entities'
+import { OrganizationRepository } from '@/modules/organizations/domain/repositories'
+import { auth0 } from '@lib/auth0'
+
+export const GET = auth0.withApiAuthRequired(async function handler(
+  _: Request,
+  context: { params?: Promise<Record<string, string | string[]>> }
+) {
+  if (!context.params) {
+    return ApiResponse.badRequest('Missing slug parameter')
+  }
+
+  const params = await context.params
+  const slug = params.slug
+
+  if (!slug || typeof slug !== 'string') {
+    return ApiResponse.badRequest('Invalid slug parameter')
+  }
+
+  const session = await auth0.getSession()
+  const ownerEmail = session?.user?.email
+
+  if (!ownerEmail) {
+    return ApiResponse.unauthorized('Unauthorized')
+  }
+
+  const repository = new OrganizationRepository()
+
+  try {
+    const hasAccess = await repository.me.hasAccess(slug, ownerEmail)
+
+    return ApiResponse.ok({ hasAccess })
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return ApiResponse.internalServerError(
+        `[GET /me/organizations/access/${slug}] ${error.message}`
+      )
+    }
+
+    return ApiResponse.internalServerError(
+      `[GET /me/organizations/access/${slug}] ${error}`
+    )
+  }
+})
