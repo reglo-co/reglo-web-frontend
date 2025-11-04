@@ -1,5 +1,5 @@
 import { ApiResponse } from '@/modules/common/entities'
-import { OrganizationRepository } from '@/modules/organizations/domain/repositories'
+import { OrganizationRepository } from '@/modules/organizations/repositories'
 import { auth0 } from '@lib/auth0'
 
 export const POST = auth0.withApiAuthRequired(async function handler(

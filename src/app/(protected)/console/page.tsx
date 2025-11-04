@@ -4,12 +4,12 @@ import { HeaderConsole } from '@ui/index'
 import { Activity, Fragment } from 'react'
 
 import { Skeleton } from '@/modules/common/ui/primitives'
-import { DialogCreateOrganization } from '@/modules/organizations/use-cases/create-organization'
+import { DialogCreateOrganization } from '@/modules/organizations/create-organization'
 import {
   EmptyOrganizations,
   ListOrganizations,
   useListMyOrganizations,
-} from '@organizations/use-cases/list-my-organizations'
+} from '@organizations/list-my-organizations'
 
 export default function Page() {
   const { total, isLoading } = useListMyOrganizations()

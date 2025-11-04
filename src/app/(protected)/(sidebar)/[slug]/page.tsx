@@ -1,7 +1,7 @@
 import { PropsWithParams } from '@/modules/common/types/common.types'
 import { Separator } from '@/modules/common/ui/primitives/separator'
-import { userCanAccessOrganizationService } from '@/modules/organizations/use-cases/access/services/user-can-access-organization.service'
-import { CurrentOrganization } from '@/modules/organizations/use-cases/current-organization'
+import { userCanAccessOrganizationService } from '@/modules/organizations/access'
+import { CurrentOrganization } from '@/modules/organizations/current-organization'
 import { notFound } from 'next/navigation'
 import { Fragment } from 'react'
 
