@@ -1,32 +1,49 @@
-import LoginButton from '@/components/LoginButton'
-import LogoutButton from '@/components/LogoutButton'
-import Profile from '@/components/Profile'
-import { auth0 } from '@lib/auth0'
+import { Logo } from '@/modules/common/ui'
+import { Button } from '@/modules/common/ui/primitives'
+import { CircleQuestionMark } from 'lucide-react'
+import Link from 'next/link'
 
 export default async function Home() {
-  const session = await auth0.getSession()
-
-  const user = session?.user
-
   return (
-    <div className="app-container">
-      <div className="main-card-wrapper">
-        <h1 className="main-title">Next.js + Auth0</h1>
-        <div className="action-card">
-          {user ? (
-            <div className="logged-in-section">
-              <p className="logged-in-message">✅ Successfully logged in!</p>
-              <Profile />
-              <LogoutButton />
-            </div>
-          ) : (
-            <>
-              <p className="action-text">
-                Welcome! Please log in to access your protected content.
-              </p>
-              <LoginButton />
-            </>
-          )}
+    <div className="app-container bg-constellation-svg">
+      <header className="header-height bg-background/90 border-border/70 w-full border-b px-4 md:px-6">
+        <div className="container-xl flex h-full items-center justify-between">
+          <div className="group flex cursor-pointer items-center gap-2">
+            <Logo.Symbol className="size-5 transition-transform duration-500 group-hover:rotate-90" />
+            <span className="pt-0.25 text-xl">Reglo</span>
+          </div>
+          <Link href="/console" className="pr-3.5">
+            <Button className="group">
+              <Logo.Symbol className="size-3.5 transition-transform duration-500 group-hover:rotate-90" />
+              <span className="pt-0.5">Área logada</span>
+            </Button>
+          </Link>
+        </div>
+      </header>
+      <div className="page-without-header text- flex w-full flex-col items-center justify-center">
+        <div className="container-sm flex flex-col items-center justify-center gap-8 md:-mt-(--header-height)">
+          <h1 className="text-gradient text-center text-3xl sm:text-4xl md:text-5xl">
+            Gerencie, versione e valide <br /> as regras de negócio do seu time
+            com eficiência
+          </h1>
+          <p className="text-support text-md text-center sm:text-lg md:text-xl">
+            Tenha uma única fonte da verdade para guiar o seu time com clareza,
+            consistência e total controle sobre cada decisão.
+          </p>
+          <div className="flex flex-col gap-3 pt-6 sm:flex-row md:gap-6">
+            <Link href="/console">
+              <Button size="lg" className="group">
+                <Logo.Symbol className="size-3.5 transition-transform duration-500 group-hover:rotate-90" />
+                <span className="pt-0.5">Começar agora!</span>
+              </Button>
+            </Link>
+            <Link href="/">
+              <Button size="lg" variant="outline" className="group">
+                <CircleQuestionMark strokeWidth={1.5} className="size-4" />
+                <span className="pt-0.5">Como funciona?</span>
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

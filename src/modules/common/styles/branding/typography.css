@@ -134,3 +134,8 @@
   @apply pt-3;
 }
 
+@utility text-gradient {
+  background: linear-gradient(to left, #666, #333);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
