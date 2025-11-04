@@ -1,16 +1,13 @@
 import { useModal } from '@/modules/common/stores'
-import { ThemeSwitcher } from '@ui/index'
+import { ExternalIcons, ThemeSwitcher } from '@ui/index'
 import { Logo } from '@ui/logo'
 import { Button } from '@ui/primitives/button'
-import { Building2 } from 'lucide-react'
 import { Fragment } from 'react'
 
 import {
   Empty,
   EmptyContent,
-  EmptyDescription,
   EmptyHeader,
-  EmptyMedia,
   EmptyTitle,
 } from '@ui/primitives/empty'
 
@@ -19,23 +16,19 @@ export function EmptyOrganizations() {
 
   return (
     <Fragment>
-      <Empty>
+      <Empty className="container-sm w-full">
         <EmptyHeader>
-          <EmptyMedia variant="icon">
-            <Building2 strokeWidth={1.5} />
-          </EmptyMedia>
-          <EmptyTitle className="type-h5!">
-            Nenhuma organização por aqui... ainda!
+          <ExternalIcons.Building className="text-label size-16" />
+
+          <EmptyTitle className="type-h3! max-w-xs pt-6">
+            Nenhuma organização por aqui... ainda...
           </EmptyTitle>
-          <EmptyDescription>
-            Parece que tá tudo em branco, perfeito pra começar algo incrível.
-          </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
-          <div className="flex flex-col items-center gap-4">
-            <Button onClick={() => open('create-organization')}>
+          <div className="flex flex-col items-center gap-6 pt-4">
+            <Button size="lg" onClick={() => open('create-organization')}>
               <Logo.Symbol className="size-3.5" />
-              <span>Começar agora!</span>
+              <span>Criar nova organização!</span>
             </Button>
             <ThemeSwitcher />
           </div>

@@ -1,6 +1,7 @@
 import { CreditCard, LogOut, Settings, User } from 'lucide-react'
 import Link from 'next/link'
 
+import { useModal } from '@/modules/common/stores'
 import { NavUserHeader } from '@/modules/common/ui'
 import {
   DropdownMenuContent,
@@ -16,6 +17,7 @@ interface NavUserDropdownProps {
 }
 
 export function NavUserDropdown({ side, align }: NavUserDropdownProps) {
+  const { open } = useModal()
   return (
     <DropdownMenuContent
       className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
@@ -28,23 +30,26 @@ export function NavUserDropdown({ side, align }: NavUserDropdownProps) {
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
-        <DropdownMenuItem>
-          <User />
+        <DropdownMenuItem className="group hover:text-label-hover!">
+          <User className="group-hover:text-label-hover!" />
           <span className="type-gap-top-1 leading-none">Minha conta</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => null}>
-          <Settings />
+        <DropdownMenuItem
+          className="group hover:text-label-hover!"
+          onClick={() => open('system-configuration')}
+        >
+          <Settings className="group-hover:text-label-hover!" />
           <span className="type-gap-top-1 leading-none">Configurações</span>
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <CreditCard />
+        <DropdownMenuItem className="group hover:text-label-hover!">
+          <CreditCard className="group-hover:text-label-hover!" />
           <span className="type-gap-top-1 leading-none">Pagamentos</span>
         </DropdownMenuItem>
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
       <Link href="/auth/logout">
-        <DropdownMenuItem>
-          <LogOut />
+        <DropdownMenuItem className="group hover:text-label-hover!">
+          <LogOut className="group-hover:text-label-hover!" />
           <span className="type-gap-top-1 leading-none">Sair</span>
         </DropdownMenuItem>
       </Link>

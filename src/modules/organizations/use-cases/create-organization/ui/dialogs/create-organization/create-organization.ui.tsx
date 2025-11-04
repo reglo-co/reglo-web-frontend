@@ -116,7 +116,7 @@ export function DialogCreateOrganization() {
                   <fieldset>
                     <legend>URL da organização</legend>
                     <div className="relative">
-                      <span className="type-small text-label-support absolute top-1/2 left-3 -translate-y-1/2">
+                      <span className="type-small text-support absolute top-1/2 left-3 -translate-y-1/2">
                         reglo.co/
                       </span>
                       <Input

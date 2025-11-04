@@ -1,4 +1,5 @@
 export * from './app-sidebar'
+export * from './external-icons'
 export * from './header-console'
 export * from './logo'
 export * from './nav-main'

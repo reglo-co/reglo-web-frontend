@@ -43,5 +43,5 @@
 --sidebar-border: #000000;
 --sidebar-ring: #000000;
 --label: #000000;
---label-support: #000000;
+--support: #000000;
 }

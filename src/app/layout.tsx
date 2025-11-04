@@ -37,7 +37,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
     <html suppressHydrationWarning lang="pt-BR">
       <body
         suppressHydrationWarning
-        className={`${abeeZee.variable} tracking-wide antialiased`}
+        className={`${abeeZee.variable} text-label tracking-wide antialiased`}
       >
         <Auth0Provider>
           <Providers>{children}</Providers>

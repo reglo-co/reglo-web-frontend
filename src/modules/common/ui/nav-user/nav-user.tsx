@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from '@/modules/common/ui/primitives/dropdown-menu'
 
+import { useMounted } from '@/modules/common/hooks/use-mounted'
 import {
   NavUserDropdown,
   NavUserHeader,
@@ -26,16 +27,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/modules/common/ui/primitives/sidebar'
-import { useMounted } from '@/modules/common/hooks/use-mounted'
 
 export function NavUser() {
   const [configModal, setConfigModal] = useState(false)
   const mounted = useMounted()
   const { isMobile } = useSidebar()
 
-  const name = '--teste--'
-  const email = '--teste--'
-  const avatar = '--teste--'
   const side = isMobile ? 'bottom' : 'right'
 
   return (

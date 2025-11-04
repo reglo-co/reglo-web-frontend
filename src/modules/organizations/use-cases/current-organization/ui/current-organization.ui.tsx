@@ -25,7 +25,7 @@ export function CurrentOrganization() {
     <Item
       size="sm"
       variant="outline"
-      className="min-w-54 items-center gap-2.5 px-3 py-2"
+      className="bg-popover min-w-54 items-center gap-2.5 px-3 py-2"
     >
       <ItemMedia>
         <Logo.Symbol className="size-2.5" />

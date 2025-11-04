@@ -4,6 +4,7 @@ export type ModalType =
   | 'create-organization'
   | 'empty-create-organization'
   | 'kanban-item-details'
+  | 'system-configuration'
 
 type ModalStore = {
   name: ModalType | null

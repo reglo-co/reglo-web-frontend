@@ -26,10 +26,10 @@ export function ListOrganizationItem({
     <Link href={`/${slug}`}>
       <Item
         variant="outline"
-        className="hover:bg-accent/50 transition-base cursor-pointer"
+        className="hover:bg-accent/50 transition-base h-20 cursor-pointer"
       >
         <ItemMedia>
-          <Avatar className="mt-0.5 size-8">
+          <Avatar className="mt-1 size-8">
             <AvatarImage src={avatarUrl} />
             <AvatarFallback>{nameInitial}</AvatarFallback>
           </Avatar>

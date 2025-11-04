@@ -1,4 +1,10 @@
 import { PropsWithParams } from '@/modules/common/types/common.types'
+import { Separator } from '@/modules/common/ui/primitives/separator'
+import { userCanAccessOrganizationService } from '@/modules/organizations/use-cases/access/services/user-can-access-organization.service'
+import { CurrentOrganization } from '@/modules/organizations/use-cases/current-organization'
+import { notFound } from 'next/navigation'
+import { Fragment } from 'react'
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,16 +13,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/modules/common/ui/primitives/breadcrumb'
-import { Separator } from '@/modules/common/ui/primitives/separator'
-import { userCanAccessOrganizationService } from '@/modules/organizations/use-cases/access/services/user-can-access-organization.service'
-import { CurrentOrganization } from '@/modules/organizations/use-cases/current-organization'
-import { notFound } from 'next/navigation'
 
 export default async function Page({
   params,
 }: PropsWithParams<{ slug: string }>) {
   const { slug } = await params
-
   const hasAccess = await userCanAccessOrganizationService(slug)
 
   if (!hasAccess) {
@@ -24,7 +25,7 @@ export default async function Page({
   }
 
   return (
-    <>
+    <Fragment>
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
         <div className="flex items-center gap-2 px-4">
           <CurrentOrganization />
@@ -49,12 +50,12 @@ export default async function Page({
       </header>
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-          <div className="bg-muted/50 aspect-video rounded-xl" />
-          <div className="bg-muted/50 aspect-video rounded-xl" />
-          <div className="bg-muted/50 aspect-video rounded-xl" />
+          <div className="bg-muted aspect-video rounded-xl" />
+          <div className="bg-muted aspect-video rounded-xl" />
+          <div className="bg-muted aspect-video rounded-xl" />
         </div>
-        <div className="bg-muted/50 min-h-screen flex-1 rounded-xl md:min-h-min" />
+        <div className="bg-muted min-h-screen flex-1 rounded-xl md:min-h-min" />
       </div>
-    </>
+    </Fragment>
   )
 }
