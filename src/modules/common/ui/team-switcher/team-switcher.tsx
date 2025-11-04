@@ -1,7 +1,7 @@
 'use client'
 
+import { useMounted } from '@/modules/common/hooks/use-mounted'
 import { ChevronsUpDown, Plus } from 'lucide-react'
-import * as React from 'react'
 
 import {
   DropdownMenu,
@@ -13,26 +13,31 @@ import {
   DropdownMenuTrigger,
 } from '@/modules/common/ui/primitives/dropdown-menu'
 
-import { useMounted } from '@/modules/common/hooks/use-mounted'
+import { useModal } from '@/modules/common/stores'
+import { Logo } from '@/modules/common/ui'
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from '@/modules/common/ui/primitives/sidebar'
+import {
+  useListMyOrganizations,
+  useOrganizationBySlug,
+} from '@/modules/organizations'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
-export function TeamSwitcher({
-  teams,
-}: {
-  teams: {
-    name: string
-    logo: React.ElementType
-    plan: string
-  }[]
-}) {
+export function TeamSwitcher() {
+  const { open } = useModal()
+  const pathname = usePathname()
+  const slug = pathname.split('/')[1] || ''
+  const { organization } = useOrganizationBySlug(slug)
+  const { list: teams } = useListMyOrganizations()
   const { isMobile } = useSidebar()
-  const [activeTeam, setActiveTeam] = React.useState(teams[0])
   const mounted = useMounted()
+
+  const activeTeam = organization
 
   if (!activeTeam) {
     return null
@@ -44,7 +49,7 @@ export function TeamSwitcher({
         <SidebarMenuItem>
           <SidebarMenuButton size="lg" disabled>
             <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-              <activeTeam.logo className="size-4" />
+              <Logo.Symbol className="size-4" />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{activeTeam.name}</span>
@@ -67,7 +72,7 @@ export function TeamSwitcher({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                <activeTeam.logo className="size-4" />
+                <Logo.Symbol className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{activeTeam.name}</span>
@@ -86,20 +91,21 @@ export function TeamSwitcher({
               Teams
             </DropdownMenuLabel>
             {teams.map((team, index) => (
-              <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
-                className="gap-2 p-2"
-              >
-                <div className="flex size-6 items-center justify-center rounded-md border">
-                  <team.logo className="size-3.5 shrink-0" />
-                </div>
-                {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-              </DropdownMenuItem>
+              <Link href={`/${team.slug}`} key={team.slug}>
+                <DropdownMenuItem key={team.name} className="gap-2 p-2">
+                  <div className="flex size-6 items-center justify-center rounded-md border">
+                    <Logo.Symbol className="size-3.5 shrink-0" />
+                  </div>
+                  {team.name}
+                  <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              </Link>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
+            <DropdownMenuItem
+              onClick={() => open('create-organization')}
+              className="gap-2 p-2"
+            >
               <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
                 <Plus className="size-4" />
               </div>

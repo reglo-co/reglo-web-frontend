@@ -5,7 +5,6 @@ import { Activity, Fragment } from 'react'
 
 import { Skeleton } from '@/modules/common/ui/primitives'
 import {
-  DialogCreateOrganization,
   EmptyOrganizations,
   ListOrganizations,
   useListMyOrganizations,
@@ -38,7 +37,6 @@ export default function Page() {
             <Skeleton className="h-20 w-full" />
           </div>
         </Activity>
-        <DialogCreateOrganization />
       </main>
     </Fragment>
   )

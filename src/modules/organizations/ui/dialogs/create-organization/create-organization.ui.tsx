@@ -87,8 +87,8 @@ export function DialogCreateOrganization() {
   }
 
   function handleClose() {
-    toggle('create-organization')
     queryClient.invalidateQueries({ queryKey: ['list-my-organizations'] })
+    toggle('create-organization')
     setTimeout(() => {
       resetMutation()
       setSlugManuallyEdited(false)
@@ -154,7 +154,7 @@ export function DialogCreateOrganization() {
                 </EmptyHeader>
                 <EmptyContent className="pt-6 pb-4">
                   <Link href={`/${slug}`}>
-                    <Button>
+                    <Button onClick={handleClose}>
                       <Logo.Symbol className="size-3.5" />
                       <span>Ir para organização</span>
                     </Button>
