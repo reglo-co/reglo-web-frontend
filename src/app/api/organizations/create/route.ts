@@ -2,7 +2,7 @@ import { ApiResponse } from '@/modules/common/entities'
 import { OrganizationRepository } from '@/modules/organizations/repositories'
 import { auth0 } from '@lib/auth0'
 
-export const POST = auth0.withApiAuthRequired(async function handler(
+const handler = auth0.withApiAuthRequired(async function handler(
   request: Request
 ) {
   const session = await auth0.getSession()
@@ -36,3 +36,5 @@ export const POST = auth0.withApiAuthRequired(async function handler(
     )
   }
 })
+
+export const POST = handler as (req: Request) => Promise<Response> | Response

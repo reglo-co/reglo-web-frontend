@@ -2,7 +2,7 @@ import { ApiResponse } from '@/modules/common/entities'
 import { OrganizationRepository } from '@/modules/organizations/repositories'
 import { auth0 } from '@lib/auth0'
 
-export const GET = auth0.withApiAuthRequired(async function handler(
+const handler = auth0.withApiAuthRequired(async function handler(
   _: Request,
   context: { params?: Promise<Record<string, string | string[]>> }
 ) {
@@ -28,3 +28,8 @@ export const GET = auth0.withApiAuthRequired(async function handler(
     )
   }
 })
+
+export const GET = handler as (
+  req: Request,
+  context: { params?: Promise<Record<string, string | string[]>> }
+) => Promise<Response> | Response

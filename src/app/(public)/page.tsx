@@ -1,9 +1,11 @@
+'use client'
+
 import { Logo } from '@/modules/common/ui'
 import { Button } from '@/modules/common/ui/primitives'
 import { CircleQuestionMark } from 'lucide-react'
 import Link from 'next/link'
 
-export default async function Home() {
+export default function Home() {
   return (
     <div className="app-container bg-constellation-svg">
       <header className="header-height bg-background/90 border-border/70 w-full border-b px-4 md:px-6">
@@ -12,7 +14,13 @@ export default async function Home() {
             <Logo.Symbol className="size-5 transition-transform duration-500 group-hover:rotate-90" />
             <span className="pt-0.25 text-xl">Reglo</span>
           </div>
-          <Link href="/console" className="pr-3.5">
+          <Link
+            href="/console"
+            onClick={(e) => {
+              e.preventDefault()
+              window.location.href = '/console'
+            }}
+          >
             <Button className="group">
               <Logo.Symbol className="size-3.5 transition-transform duration-500 group-hover:rotate-90" />
               <span className="pt-0.5">Área logada</span>
@@ -31,7 +39,13 @@ export default async function Home() {
             consistência e total controle sobre cada decisão.
           </p>
           <div className="flex flex-col gap-3 pt-6 sm:flex-row md:gap-6">
-            <Link href="/console">
+            <Link
+              href="/console"
+              onClick={(e) => {
+                e.preventDefault()
+                window.location.href = '/console'
+              }}
+            >
               <Button size="lg" className="group">
                 <Logo.Symbol className="size-3.5 transition-transform duration-500 group-hover:rotate-90" />
                 <span className="pt-0.5">Começar agora!</span>

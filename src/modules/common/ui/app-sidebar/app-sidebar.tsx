@@ -97,7 +97,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <>
       <Sidebar collapsible="icon" {...props}>
         <SidebarHeader className="flex flex-col items-center justify-between gap-2">
-          <TeamSwitcher teams={data.teams} />
+          <TeamSwitcher />
         </SidebarHeader>
         <SidebarContent>
           <NavMain title="" items={data.navMain} />

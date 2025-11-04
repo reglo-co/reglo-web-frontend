@@ -1,3 +1,4 @@
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { Auth0Provider } from '@auth0/nextjs-auth0'
 import { Providers } from '@providers/index'
 import '@styles/globals.css'
@@ -9,6 +10,8 @@ const abeeZee = ABeeZee({
   variable: '--font-abee-zee',
   weight: '400',
   subsets: ['latin'],
+  display: 'swap',
+  preload: true,
 })
 
 export const metadata: Metadata = {
@@ -39,9 +42,11 @@ export default function RootLayout({ children }: PropsWithChildren) {
         suppressHydrationWarning
         className={`${abeeZee.variable} text-label tracking-wide antialiased`}
       >
-        <Auth0Provider>
-          <Providers>{children}</Providers>
-        </Auth0Provider>
+        <ErrorBoundary>
+          <Auth0Provider>
+            <Providers>{children}</Providers>
+          </Auth0Provider>
+        </ErrorBoundary>
       </body>
     </html>
   )

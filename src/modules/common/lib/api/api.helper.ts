@@ -23,6 +23,12 @@ export function setServerCookieHeaderProvider(
 
 const kyInstance = ky.create({
   prefixUrl,
+  timeout: 30000,
+  retry: {
+    limit: 2,
+    methods: ['get'],
+    statusCodes: [408, 413, 429, 500, 502, 503, 504],
+  },
   hooks: {
     beforeRequest: [
       async (request) => {
@@ -43,12 +49,25 @@ const kyInstance = ky.create({
                   )
                   .join('; ')
               : undefined
-          } catch {
-            // ignore if next/headers is not available in this context
-          }
+          } catch {}
         }
         if (!cookieHeader) return
         request.headers.set('cookie', cookieHeader)
+      },
+    ],
+    beforeError: [
+      (error) => {
+        if (error.response) {
+          const status = error.response.status
+          if (status >= 500) {
+            console.error('[API] Server error:', {
+              url: error.request.url,
+              status,
+              message: error.message,
+            })
+          }
+        }
+        return error
       },
     ],
   },
