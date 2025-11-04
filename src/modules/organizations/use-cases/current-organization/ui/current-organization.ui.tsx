@@ -35,7 +35,7 @@ export function CurrentOrganization() {
           {organization?.name}
         </ItemTitle>
       </ItemContent>
-      <ItemActions className="scale-75">
+      <ItemActions className="scale-85">
         <Badge className="type-micro!">main</Badge>
       </ItemActions>
     </Item>
