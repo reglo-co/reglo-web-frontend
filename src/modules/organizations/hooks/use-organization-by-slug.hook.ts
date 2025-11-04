@@ -1,4 +1,6 @@
-import { getOrganizationBySlugService } from '@/modules/organizations/current-organization'
+'use client'
+
+import { getOrganizationBySlugService } from '@/modules/organizations/services'
 import { useQuery } from '@tanstack/react-query'
 
 export function useOrganizationBySlug(slug: string) {

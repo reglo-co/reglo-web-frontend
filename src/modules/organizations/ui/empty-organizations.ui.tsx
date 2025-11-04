@@ -1,3 +1,5 @@
+'use client'
+
 import { useModal } from '@/modules/common/stores'
 import { ExternalIcons, ThemeSwitcher } from '@ui/index'
 import { Logo } from '@ui/logo'

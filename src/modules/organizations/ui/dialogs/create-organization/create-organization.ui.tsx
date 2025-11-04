@@ -1,3 +1,5 @@
+'use client'
+
 import { useModal } from '@/modules/common/stores'
 import { Status } from '@/modules/common/ui'
 import { Logo } from '@/modules/common/ui/logo'
@@ -25,7 +27,7 @@ import {
 import {
   useCreateOrganization,
   useSlugAvailable,
-} from '@/modules/organizations/create-organization'
+} from '@/modules/organizations/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import { Check } from 'lucide-react'
 import Link from 'next/link'

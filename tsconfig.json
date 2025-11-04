@@ -28,6 +28,7 @@
       "@types/*": ["./src/types/*"],
       "@ui/*": ["./src/modules/common/ui/*"],
       // modules
+      "@organizations": ["./src/modules/organizations/index"],
       "@organizations/*": ["./src/modules/organizations/*"]
     },
     "plugins": [
@@ -43,8 +44,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/types/svg.d.ts",
-    ".next/dev/types/**/*.ts",
-    "src/modules/organizations/use-cases/access/services/user-can-access-organization.service.ts"
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

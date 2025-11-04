@@ -1,11 +1,11 @@
+'use client'
+
 import { useModal } from '@/modules/common/stores/modal.store'
 import { Button } from '@/modules/common/ui/primitives'
 import { Plus } from 'lucide-react'
 
-import {
-  ListOrganizationItem,
-  useListMyOrganizations,
-} from '@/modules/organizations/list-my-organizations'
+import { useListMyOrganizations } from '@/modules/organizations/hooks'
+import { ListOrganizationItem } from '@/modules/organizations/ui'
 
 export function ListOrganizations() {
   const { list } = useListMyOrganizations()

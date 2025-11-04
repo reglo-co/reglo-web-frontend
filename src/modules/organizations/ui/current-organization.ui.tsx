@@ -9,7 +9,7 @@ import {
 } from '@/modules/common/ui/primitives'
 
 import { Item, ItemMedia } from '@/modules/common/ui/primitives'
-import { useOrganizationBySlug } from '@/modules/organizations/current-organization'
+import { useOrganizationBySlug } from '@/modules/organizations/hooks'
 import { usePathname } from 'next/navigation'
 
 export function CurrentOrganization() {

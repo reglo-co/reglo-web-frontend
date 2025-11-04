@@ -1,18 +1,20 @@
-import { userCanAccessOrganizationService } from '@/modules/organizations/access'
+'use client'
+
+import { listMyOrganizationsService } from '@/modules/organizations/services'
 import { useQuery } from '@tanstack/react-query'
 
-export function useUserCanAccessOrganization(slug: string) {
+export function useListMyOrganizations() {
   const response = useQuery({
-    queryKey: ['user-can-access-organization', slug],
+    queryKey: ['list-my-organizations'],
     queryFn: async () => {
-      const result = await userCanAccessOrganizationService(slug!)
+      const result = await listMyOrganizationsService()
       return result
     },
-    enabled: !!slug,
   })
 
   return {
-    userCanAccessOrganization: response.data,
+    list: response.data?.list || [],
+    total: response.data?.total || 0,
     isLoading: response.isLoading,
     isSuccess: response.isSuccess,
     isFetching: response.isFetching,
