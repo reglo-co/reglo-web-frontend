@@ -43,63 +43,63 @@
 }
 
 @utility type-display {
-  @apply text-5xl leading-tight font-semibold tracking-tight md:text-6xl;
+  @apply text-5xl leading-tight md:text-6xl;
 }
 
 @utility type-h1 {
-  @apply text-4xl leading-tight font-semibold tracking-tight md:text-5xl;
+  @apply text-4xl leading-tight md:text-5xl;
 }
 
 @utility type-h2 {
-  @apply text-3xl leading-tight font-semibold tracking-tight md:text-4xl;
+  @apply text-3xl leading-tight md:text-4xl;
 }
 
 @utility type-h3 {
-  @apply text-2xl leading-snug font-medium tracking-normal md:text-3xl;
+  @apply text-2xl leading-snug md:text-3xl;
 }
 
 @utility type-h4 {
-  @apply text-xl leading-snug font-medium tracking-normal md:text-2xl;
+  @apply text-xl leading-snug md:text-2xl;
 }
 
 @utility type-h5 {
-  @apply text-lg leading-snug font-medium tracking-normal md:text-xl;
+  @apply text-lg leading-snug md:text-xl;
 }
 
 @utility type-h6 {
-  @apply text-base leading-snug font-medium tracking-wide md:text-lg;
+  @apply text-base leading-snug md:text-lg;
 }
 
 @utility type-lead {
-  @apply text-lg leading-relaxed font-normal tracking-normal md:text-xl;
+  @apply text-lg leading-relaxed md:text-xl;
 }
 
 @utility type-body {
-  @apply text-base leading-relaxed font-normal tracking-normal;
+  @apply text-base leading-relaxed;
 }
 
 @utility type-body-strong {
-  @apply text-base leading-relaxed font-semibold tracking-normal;
+  @apply text-base leading-relaxed;
 }
 
 @utility type-muted {
-  @apply text-base leading-relaxed font-normal tracking-normal;
+  @apply text-base leading-relaxed;
 }
 
 @utility type-small {
-  @apply text-sm leading-snug font-normal tracking-normal;
+  @apply text-sm leading-snug;
 }
 
 @utility type-micro {
-  @apply text-[12px] leading-snug font-normal tracking-normal;
+  @apply text-[12px] leading-snug;
 }
 
 @utility type-caption {
-  @apply text-xs leading-snug font-normal tracking-wide;
+  @apply text-xs leading-snug;
 }
 
 @utility type-overline {
-  @apply text-xs font-medium tracking-wider uppercase;
+  @apply text-xs tracking-wider uppercase;
 }
 
 @utility type-code {

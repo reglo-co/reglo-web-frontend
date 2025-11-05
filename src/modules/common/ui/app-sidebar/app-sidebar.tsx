@@ -18,11 +18,17 @@ import {
 } from 'lucide-react'
 
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/modules/common/ui/primitives'
+import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
 } from '@/modules/common/ui/primitives/sidebar'
+import { usePathname } from 'next/navigation'
 
 // This is sample data.
 const data = {
@@ -59,7 +65,7 @@ const data = {
   navOrganization: [
     {
       title: 'Projetos',
-      url: '/',
+      url: '/projects',
       icon: SquareTerminal,
     },
     {
@@ -93,6 +99,21 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname()
+  const pathnames = pathname.split('/').filter(Boolean)
+
+  const organizationSlug = pathnames[0]
+  const projectSlug = pathnames[1]
+
+  const hasReservedPathname = ['settings', 'peoples', 'projects'].includes(
+    projectSlug
+  )
+
+  console.log('hasReservedPathname', hasReservedPathname)
+  const isProject = pathnames.length >= 2 && !hasReservedPathname
+
+  console.log(organizationSlug)
+
   return (
     <>
       <Sidebar collapsible="icon" {...props}>
@@ -100,9 +121,35 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <TeamSwitcher />
         </SidebarHeader>
         <SidebarContent>
-          <NavMain title="" items={data.navMain} />
-          <NavMain title="Minha organização" items={data.navOrganization} />
-          <NavMain title="Meu projeto" items={data.navProject} />
+          <NavMain title="" urlPrefix={organizationSlug} items={data.navMain} />
+          <NavMain
+            title="Minha organização"
+            urlPrefix={organizationSlug}
+            items={data.navOrganization}
+          />
+
+          <React.Activity mode={isProject ? 'visible' : 'hidden'}>
+            <NavMain title="Meu projeto" items={data.navProject} />
+          </React.Activity>
+          <React.Activity mode={isProject ? 'hidden' : 'visible'}>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <div>
+                  <div
+                    data-is-project={isProject}
+                    className="data-[is-project=false]:pointer-events-none data-[is-project=false]:opacity-25"
+                  >
+                    <NavMain title="Meu projeto" items={data.navProject} />
+                  </div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p className="type-micro!">
+                  Você precisa selecionar um projeto para acessar este menu
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </React.Activity>
         </SidebarContent>
         <SidebarFooter>
           <NavUser />

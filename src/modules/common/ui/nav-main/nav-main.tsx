@@ -1,12 +1,14 @@
 'use client'
 
 import { ChevronRight, type LucideIcon } from 'lucide-react'
+import Link from 'next/link'
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/modules/common/ui/primitives/collapsible'
+
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -17,13 +19,10 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/modules/common/ui/primitives/sidebar'
-import Link from 'next/link'
 
-export function NavMain({
-  items,
-  title,
-}: {
+type NavMainProps = {
   title: string
+  urlPrefix?: string
   items: {
     title: string
     url: string
@@ -34,7 +33,30 @@ export function NavMain({
       url: string
     }[]
   }[]
-}) {
+}
+
+export function NavMain({ items, title, urlPrefix }: NavMainProps) {
+  const getUrl = (url: string) => {
+    const sanitize = (s: string) => s.replace(/^\/+|\/+$/g, '')
+    const target = sanitize(url)
+
+    if (urlPrefix) {
+      const prefix = sanitize(urlPrefix)
+      if (!target) return `/${prefix}`
+
+      const targetNoPrefix =
+        target === prefix
+          ? ''
+          : target.startsWith(`${prefix}/`)
+            ? target.slice(prefix.length + 1)
+            : target
+
+      return `/${prefix}${targetNoPrefix ? `/${targetNoPrefix}` : ''}`
+    }
+
+    return target ? `/${target}` : '/'
+  }
+
   return (
     <SidebarGroup>
       {title && <SidebarGroupLabel>{title}</SidebarGroupLabel>}
@@ -58,7 +80,7 @@ export function NavMain({
                     {item.items.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title}>
                         <SidebarMenuSubButton asChild>
-                          <Link href={subItem.url}>
+                          <Link href={getUrl(subItem.url)}>
                             <span>{subItem.title}</span>
                           </Link>
                         </SidebarMenuSubButton>
@@ -69,7 +91,7 @@ export function NavMain({
               </Collapsible>
             ) : (
               <SidebarMenuButton asChild tooltip={item.title}>
-                <Link href={item.url}>
+                <Link href={getUrl(item.url)}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                 </Link>

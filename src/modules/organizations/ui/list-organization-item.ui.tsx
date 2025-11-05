@@ -26,7 +26,7 @@ export function ListOrganizationItem({
     <Link href={`/${slug}`}>
       <Item
         variant="outline"
-        className="hover:bg-accent/50 transition-base h-20 cursor-pointer"
+        className="hover:bg-accent/50 bg-accent/20 transition-base h-20 cursor-pointer"
       >
         <ItemMedia>
           <Avatar className="mt-1 size-8">
