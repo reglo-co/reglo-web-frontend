@@ -71,7 +71,7 @@ export function NavMain({ items, title, urlPrefix }: NavMainProps) {
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton tooltip={item.title}>
                     {item.icon && <item.icon />}
-                    <span>{item.title}</span>
+                    <span className="pt-1">{item.title}</span>
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
@@ -93,7 +93,7 @@ export function NavMain({ items, title, urlPrefix }: NavMainProps) {
               <SidebarMenuButton asChild tooltip={item.title}>
                 <Link href={getUrl(item.url)}>
                   {item.icon && <item.icon />}
-                  <span>{item.title}</span>
+                  <span className="pt-1">{item.title}</span>
                 </Link>
               </SidebarMenuButton>
             )}

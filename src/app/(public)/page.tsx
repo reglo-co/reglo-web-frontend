@@ -30,7 +30,7 @@ export default function Home() {
       </header>
       <div className="page-without-header text- flex w-full flex-col items-center justify-center">
         <div className="container-sm flex flex-col items-center justify-center gap-8 md:-mt-(--header-height)">
-          <h1 className="text-gradient text-center text-3xl sm:text-4xl md:text-5xl">
+          <h1 className="text-gradient text-center text-3xl font-bold sm:text-4xl md:text-5xl">
             Gerencie, versione e valide <br /> as regras de negócio do seu time
             com eficiência
           </h1>

@@ -13,7 +13,7 @@ import {
   GalleryVerticalEnd,
   GitBranch,
   Inbox,
-  SquareTerminal,
+  Mailbox,
   Users,
 } from 'lucide-react'
 
@@ -66,7 +66,7 @@ const data = {
     {
       title: 'Projetos',
       url: '/projects',
-      icon: SquareTerminal,
+      icon: Mailbox,
     },
     {
       title: 'Pessoas',
