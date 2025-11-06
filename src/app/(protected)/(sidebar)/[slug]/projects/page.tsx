@@ -197,7 +197,7 @@ export default function Page() {
     <div className="container-lg flex flex-col gap-10 pt-16">
       <div className="flex w-full items-center justify-between">
         <h2 className="type-h3 font-bold tracking-wide">Projetos</h2>
-        <Button size="sm" variant="outline">
+        <Button size="sm" variant="secondary">
           <Plus className="size-3.5" />
           <span className="pt-0.5 text-sm font-medium">Novo projeto</span>
         </Button>

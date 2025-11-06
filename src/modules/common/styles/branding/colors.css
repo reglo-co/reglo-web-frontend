@@ -49,7 +49,7 @@
   /* branding variables */
   --label: #000000;
   --label-hover: #000000;
-  --support: #808080;
+  --support: #909090;
   --input-hover: #f0f0f0;
 
   /* theme switcher */
@@ -121,14 +121,14 @@
 
 [data-theme='ocean'] {
   --ocean-purple: #4f568f;
-  --ocean-blue-darkness: #1e1f2a;
+  --ocean-blue-darkness: #171720;
   --ocean-blue-dark: #30303b;
   --ocean-blue-medium: #444754;
   --ocean-blue-light: #e4e5ee;
   --ocean-blue-lighter: #ffffff;
   --ocean-gray-darkness: #5d5e65;
-  --ocean-gray-dark: #999aa1;
-  --ocean-gray-light: #c4c4c7;
+  --ocean-gray-dark: #8a8b92;
+  --ocean-gray-light: #dbdbdb;
   --ocean-destructive: #ef4444;
   --ocean-success: #a3be8c;
   --ocean-warning: #f2be00;
@@ -181,7 +181,7 @@
   /* branding variables */
   --label: var(--ocean-gray-light);
   --label-hover: var(--ocean-blue-lighter);
-  --support: var(--ocean-gray-darkness);
+  --support: var(--ocean-gray-dark);
   --input-hover: var(--ocean-blue-dark);
 }
 

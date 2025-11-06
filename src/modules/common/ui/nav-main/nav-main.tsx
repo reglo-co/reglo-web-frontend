@@ -2,6 +2,7 @@
 
 import { ChevronRight, type LucideIcon } from 'lucide-react'
 import Link from 'next/link'
+import { PropsWithChildren } from 'react'
 
 import {
   Collapsible,
@@ -33,6 +34,10 @@ type NavMainProps = {
       url: string
     }[]
   }[]
+}
+
+function NavText({ children }: PropsWithChildren) {
+  return <span className="pt-0.5 font-medium tracking-wider">{children}</span>
 }
 
 export function NavMain({ items, title, urlPrefix }: NavMainProps) {
@@ -70,8 +75,8 @@ export function NavMain({ items, title, urlPrefix }: NavMainProps) {
               >
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton tooltip={item.title}>
-                    {item.icon && <item.icon />}
-                    <span className="pt-1">{item.title}</span>
+                    {item.icon && <item.icon className="text-support" />}
+                    <NavText>{item.title}</NavText>
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
@@ -81,7 +86,7 @@ export function NavMain({ items, title, urlPrefix }: NavMainProps) {
                       <SidebarMenuSubItem key={subItem.title}>
                         <SidebarMenuSubButton asChild>
                           <Link href={getUrl(subItem.url)}>
-                            <span>{subItem.title}</span>
+                            <NavText>{subItem.title}</NavText>
                           </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
@@ -92,8 +97,8 @@ export function NavMain({ items, title, urlPrefix }: NavMainProps) {
             ) : (
               <SidebarMenuButton asChild tooltip={item.title}>
                 <Link href={getUrl(item.url)}>
-                  {item.icon && <item.icon />}
-                  <span className="pt-1">{item.title}</span>
+                  {item.icon && <item.icon className="text-support" />}
+                  <NavText>{item.title}</NavText>
                 </Link>
               </SidebarMenuButton>
             )}
