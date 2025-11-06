@@ -1,11 +1,14 @@
 'use client'
 
+import { useModal } from '@/modules/common/stores'
+import { Logo } from '@/modules/common/ui/logo'
+import { useListOrganizationProjects } from '@/modules/projects/hooks'
 import { TableHeaderButton } from '@/modules/projects/ui'
+import { Button } from '@ui/primitives/button'
 import { Mailbox } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import * as React from 'react'
 
-import { useModal } from '@/modules/common/stores'
 import {
   Avatar,
   AvatarFallback,
@@ -16,8 +19,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from '@/modules/common/ui/primitives'
-import { Button } from '@ui/primitives/button'
+
 import {
   Empty,
   EmptyContent,
@@ -25,8 +31,8 @@ import {
   EmptyTitle,
 } from '@ui/primitives/empty'
 
-import { Logo } from '@/modules/common/ui/logo'
-import { useListOrganizationProjects } from '@/modules/projects/hooks'
+import { getAuth0UsersByEmailService } from '@/modules/users/services/get-auth0-users-by-email.service'
+import { useQuery } from '@tanstack/react-query'
 import {
   ColumnDef,
   SortingState,
@@ -50,8 +56,6 @@ type Project = {
   rulesCount: number
 }
 
-const MOCK_PROJECTS: Project[] = []
-
 function getInitials(name: string) {
   const parts = name.trim().split(' ')
   const first = parts.at(0)?.[0] ?? ''
@@ -69,16 +73,50 @@ export function ProjectTableList() {
     { id: 'name', desc: false },
   ])
 
+  const ownerEmails = React.useMemo(
+    () =>
+      Array.from(
+        new Set(
+          (list || [])
+            .map((p: any) => p.ownerEmail as string | undefined)
+            .filter(Boolean) as string[]
+        )
+      ),
+    [list]
+  )
+
+  const { data: users = [] } = useQuery({
+    queryKey: ['auth0-users-by-email', ownerEmails],
+    queryFn: () => getAuth0UsersByEmailService(ownerEmails),
+    enabled: ownerEmails.length > 0,
+  })
+
+  const emailToUser = React.useMemo(() => {
+    const map = new Map<
+      string,
+      { id: string; name: string; avatarUrl?: string }
+    >()
+    for (const u of users) {
+      map.set(u.email, { id: u.email, name: u.name, avatarUrl: u.avatarUrl })
+    }
+    return map
+  }, [users])
+
+  console.log('emailToUser', emailToUser)
+
   const projects = React.useMemo<Project[]>(
     () =>
-      (list || []).map((p) => ({
-        id: p.slug,
-        name: p.name,
-        updatedAt: p.updatedAt,
-        members: [],
-        rulesCount: 0,
-      })),
-    [list]
+      (list || []).map((p: any) => {
+        const owner = emailToUser.get(p.ownerEmail)
+        return {
+          id: p.slug,
+          name: p.name,
+          updatedAt: p.updatedAt,
+          members: owner ? [owner] : [],
+          rulesCount: 0,
+        }
+      }),
+    [list, emailToUser]
   )
 
   if (!isLoading && projects.length === 0) {
@@ -162,23 +200,35 @@ export function ProjectTableList() {
         cell: ({ row }) => {
           const people = row.original.members.slice(0, 3)
           const remaining = Math.max(row.original.members.length - 3, 0)
+          const title = new Intl.ListFormat('pt-BR', {
+            style: 'long',
+            type: 'conjunction',
+          }).format(people.map((person) => person.name))
+
           return (
-            <div className="flex -space-x-2 pl-3">
-              {people.map((person) => (
-                <Avatar
-                  key={person.id}
-                  className="ring-background size-8 ring-2"
-                >
-                  <AvatarImage src={person.avatarUrl} alt={person.name} />
-                  <AvatarFallback>{getInitials(person.name)}</AvatarFallback>
-                </Avatar>
-              ))}
-              {remaining > 0 && (
-                <div className="bg-muted text-foreground ring-background inline-flex size-8 items-center justify-center rounded-full text-xs ring-2">
-                  +{remaining}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex w-fit -space-x-2 pl-3">
+                  {people.slice(0, 3).map((person) => (
+                    <Avatar
+                      key={person.id}
+                      className="ring-background size-6 ring-2"
+                    >
+                      <AvatarImage src={person.avatarUrl} alt={person.name} />
+                      <AvatarFallback>
+                        {getInitials(person.name)}
+                      </AvatarFallback>
+                    </Avatar>
+                  ))}
+                  {remaining > 0 && (
+                    <div className="bg-muted text-foreground ring-background inline-flex size-8 items-center justify-center rounded-full text-xs ring-2">
+                      +{remaining}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">{title}</TooltipContent>
+            </Tooltip>
           )
         },
       },

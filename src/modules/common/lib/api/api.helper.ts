@@ -11,6 +11,7 @@ export type API_ENDPOINTS =
   | `me/organizations/access/${string}`
   | `projects/slug/available/${string}/${string}`
   | `me/projects/availables/${string}`
+  | 'users/by-email'
 
 const prefixUrl = process.env.NEXT_PUBLIC_API_URL
 
