@@ -1,1 +1,1 @@
-export * from './projec-table-list.ui'
+export * from './project-table-list.ui'

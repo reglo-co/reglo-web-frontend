@@ -104,10 +104,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     projectSlug
   )
 
-  console.log('hasReservedPathname', hasReservedPathname)
   const isProject = pathnames.length >= 2 && !hasReservedPathname
-
-  console.log(organizationSlug)
 
   return (
     <>

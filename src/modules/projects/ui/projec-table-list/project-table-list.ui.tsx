@@ -5,6 +5,7 @@ import { Mailbox } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import * as React from 'react'
 
+import { useModal } from '@/modules/common/stores'
 import {
   Avatar,
   AvatarFallback,
@@ -16,7 +17,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/modules/common/ui/primitives'
+import { Button } from '@ui/primitives/button'
+import {
+  Empty,
+  EmptyContent,
+  EmptyHeader,
+  EmptyTitle,
+} from '@ui/primitives/empty'
 
+import { Logo } from '@/modules/common/ui/logo'
+import { useListOrganizationProjects } from '@/modules/projects/hooks'
 import {
   ColumnDef,
   SortingState,
@@ -40,52 +50,7 @@ type Project = {
   rulesCount: number
 }
 
-const MOCK_PROJECTS: Project[] = [
-  {
-    id: 'p-1',
-    name: 'Core API',
-    updatedAt: '2025-10-29',
-    members: [
-      { id: 'u-1', name: 'Ana Silva' },
-      { id: 'u-2', name: 'Bruno Lima' },
-      { id: 'u-3', name: 'Carlos Souza' },
-    ],
-    rulesCount: 128,
-  },
-  {
-    id: 'p-2',
-    name: 'Admin Console',
-    updatedAt: '2025-10-27',
-    members: [
-      { id: 'u-4', name: 'Daniela Rocha' },
-      { id: 'u-5', name: 'Eduardo Alves' },
-      { id: 'u-6', name: 'Fernanda Reis' },
-    ],
-    rulesCount: 86,
-  },
-  {
-    id: 'p-3',
-    name: 'Mobile App',
-    updatedAt: '2025-10-25',
-    members: [
-      { id: 'u-7', name: 'Gustavo Nunes' },
-      { id: 'u-8', name: 'Helena Prado' },
-      { id: 'u-9', name: 'Igor Mendes' },
-      { id: 'u-10', name: 'Joana Dias' },
-    ],
-    rulesCount: 42,
-  },
-  {
-    id: 'p-4',
-    name: 'Data Platform',
-    updatedAt: '2025-10-22',
-    members: [
-      { id: 'u-11', name: 'Karla Moraes' },
-      { id: 'u-12', name: 'Lucas Peixoto' },
-    ],
-    rulesCount: 64,
-  },
-]
+const MOCK_PROJECTS: Project[] = []
 
 function getInitials(name: string) {
   const parts = name.trim().split(' ')
@@ -97,10 +62,48 @@ function getInitials(name: string) {
 export function ProjectTableList() {
   const router = useRouter()
   const params = useParams<{ slug: string }>()
+  const { list, isLoading } = useListOrganizationProjects(params?.slug)
+  const { open } = useModal()
 
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: 'name', desc: false },
   ])
+
+  const projects = React.useMemo<Project[]>(
+    () =>
+      (list || []).map((p) => ({
+        id: p.slug,
+        name: p.name,
+        updatedAt: p.updatedAt,
+        members: [],
+        rulesCount: 0,
+      })),
+    [list]
+  )
+
+  if (!isLoading && projects.length === 0) {
+    return (
+      <Empty className="w-full">
+        <EmptyHeader>
+          <EmptyTitle className="type-h3! text-support">
+            Nenhum projeto por aqui... ainda...
+          </EmptyTitle>
+        </EmptyHeader>
+        <EmptyContent>
+          <div className="flex flex-col items-center gap-6 pt-4">
+            <Button
+              size="lg"
+              onClick={() => open('create-project')}
+              className="group"
+            >
+              <Logo.Symbol className="transition-base size-3.5 duration-500 ease-in-out group-hover:rotate-90" />
+              <span>Criar novo projeto!</span>
+            </Button>
+          </div>
+        </EmptyContent>
+      </Empty>
+    )
+  }
 
   const columns = React.useMemo<ColumnDef<Project>[]>(
     () => [
@@ -192,7 +195,7 @@ export function ProjectTableList() {
   )
 
   const table = useReactTable({
-    data: MOCK_PROJECTS,
+    data: projects,
     columns,
     state: { sorting },
     onSortingChange: setSorting,
@@ -202,7 +205,7 @@ export function ProjectTableList() {
 
   const handleRowClick = (projectId: string) => {
     const slug = params?.slug
-    const href = `/${slug}/projects/${projectId}`
+    const href = `/${slug}/${projectId}`
     router.push(href)
   }
 

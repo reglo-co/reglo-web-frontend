@@ -9,6 +9,8 @@ export type API_ENDPOINTS =
   | 'me/organizations/created'
   | 'me/organizations/availables'
   | `me/organizations/access/${string}`
+  | `projects/slug/available/${string}/${string}`
+  | `me/projects/availables/${string}`
 
 const prefixUrl = process.env.NEXT_PUBLIC_API_URL
 

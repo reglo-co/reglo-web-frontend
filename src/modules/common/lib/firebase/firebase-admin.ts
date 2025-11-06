@@ -12,11 +12,13 @@ function initializeFirebaseAdmin(): Firestore {
       const clientEmail = process.env.FIREBASE_CLIENT_EMAIL
       const privateKey = process.env.FIREBASE_PRIVATE_KEY
 
-      console.log('Environment variables check:', {
-        projectId: projectId ? '✅ Set' : '❌ Missing',
-        clientEmail: clientEmail ? '✅ Set' : '❌ Missing',
-        privateKey: privateKey ? '✅ Set' : '❌ Missing',
-      })
+      console.table([
+        {
+          projectId: projectId ? '✅ Set' : '❌ Missing',
+          clientEmail: clientEmail ? '✅ Set' : '❌ Missing',
+          privateKey: privateKey ? '✅ Set' : '❌ Missing',
+        },
+      ])
 
       if (!projectId || !clientEmail || !privateKey) {
         throw new Error(
