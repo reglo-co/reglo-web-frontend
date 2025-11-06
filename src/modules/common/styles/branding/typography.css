@@ -38,7 +38,7 @@
   }
 
   legend {
-    @apply type-small pb-1 font-medium;
+    @apply type-small pb-2 font-medium;
   }
 }
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { useModal } from '@/modules/common/stores'
-import { Status } from '@/modules/common/ui'
+import { Fieldset, Status } from '@/modules/common/ui'
 import { Logo } from '@/modules/common/ui/logo'
 import { sanitizeSlug } from '@/modules/organizations/helpers'
 import { Activity, useEffect, useMemo, useState } from 'react'
@@ -111,12 +111,10 @@ export function DialogCreateOrganization() {
             <Activity mode={!isSuccess ? 'visible' : 'hidden'}>
               <div className="flex items-center gap-2">
                 <form className="grid flex-1 gap-6">
-                  <fieldset>
-                    <legend>Nome da organização</legend>
+                  <Fieldset title="Nome da organização">
                     <Input {...register('name')} />
-                  </fieldset>
-                  <fieldset>
-                    <legend>URL da organização</legend>
+                  </Fieldset>
+                  <Fieldset title="URL da organização">
                     <div className="relative">
                       <span className="type-small text-support absolute top-1/2 left-3 -translate-y-1/2">
                         reglo.co/
@@ -138,7 +136,7 @@ export function DialogCreateOrganization() {
                         A URL já está em uso. Por favor, tente outra
                       </p>
                     )}
-                  </fieldset>
+                  </Fieldset>
                 </form>
               </div>
             </Activity>

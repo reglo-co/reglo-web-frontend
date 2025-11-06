@@ -1,5 +1,6 @@
 export * from './app-sidebar'
 export * from './external-icons'
+export * from './fieldset'
 export * from './header-console'
 export * from './header-page'
 export * from './logo'
