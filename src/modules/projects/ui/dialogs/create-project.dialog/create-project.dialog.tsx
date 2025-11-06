@@ -1,5 +1,6 @@
 import { useModal } from '@/modules/common/stores'
 import { Fieldset, Logo, Status } from '@/modules/common/ui'
+import { Activity } from 'react'
 
 import {
   Button,
@@ -12,7 +13,6 @@ import {
   DialogTitle,
   Input,
 } from '@/modules/common/ui/primitives'
-import { Activity } from 'react'
 
 export function CreateProjectDialog() {
   const { isOpen, toggle } = useModal()
