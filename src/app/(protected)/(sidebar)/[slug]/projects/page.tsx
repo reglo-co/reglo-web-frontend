@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/modules/common/ui/primitives'
+import { TableHeaderButton } from '@/modules/projects/ui'
 import {
   ColumnDef,
   SortingState,
@@ -107,22 +108,20 @@ export default function Page() {
         accessorKey: 'name',
         header: ({ column }) => {
           const dir = column.getIsSorted()
+
           return (
-            <button
-              className="group inline-flex items-center gap-1 font-medium hover:underline"
+            <TableHeaderButton
               onClick={column.getToggleSortingHandler()}
+              dir={dir}
             >
-              <span>Nome</span>
-              <span className="text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
-                {dir === 'asc' ? '▲' : dir === 'desc' ? '▼' : '↕'}
-              </span>
-            </button>
+              Nome
+            </TableHeaderButton>
           )
         },
         cell: ({ row }) => {
           const project = row.original
           return (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 pl-3">
               <span className="text-muted-foreground inline-flex size-5 items-center justify-center">
                 <Mailbox className="size-4" />
               </span>
@@ -134,22 +133,33 @@ export default function Page() {
       {
         id: 'updatedAt',
         accessorKey: 'updatedAt',
-        header: () => <span>Última atualização</span>,
+        header: ({ column }) => {
+          const dir = column.getIsSorted()
+
+          return (
+            <TableHeaderButton
+              onClick={column.getToggleSortingHandler()}
+              dir={dir}
+            >
+              Última atualização
+            </TableHeaderButton>
+          )
+        },
         cell: ({ getValue }) => {
           const value = String(getValue())
           const date = new Date(value)
           const formatted = date.toLocaleDateString('pt-BR')
-          return <span className="text-muted-foreground">{formatted}</span>
+          return <span className="text-muted-foreground pl-3">{formatted}</span>
         },
       },
       {
         id: 'team',
-        header: () => <span>Equipe</span>,
+        header: () => <TableHeaderButton dir={false}>Equipe</TableHeaderButton>,
         cell: ({ row }) => {
           const people = row.original.members.slice(0, 3)
           const remaining = Math.max(row.original.members.length - 3, 0)
           return (
-            <div className="flex -space-x-2">
+            <div className="flex -space-x-2 pl-3">
               {people.map((person) => (
                 <Avatar
                   key={person.id}
@@ -171,8 +181,10 @@ export default function Page() {
       {
         id: 'rulesCount',
         accessorKey: 'rulesCount',
-        header: () => <span>Regras</span>,
-        cell: ({ getValue }) => <span>{String(getValue())}</span>,
+        header: () => <TableHeaderButton dir={false}>Regras</TableHeaderButton>,
+        cell: ({ getValue }) => (
+          <span className="pl-3">{String(getValue())}</span>
+        ),
       },
     ],
     []
@@ -206,7 +218,7 @@ export default function Page() {
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow hover={false} key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
                 <TableHead key={header.id}>
                   {header.isPlaceholder
