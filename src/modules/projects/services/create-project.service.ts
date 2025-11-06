@@ -15,5 +15,3 @@ export async function createProjectService(
     return Result.failure(new Error(errorMessage))
   }
 }
-
-
