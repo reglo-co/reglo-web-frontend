@@ -107,27 +107,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const isProject = pathnames.length >= 2 && !hasReservedPathname
 
   return (
-    <>
-      <Sidebar collapsible="icon" {...props}>
-        <SidebarHeader className="flex flex-col items-center justify-between gap-2">
-          <TeamSwitcher />
-        </SidebarHeader>
-        <SidebarContent>
-          <NavMain title="" urlPrefix={organizationSlug} items={data.navMain} />
-          <NavMain
-            title="Minha organização"
-            urlPrefix={organizationSlug}
-            items={data.navOrganization}
-          />
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeader className="flex flex-col items-center justify-between gap-2">
+        <TeamSwitcher />
+      </SidebarHeader>
+      <SidebarContent className="pt-4">
+        <NavMain title="" urlPrefix={organizationSlug} items={data.navMain} />
+        <NavMain
+          title="Minha organização"
+          urlPrefix={organizationSlug}
+          items={data.navOrganization}
+        />
 
-          <React.Activity mode={isProject ? 'visible' : 'hidden'}>
-            <NavMain title="Meu projeto" items={data.navProject} />
-          </React.Activity>
-        </SidebarContent>
-        <SidebarFooter>
-          <NavUser />
-        </SidebarFooter>
-      </Sidebar>
-    </>
+        <React.Activity mode={isProject ? 'visible' : 'hidden'}>
+          <NavMain title="Meu projeto" items={data.navProject} />
+        </React.Activity>
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser />
+      </SidebarFooter>
+    </Sidebar>
   )
 }

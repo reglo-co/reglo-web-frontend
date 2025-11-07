@@ -8,7 +8,8 @@
 
   /* shadcn variables */
   --radius: 0.65rem;
-  --background: oklch(1 0 0);
+  --background: oklch(0.99 0 0);
+  --background-muted: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -37,7 +38,7 @@
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
+  --sidebar: oklch(0.99 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
   --sidebar-primary-foreground: oklch(0.985 0 0);
@@ -120,8 +121,9 @@
 }
 
 [data-theme='ocean'] {
-  --ocean-purple: #4f568f;
+  --ocean-purple: #3c3c62;
   --ocean-blue-darkness: #171720;
+  --ocean-blue-darkness-muted: #1c1c26;
   --ocean-blue-dark: #30303b;
   --ocean-blue-medium: #444754;
   --ocean-blue-light: #e4e5ee;
@@ -141,6 +143,7 @@
   --secondary-foreground: var(--ocean-blue-light);
   --foreground: var(--ocean-blue-light);
   --background: var(--ocean-blue-darkness);
+  --background-muted: var(--ocean-blue-darkness-muted);
   --card: var(--ocean-blue-darkness);
   --card-foreground: var(--ocean-blue-light);
   --popover: var(--ocean-blue-dark);
@@ -254,6 +257,7 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
+  --color-background-muted: var(--background-muted);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);

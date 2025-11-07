@@ -24,13 +24,9 @@ import {
   TooltipTrigger,
 } from '@/modules/common/ui/primitives'
 
-import {
-  Empty,
-  EmptyContent,
-  EmptyHeader,
-  EmptyTitle,
-} from '@ui/primitives/empty'
+import { Empty, EmptyContent, EmptyHeader } from '@ui/primitives/empty'
 
+import { ExternalIcons } from '@/modules/common/ui'
 import { getAuth0UsersByEmailService } from '@/modules/users/services/get-auth0-users-by-email.service'
 import { useQuery } from '@tanstack/react-query'
 import {
@@ -41,6 +37,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { useTheme } from 'next-themes'
 
 type Member = {
   id: string
@@ -64,6 +61,7 @@ function getInitials(name: string) {
 }
 
 export function ProjectTableList() {
+  const { theme } = useTheme()
   const router = useRouter()
   const params = useParams<{ slug: string }>()
   const { list, isLoading } = useListOrganizationProjects(params?.slug)
@@ -118,30 +116,6 @@ export function ProjectTableList() {
       }),
     [list, emailToUser]
   )
-
-  if (!isLoading && projects.length === 0) {
-    return (
-      <Empty className="w-full">
-        <EmptyHeader>
-          <EmptyTitle className="type-h3! text-support">
-            Nenhum projeto por aqui... ainda...
-          </EmptyTitle>
-        </EmptyHeader>
-        <EmptyContent>
-          <div className="flex flex-col items-center gap-6 pt-4">
-            <Button
-              size="lg"
-              onClick={() => open('create-project')}
-              className="group"
-            >
-              <Logo.Symbol className="transition-base size-3.5 duration-500 ease-in-out group-hover:rotate-90" />
-              <span>Criar novo projeto!</span>
-            </Button>
-          </div>
-        </EmptyContent>
-      </Empty>
-    )
-  }
 
   const columns = React.useMemo<ColumnDef<Project>[]>(
     () => [
@@ -259,7 +233,25 @@ export function ProjectTableList() {
     router.push(href)
   }
 
-  return (
+  return !isLoading && projects.length === 0 ? (
+    <Empty className="w-full">
+      <EmptyHeader>
+        <ExternalIcons.Empty className="text-support size-46 opacity-40" />
+      </EmptyHeader>
+      <EmptyContent>
+        <div className="flex flex-col items-center gap-6 pt-4">
+          <Button
+            size="lg"
+            onClick={() => open('create-project')}
+            className="group"
+          >
+            <Logo.Symbol className="transition-base size-3.5 duration-500 ease-in-out group-hover:rotate-90" />
+            <span>Criar novo projeto!</span>
+          </Button>
+        </div>
+      </EmptyContent>
+    </Empty>
+  ) : (
     <Table>
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
