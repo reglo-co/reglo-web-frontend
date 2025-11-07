@@ -1,4 +1,4 @@
-import { CreditCard, LogOut, Settings, User } from 'lucide-react'
+import { CreditCard, Home, LogOut, Settings, User } from 'lucide-react'
 import Link from 'next/link'
 
 import { useModal } from '@/modules/common/stores'
@@ -30,6 +30,12 @@ export function NavUserDropdown({ side, align }: NavUserDropdownProps) {
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
+        <Link href="/console">
+          <DropdownMenuItem className="group hover:text-label-hover!">
+            <Home className="group-hover:text-label-hover!" />
+            <span className="type-gap-top-1 leading-none">Inicio</span>
+          </DropdownMenuItem>
+        </Link>
         <DropdownMenuItem className="group hover:text-label-hover!">
           <User className="group-hover:text-label-hover!" />
           <span className="type-gap-top-1 leading-none">Minha conta</span>
