@@ -19,7 +19,7 @@ export default function Page() {
   if (isLoading) {
     return (
       <Container>
-        <div className="flex flex-col gap-12 pt-16">
+        <div className="flex flex-col gap-12">
           <div className="flex w-full justify-between gap-4">
             <Skeleton className="h-10 w-48" />
             <Skeleton className="h-10 w-32" />
@@ -44,7 +44,7 @@ export default function Page() {
   }
 
   return (
-    <Container className="pt-16">
+    <Container>
       <ProjectTableList
         list={list}
         organization={organization}

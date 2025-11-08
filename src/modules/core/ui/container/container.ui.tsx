@@ -10,7 +10,10 @@ export function Container({
     <div className="bg-background h-full w-full rounded-2xl py-2 pr-2">
       <div className="bg-background-muted border-border/50 flex h-full flex-col gap-10 rounded-2xl border">
         <div
-          className={cn('container-lg flex h-full flex-col gap-20', className)}
+          className={cn(
+            'container-lg flex h-full flex-col gap-20 p-10',
+            className
+          )}
         >
           {children}
         </div>

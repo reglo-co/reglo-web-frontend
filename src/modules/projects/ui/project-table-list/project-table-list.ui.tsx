@@ -116,7 +116,7 @@ export function ProjectTableList({
             <TableRow
               key={row.id}
               className="cursor-pointer"
-              onClick={() => handleRowClick(row.original.id)}
+              onClick={() => handleRowClick(row.original.slug)}
             >
               {row.getVisibleCells().map((cell) => (
                 <TableCell key={cell.id}>

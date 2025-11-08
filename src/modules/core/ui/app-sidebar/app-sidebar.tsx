@@ -65,7 +65,7 @@ const data = {
     },
     {
       title: 'Pessoas',
-      url: '/',
+      url: '/people',
       icon: Users,
     },
   ],

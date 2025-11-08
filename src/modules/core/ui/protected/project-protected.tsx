@@ -4,10 +4,12 @@ import { PropsWithChildren } from 'react'
 
 export async function ProjectProtected({
   children,
+  organization,
   project,
-}: PropsWithChildren & { project: string }) {
-  const { list } = await listMyProjectsByOrganizationService(project)
+}: PropsWithChildren & { organization: string; project: string }) {
+  const { list } = await listMyProjectsByOrganizationService(organization)
   const hasProjectAccess = list.some((p) => p.slug === project)
+
   if (!hasProjectAccess) {
     return notFound()
   }
