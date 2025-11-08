@@ -1,5 +1,6 @@
 'use client'
 
+import { env } from '@env'
 import { Component, type ReactNode } from 'react'
 
 interface ErrorBoundaryProps {
@@ -60,7 +61,7 @@ export class ErrorBoundary extends Component<
             <p className="text-muted-foreground">
               Ocorreu um erro inesperado. Por favor, tente novamente.
             </p>
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {env.NEXT_PUBLIC_APP_ENV === 'development' && this.state.error && (
               <details className="bg-muted mt-4 rounded-md p-4 text-left">
                 <summary className="cursor-pointer font-medium">
                   Detalhes do erro (dev)

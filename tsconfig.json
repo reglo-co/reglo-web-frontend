@@ -18,6 +18,7 @@
     "paths": {
       // general
       "@app/*": ["./src/app/*"],
+      "@env": ["./src/env"],
 
       // core
       "@core/*": ["./src/modules/core/*"],

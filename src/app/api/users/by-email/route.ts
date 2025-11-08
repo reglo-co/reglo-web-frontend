@@ -1,4 +1,5 @@
 import { ApiResponse } from '@core/entities'
+import { env } from '@env'
 import { auth0 } from '@lib/auth0'
 
 type Auth0ManagementTokenResponse = {
@@ -26,13 +27,9 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 async function getManagementToken(): Promise<string> {
-  const domain = process.env.AUTH0_DOMAIN
-  const clientId = process.env.AUTH0_API_CLIENT_ID
-  const clientSecret = process.env.AUTH0_API_CLIENT_SECRET
-
-  if (!domain || !clientId || !clientSecret) {
-    throw new Error('Missing Auth0 management credentials')
-  }
+  const domain = env.AUTH0_DOMAIN
+  const clientId = env.AUTH0_API_CLIENT_ID
+  const clientSecret = env.AUTH0_API_CLIENT_SECRET
 
   const response = await fetch(`https://${domain}/oauth/token`, {
     method: 'POST',
@@ -58,8 +55,7 @@ async function getManagementToken(): Promise<string> {
 }
 
 async function fetchUserByEmail(token: string, email: string) {
-  const audience = process.env.AUTH0_API_AUDIENCE
-  if (!audience) throw new Error('Missing AUTH0_DOMAIN')
+  const audience = env.AUTH0_API_AUDIENCE
 
   const url = new URL(`${audience}/users-by-email`)
   url.searchParams.set('email', email)

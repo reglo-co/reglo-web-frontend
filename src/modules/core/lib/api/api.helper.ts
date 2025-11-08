@@ -1,3 +1,4 @@
+import { env } from '@env'
 import type { Options } from 'ky'
 import ky from 'ky'
 
@@ -14,7 +15,7 @@ export type API_ENDPOINTS =
   | `me/projects/availables/${string}`
   | 'users/by-email'
 
-const prefixUrl = process.env.NEXT_PUBLIC_API_URL
+const prefixUrl = env.NEXT_PUBLIC_API_URL
 
 let serverCookieHeaderProvider: (() => Promise<string | undefined>) | null =
   null
