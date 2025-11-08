@@ -1,11 +1,13 @@
 'use client'
 
 import { useModal } from '@core/stores'
-import { Logo } from '@ui/logo'
-import { useListOrganizationProjects } from '@projects/hooks'
+import { WithOrganization } from '@core/types'
+import { Project } from '@projects/types'
 import { TableHeaderButton } from '@projects/ui'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@ui/primitives/button'
-import { Mailbox } from 'lucide-react'
+import { getAuth0UsersByEmailService } from '@users/services/get-auth0-users-by-email.service'
+import { Mailbox, Plus, RefreshCcw, RotateCcw } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import * as React from 'react'
 
@@ -24,11 +26,6 @@ import {
   TooltipTrigger,
 } from '@ui/primitives'
 
-import { Empty, EmptyContent, EmptyHeader } from '@ui/primitives/empty'
-
-import { ExternalIcons } from '@core/ui'
-import { getAuth0UsersByEmailService } from '@users/services/get-auth0-users-by-email.service'
-import { useQuery } from '@tanstack/react-query'
 import {
   ColumnDef,
   SortingState,
@@ -37,7 +34,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { useTheme } from 'next-themes'
 
 type Member = {
   id: string
@@ -45,7 +41,7 @@ type Member = {
   avatarUrl?: string
 }
 
-type Project = {
+type ProjectTable = {
   id: string
   name: string
   updatedAt: string
@@ -60,12 +56,27 @@ function getInitials(name: string) {
   return `${first}${last}`.toUpperCase()
 }
 
-export function ProjectTableList() {
-  const { theme } = useTheme()
+export function ProjectTableList({
+  list,
+  isFetching,
+}: {
+  list: Project[]
+  isFetching: boolean
+}) {
+  const [delayFetching, setDelayFetching] = React.useState(false)
+
+  React.useEffect(() => {
+    if (isFetching) {
+      setTimeout(() => {
+        setDelayFetching(false)
+      }, 1000)
+    }
+  }, [isFetching])
+
+  const params = useParams<WithOrganization>()
   const router = useRouter()
-  const params = useParams<{ slug: string }>()
-  const { list, isLoading } = useListOrganizationProjects(params?.slug)
   const { open } = useModal()
+  const queryClient = useQueryClient()
 
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: 'name', desc: false },
@@ -100,9 +111,7 @@ export function ProjectTableList() {
     return map
   }, [users])
 
-  console.log('emailToUser', emailToUser)
-
-  const projects = React.useMemo<Project[]>(
+  const projects = React.useMemo<ProjectTable[]>(
     () =>
       (list || []).map((p: any) => {
         const owner = emailToUser.get(p.ownerEmail)
@@ -117,7 +126,7 @@ export function ProjectTableList() {
     [list, emailToUser]
   )
 
-  const columns = React.useMemo<ColumnDef<Project>[]>(
+  const columns = React.useMemo<ColumnDef<ProjectTable>[]>(
     () => [
       {
         id: 'name',
@@ -186,7 +195,7 @@ export function ProjectTableList() {
                   {people.slice(0, 3).map((person) => (
                     <Avatar
                       key={person.id}
-                      className="ring-background size-6 ring-2"
+                      className="ring-background size-5 ring-2"
                     >
                       <AvatarImage src={person.avatarUrl} alt={person.name} />
                       <AvatarFallback>
@@ -228,62 +237,78 @@ export function ProjectTableList() {
   })
 
   const handleRowClick = (projectId: string) => {
-    const slug = params?.slug
+    const slug = params?.organization
     const href = `/${slug}/${projectId}`
     router.push(href)
   }
 
-  return !isLoading && projects.length === 0 ? (
-    <Empty className="w-full">
-      <EmptyHeader>
-        <ExternalIcons.Empty className="text-support size-46 opacity-40" />
-      </EmptyHeader>
-      <EmptyContent>
-        <div className="flex flex-col items-center gap-6 pt-4">
+  return (
+    <div className="flex flex-col gap-12">
+      <div className="flex w-full items-center justify-between">
+        <h2 className="type-h3 font-bold tracking-wide">Projetos</h2>
+        <div className="flex items-center gap-2">
           <Button
-            size="lg"
-            onClick={() => open('create-project')}
-            className="group"
+            size="icon"
+            variant="ghost"
+            onClick={() => {
+              setDelayFetching(true)
+              queryClient.invalidateQueries({
+                queryKey: ['list-organization-projects'],
+              })
+            }}
           >
-            <Logo.Symbol className="transition-base size-3.5 duration-500 ease-in-out group-hover:rotate-90" />
-            <span>Criar novo projeto!</span>
+            {isFetching || delayFetching ? (
+              <RefreshCcw className="size-3.5 animate-spin" />
+            ) : (
+              <RotateCcw className="size-3.5" />
+            )}
+          </Button>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => open('create-project')}
+          >
+            <Plus className="size-3.5" />
+            <span className="pt-0.5 text-sm font-medium">Novo projeto</span>
           </Button>
         </div>
-      </EmptyContent>
-    </Empty>
-  ) : (
-    <Table>
-      <TableHeader>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <TableRow hover={false} key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
-              <TableHead key={header.id}>
-                {header.isPlaceholder
-                  ? null
-                  : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-              </TableHead>
-            ))}
-          </TableRow>
-        ))}
-      </TableHeader>
-      <TableBody>
-        {table.getRowModel().rows.map((row) => (
-          <TableRow
-            key={row.id}
-            className="cursor-pointer"
-            onClick={() => handleRowClick(row.original.id)}
-          >
-            {row.getVisibleCells().map((cell) => (
-              <TableCell key={cell.id}>
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </TableCell>
-            ))}
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+      </div>
+      <Table
+        data-fetching={isFetching || delayFetching}
+        className="transition-base data-[fetching=true]:pointer-events-none data-[fetching=true]:opacity-25"
+      >
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow hover={false} key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows.map((row) => (
+            <TableRow
+              key={row.id}
+              className="cursor-pointer"
+              onClick={() => handleRowClick(row.original.id)}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   )
 }

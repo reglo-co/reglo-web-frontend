@@ -33,7 +33,7 @@ export function NavUserDropdown({ side, align }: NavUserDropdownProps) {
         <Link href="/console">
           <DropdownMenuItem className="group hover:text-label-hover!">
             <Home className="group-hover:text-label-hover!" />
-            <span className="type-gap-top-1 leading-none">Inicio</span>
+            <span className="type-gap-top-1 leading-none">Organizações</span>
           </DropdownMenuItem>
         </Link>
         <DropdownMenuItem className="group hover:text-label-hover!">
