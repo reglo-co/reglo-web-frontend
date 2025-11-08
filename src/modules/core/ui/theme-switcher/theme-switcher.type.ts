@@ -1,1 +1,1 @@
-export type Theme = 'light' | 'dark' | 'ocean' | 'nord'
+export type Theme = 'light' | 'dark'

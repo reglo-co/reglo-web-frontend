@@ -1,8 +1,5 @@
-import { NavUserAvatar, NavUserDropdown } from '@core/ui'
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-} from '@ui/primitives'
+import { NavUserAvatar, NavUserDropdown, ThemeSwitcher } from '@core/ui'
+import { DropdownMenu, DropdownMenuTrigger } from '@ui/primitives'
 import { Logo } from '../logo'
 
 export function HeaderConsole() {
@@ -10,7 +7,8 @@ export function HeaderConsole() {
     <header className="header-height z-10 container mx-auto flex items-center justify-between px-6">
       <Logo.Symbol className="size-6" />
 
-      <div data-ui="user-button">
+      <div className="flex items-center gap-4" data-ui="user-button">
+        <ThemeSwitcher />
         <DropdownMenu>
           <DropdownMenuTrigger className="cursor-pointer">
             <NavUserAvatar />

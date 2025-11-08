@@ -46,12 +46,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider
       attribute="data-theme"
-      defaultTheme="light"
+      defaultTheme="dark"
       value={{
         light: 'light',
         dark: 'dark',
-        ocean: 'ocean',
-        nord: 'nord',
       }}
       enableSystem={false}
       disableTransitionOnChange
