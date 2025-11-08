@@ -8,4 +8,16 @@ export interface Project {
   updatedAt: string
 }
 
+export type Member = {
+  id: string
+  name: string
+  avatarUrl?: string
+}
 
+export type ProjectTable = {
+  id: string
+  name: string
+  updatedAt: string
+  members: Member[]
+  rulesCount: number
+}

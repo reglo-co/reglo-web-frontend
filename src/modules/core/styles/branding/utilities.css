@@ -10,6 +10,14 @@
   @apply transition-all duration-200 ease-in-out;
 }
 
+@utility transition-base-medium {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+@utility transition-base-slow {
+  @apply transition-all duration-500 ease-in-out;
+}
+
 @utility scroll-smooth {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;

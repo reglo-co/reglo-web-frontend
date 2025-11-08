@@ -26,10 +26,7 @@ import {
   Input,
 } from '@ui/primitives'
 
-import {
-  useCreateProject,
-  useProjectSlugAvailable,
-} from '@projects/hooks'
+import { useCreateProject, useProjectSlugAvailable } from '@projects/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 
 type FormData = {
@@ -50,7 +47,7 @@ export function CreateProjectDialog() {
     isPending,
     isSuccess,
     reset: resetMutation,
-    data: created,
+    data: createdSlug,
   } = useCreateProject()
 
   const name = watch('name')
@@ -142,7 +139,7 @@ export function CreateProjectDialog() {
                   </div>
                   {status === 'error' && (
                     <p className="type-micro text-destructive w-full pt-2 pr-2 text-right">
-                      A URL já está em uso. Por favor, tente outra
+                      Esta URL já está em uso
                     </p>
                   )}
                 </Fieldset>
@@ -159,9 +156,7 @@ export function CreateProjectDialog() {
                   </EmptyTitle>
                 </EmptyHeader>
                 <EmptyContent className="pt-6 pb-4">
-                  <Link
-                    href={`/${organizationSlug}/projects/${created?.id ?? ''}`}
-                  >
+                  <Link href={`/${organizationSlug}/${createdSlug}`}>
                     <Button onClick={handleClose}>
                       <Logo.Symbol className="size-3.5" />
                       <span>Ir para projeto</span>

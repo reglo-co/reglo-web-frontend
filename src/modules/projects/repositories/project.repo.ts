@@ -38,13 +38,13 @@ export class ProjectRepository {
     const collection = new FirebaseCollection('projects')
 
     try {
-      const result = await collection.create({
+      await collection.create({
         ...project,
         createdAt: new Date().toUTCString(),
         updatedAt: new Date().toUTCString(),
       })
 
-      return result
+      return project.slug
     } catch (error) {
       console.error(`[ProjectRepository.create] ${error}`)
       return false

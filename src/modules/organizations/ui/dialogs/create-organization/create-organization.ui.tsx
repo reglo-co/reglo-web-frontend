@@ -2,8 +2,8 @@
 
 import { useModal } from '@core/stores'
 import { Fieldset, Status } from '@core/ui'
-import { Logo } from '@ui/logo'
 import { sanitizeSlug } from '@organizations/helpers'
+import { Logo } from '@ui/logo'
 import { Activity, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -24,10 +24,7 @@ import {
   Input,
 } from '@ui/primitives'
 
-import {
-  useCreateOrganization,
-  useSlugAvailable,
-} from '@organizations/hooks'
+import { useCreateOrganization, useSlugAvailable } from '@organizations/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import { Check } from 'lucide-react'
 import Link from 'next/link'
@@ -133,7 +130,7 @@ export function DialogCreateOrganization() {
                     </div>
                     {status === 'error' && (
                       <p className="type-micro text-destructive w-full pt-2 pr-2 text-right">
-                        A URL já está em uso. Por favor, tente outra
+                        Esta URL já está em uso
                       </p>
                     )}
                   </Fieldset>
