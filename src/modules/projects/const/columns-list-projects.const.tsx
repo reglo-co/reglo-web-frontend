@@ -1,4 +1,4 @@
-import { getInitials } from '@core/helpers'
+import { getInitials, getTimeAgo } from '@core/helpers'
 import { TableHeaderButton } from '@projects/ui'
 import { ColumnDef } from '@tanstack/react-table'
 import { Mailbox } from 'lucide-react'
@@ -53,8 +53,9 @@ export const COLUMNS_LIST_PROJECTS: ColumnDef<ProjectTable>[] = [
     cell: ({ getValue }) => {
       const value = String(getValue())
       const date = new Date(value)
-      const formatted = date.toLocaleDateString('pt-BR')
-      return <span className="text-muted-foreground pl-3">{formatted}</span>
+      return (
+        <span className="text-muted-foreground pl-3">{getTimeAgo(date)}</span>
+      )
     },
   },
   {

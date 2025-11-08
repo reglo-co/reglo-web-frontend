@@ -38,11 +38,16 @@ export function ProjectTableList({
   isFetching,
   organization,
 }: ProjectTableListProps) {
-  const [sorting, setSorting] = useState<SortingState>([])
   const isFetchingDelayed = useFakeLoading(isFetching)
   const router = useRouter()
   const queryClient = useQueryClient()
   const { open } = useModal()
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: 'updatedAt',
+      desc: false,
+    },
+  ])
 
   const table = useReactTable({
     data: list,
