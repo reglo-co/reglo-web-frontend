@@ -14,10 +14,7 @@ export type Member = {
   avatarUrl?: string
 }
 
-export type ProjectTable = {
-  id: string
-  name: string
-  updatedAt: string
+export type ProjectTable = Project & {
   members: Member[]
   rulesCount: number
 }

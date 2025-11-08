@@ -3,13 +3,12 @@
 import { useFakeLoading } from '@core/hooks/use-fake-loading.hoos'
 import { useModal } from '@core/stores'
 import { COLUMNS_LIST_PROJECTS } from '@projects/const'
-import { Project, ProjectTable } from '@projects/types'
+import { ProjectTable } from '@projects/types'
 import { useQueryClient } from '@tanstack/react-query'
 import { Button } from '@ui/primitives/button'
-import { useUsersByEmail } from '@users/hooks'
 import { Plus, RefreshCcw, RotateCcw } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import * as React from 'react'
+import { useState } from 'react'
 
 import {
   Table,
@@ -29,7 +28,7 @@ import {
 } from '@tanstack/react-table'
 
 type ProjectTableListProps = {
-  list: Project[]
+  list: ProjectTable[]
   isFetching: boolean
   organization: string
 }
@@ -39,32 +38,14 @@ export function ProjectTableList({
   isFetching,
   organization,
 }: ProjectTableListProps) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = useState<SortingState>([])
   const isFetchingDelayed = useFakeLoading(isFetching)
-  const emails = list.map((p) => p.ownerEmail)
   const router = useRouter()
   const queryClient = useQueryClient()
   const { open } = useModal()
-  const { users } = useUsersByEmail(emails)
-
-  const projects = React.useMemo<ProjectTable[]>(
-    () =>
-      list.map((p) => {
-        return {
-          ...p,
-          rulesCount: 0,
-          members: users.map((m) => ({
-            id: m.email,
-            name: m.name,
-            avatarUrl: m.avatarUrl,
-          })),
-        }
-      }),
-    [list, users]
-  )
 
   const table = useReactTable({
-    data: projects,
+    data: list,
     columns: COLUMNS_LIST_PROJECTS,
     state: { sorting },
     onSortingChange: setSorting,

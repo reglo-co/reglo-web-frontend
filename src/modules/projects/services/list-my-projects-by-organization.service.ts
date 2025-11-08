@@ -1,8 +1,8 @@
 import { api } from '@lib/api'
-import type { Project } from '@projects/types'
+import type { ProjectTable } from '@projects/types'
 
 type ListMyProjectsByOrganizationResponse = {
-  list: Project[]
+  list: ProjectTable[]
   total: number
 }
 
