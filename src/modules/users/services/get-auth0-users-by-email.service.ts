@@ -1,4 +1,4 @@
-import { api } from '@/modules/common/lib/api'
+import { api } from '@lib/api'
 
 export type Auth0UserLite = {
   email: string

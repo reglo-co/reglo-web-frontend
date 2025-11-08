@@ -1,9 +1,9 @@
 'use client'
 
-import { useModal } from '@/modules/common/stores'
-import { Button } from '@/modules/common/ui/primitives'
-import { ProjectTableList } from '@/modules/projects/ui'
-import { CreateProjectDialog } from '@/modules/projects/ui/dialogs'
+import { useModal } from '@core/stores'
+import { Button } from '@ui/primitives'
+import { ProjectTableList } from '@projects/ui'
+import { CreateProjectDialog } from '@projects/ui/dialogs'
 import { Plus } from 'lucide-react'
 
 export default function Page() {

@@ -1,5 +1,5 @@
-import { ApiResponse } from '@/modules/common/entities'
-import { ProjectRepository } from '@/modules/projects/repositories'
+import { ApiResponse } from '@core/entities'
+import { ProjectRepository } from '@projects/repositories'
 import { auth0 } from '@lib/auth0'
 
 const handler = auth0.withApiAuthRequired(async function handler(

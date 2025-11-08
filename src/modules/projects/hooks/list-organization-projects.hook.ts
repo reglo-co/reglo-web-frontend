@@ -1,6 +1,6 @@
 'use client'
 
-import { listMyProjectsByOrganizationService } from '@/modules/projects/services'
+import { listMyProjectsByOrganizationService } from '@projects/services'
 import { useQuery } from '@tanstack/react-query'
 
 export function useListOrganizationProjects(organizationSlug: string) {

@@ -1,6 +1,6 @@
-import { Result } from '@/modules/common/entities'
-import { api } from '@/modules/common/lib/api'
-import type { Organization } from '@/modules/organizations/types'
+import { Result } from '@core/entities'
+import { api } from '@lib/api'
+import type { Organization } from '@organizations/types'
 
 export async function createOrganizationService(
   organization: Pick<Organization, 'name' | 'slug'>

@@ -1,5 +1,5 @@
-import { ApiResponse } from '@/modules/common/entities'
-import { ProjectRepository } from '@/modules/projects/repositories'
+import { ApiResponse } from '@core/entities'
+import { ProjectRepository } from '@projects/repositories'
 
 export async function GET(
   _req: Request,

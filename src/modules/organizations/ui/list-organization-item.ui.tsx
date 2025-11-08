@@ -1,4 +1,4 @@
-import { ItemContent, ItemDescription } from '@/modules/common/ui/primitives'
+import { ItemContent, ItemDescription } from '@ui/primitives'
 import Link from 'next/link'
 
 import {
@@ -8,7 +8,7 @@ import {
   Item,
   ItemMedia,
   ItemTitle,
-} from '@/modules/common/ui/primitives'
+} from '@ui/primitives'
 
 type ListOrganizationItemProps = {
   name: string

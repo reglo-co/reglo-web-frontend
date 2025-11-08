@@ -1,9 +1,9 @@
 'use client'
 
-import { useModal } from '@/modules/common/stores'
-import { Fieldset, Logo, Status } from '@/modules/common/ui'
-import { sanitizeSlug } from '@/modules/organizations/helpers'
-import { useCurrentOrganization } from '@/modules/organizations/hooks/use-current-organization'
+import { useModal } from '@core/stores'
+import { Fieldset, Logo, Status } from '@core/ui'
+import { sanitizeSlug } from '@organizations/helpers'
+import { useCurrentOrganization } from '@organizations/hooks/use-current-organization'
 import { Check } from 'lucide-react'
 import Link from 'next/link'
 import { Activity, useEffect, useMemo, useState } from 'react'
@@ -24,12 +24,12 @@ import {
   EmptyMedia,
   EmptyTitle,
   Input,
-} from '@/modules/common/ui/primitives'
+} from '@ui/primitives'
 
 import {
   useCreateProject,
   useProjectSlugAvailable,
-} from '@/modules/projects/hooks'
+} from '@projects/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 
 type FormData = {

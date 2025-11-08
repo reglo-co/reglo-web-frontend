@@ -1,6 +1,6 @@
-import { Result } from '@/modules/common/entities'
-import { api } from '@/modules/common/lib/api'
-import { Organization } from '@/modules/organizations/types'
+import { Result } from '@core/entities'
+import { api } from '@lib/api'
+import { Organization } from '@organizations/types'
 
 export async function getOrganizationBySlugService(
   slug: string

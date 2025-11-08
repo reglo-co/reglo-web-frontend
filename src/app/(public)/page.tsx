@@ -1,8 +1,8 @@
 'use client'
 
-import { Particles } from '@/components/ui/shadcn-io/particles'
-import { Logo } from '@/modules/common/ui'
-import { Badge, Button } from '@/modules/common/ui/primitives'
+import { Particles } from '@ui/shadcn-io/particles'
+import { Logo } from '@core/ui'
+import { Badge, Button } from '@ui/primitives'
 import { CircleQuestionMark } from 'lucide-react'
 import Link from 'next/link'
 

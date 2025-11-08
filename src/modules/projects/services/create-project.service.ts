@@ -1,6 +1,6 @@
-import { Result } from '@/modules/common/entities'
-import { api } from '@/modules/common/lib/api'
-import type { Project } from '@/modules/projects/types'
+import { Result } from '@core/entities'
+import { api } from '@lib/api'
+import type { Project } from '@projects/types'
 
 export async function createProjectService(
   project: Pick<Project, 'name' | 'slug' | 'organizationSlug'>

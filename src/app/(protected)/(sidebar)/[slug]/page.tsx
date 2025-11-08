@@ -1,4 +1,4 @@
-import { PropsWithParams } from '@/modules/common/types/common.types'
+import { PropsWithParams } from '@core/types'
 import { userCanAccessOrganizationService } from '@organizations'
 import { notFound } from 'next/navigation'
 import { Fragment } from 'react'

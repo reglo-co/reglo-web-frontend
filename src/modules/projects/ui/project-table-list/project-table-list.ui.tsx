@@ -1,9 +1,9 @@
 'use client'
 
-import { useModal } from '@/modules/common/stores'
-import { Logo } from '@/modules/common/ui/logo'
-import { useListOrganizationProjects } from '@/modules/projects/hooks'
-import { TableHeaderButton } from '@/modules/projects/ui'
+import { useModal } from '@core/stores'
+import { Logo } from '@ui/logo'
+import { useListOrganizationProjects } from '@projects/hooks'
+import { TableHeaderButton } from '@projects/ui'
 import { Button } from '@ui/primitives/button'
 import { Mailbox } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
@@ -22,12 +22,12 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/modules/common/ui/primitives'
+} from '@ui/primitives'
 
 import { Empty, EmptyContent, EmptyHeader } from '@ui/primitives/empty'
 
-import { ExternalIcons } from '@/modules/common/ui'
-import { getAuth0UsersByEmailService } from '@/modules/users/services/get-auth0-users-by-email.service'
+import { ExternalIcons } from '@core/ui'
+import { getAuth0UsersByEmailService } from '@users/services/get-auth0-users-by-email.service'
 import { useQuery } from '@tanstack/react-query'
 import {
   ColumnDef,

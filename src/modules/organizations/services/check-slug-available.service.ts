@@ -1,5 +1,5 @@
-import { Result } from '@/modules/common/entities'
-import { api } from '@/modules/common/lib/api'
+import { Result } from '@core/entities'
+import { api } from '@lib/api'
 
 export async function checkSlugAvailableService(
   slug: string

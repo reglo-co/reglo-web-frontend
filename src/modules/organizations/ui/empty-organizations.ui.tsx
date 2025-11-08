@@ -1,6 +1,6 @@
 'use client'
 
-import { useModal } from '@/modules/common/stores'
+import { useModal } from '@core/stores'
 import { ExternalIcons, ThemeSwitcher } from '@ui/index'
 import { Logo } from '@ui/logo'
 import { Button } from '@ui/primitives/button'

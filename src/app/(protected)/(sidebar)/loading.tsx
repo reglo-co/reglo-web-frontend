@@ -1,4 +1,4 @@
-import { PageLoading } from '@/modules/common/ui'
+import { PageLoading } from '@core/ui'
 
 export default function Loading() {
   return <PageLoading />

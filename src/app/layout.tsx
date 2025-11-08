@@ -1,4 +1,4 @@
-import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { ErrorBoundary } from '@ui/components/ErrorBoundary'
 import { Auth0Provider } from '@auth0/nextjs-auth0'
 import { Providers } from '@providers/index'
 import '@styles/globals.css'

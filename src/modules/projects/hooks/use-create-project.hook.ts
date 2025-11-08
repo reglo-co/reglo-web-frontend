@@ -1,7 +1,7 @@
 'use client'
 
-import { Project } from '@/modules/projects/types'
-import { createProjectService } from '@/modules/projects/services'
+import { Project } from '@projects/types'
+import { createProjectService } from '@projects/services'
 import { useMutation } from '@tanstack/react-query'
 
 export function useCreateProject() {

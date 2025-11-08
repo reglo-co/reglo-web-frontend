@@ -1,5 +1,5 @@
-import { FirebaseCollection } from '@/modules/common/lib/firebase'
-import { Project } from '@/modules/projects/types'
+import { FirebaseCollection } from '@lib/firebase'
+import { Project } from '@projects/types'
 
 type MeAvailablesParams = {
   organizationSlug: string

@@ -1,4 +1,4 @@
-import { ApiResponse } from '@/modules/common/entities'
+import { ApiResponse } from '@core/entities'
 import { auth0 } from '@lib/auth0'
 
 type Auth0ManagementTokenResponse = {

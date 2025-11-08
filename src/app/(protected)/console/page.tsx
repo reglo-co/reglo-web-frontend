@@ -3,7 +3,7 @@
 import { HeaderConsole } from '@ui/index'
 import { Activity, Fragment } from 'react'
 
-import { Skeleton } from '@/modules/common/ui/primitives'
+import { Skeleton } from '@ui/primitives'
 import {
   EmptyOrganizations,
   ListOrganizations,

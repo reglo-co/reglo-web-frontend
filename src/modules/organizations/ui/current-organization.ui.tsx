@@ -1,15 +1,15 @@
 'use client'
 
-import { Logo } from '@/modules/common/ui'
+import { Logo } from '@core/ui'
 import {
   Badge,
   ItemActions,
   ItemContent,
   ItemTitle,
-} from '@/modules/common/ui/primitives'
+} from '@ui/primitives'
 
-import { Item, ItemMedia } from '@/modules/common/ui/primitives'
-import { useOrganizationBySlug } from '@/modules/organizations/hooks'
+import { Item, ItemMedia } from '@ui/primitives'
+import { useOrganizationBySlug } from '@organizations/hooks'
 import { usePathname } from 'next/navigation'
 
 export function CurrentOrganization() {

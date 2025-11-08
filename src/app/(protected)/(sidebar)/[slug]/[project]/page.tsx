@@ -1,5 +1,5 @@
-import { PropsWithParams } from '@/modules/common/types/common.types'
-import { listMyProjectsByOrganizationService } from '@/modules/projects/services'
+import { PropsWithParams } from '@core/types'
+import { listMyProjectsByOrganizationService } from '@projects/services'
 import { userCanAccessOrganizationService } from '@organizations'
 import { notFound } from 'next/navigation'
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { listMyOrganizationsService } from '@/modules/organizations/services'
+import { listMyOrganizationsService } from '@organizations/services'
 import { useQuery } from '@tanstack/react-query'
 
 export function useListMyOrganizations() {

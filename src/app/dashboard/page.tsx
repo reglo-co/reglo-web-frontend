@@ -1,4 +1,4 @@
-import { AppSidebar } from '@/modules/common/ui/app-sidebar/app-sidebar'
+import { AppSidebar } from '@ui/app-sidebar/app-sidebar'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,13 +6,13 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/modules/common/ui/primitives/breadcrumb'
-import { Separator } from '@/modules/common/ui/primitives/separator'
+} from '@ui/primitives/breadcrumb'
+import { Separator } from '@ui/primitives/separator'
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from '@/modules/common/ui/primitives/sidebar'
+} from '@ui/primitives/sidebar'
 
 export default function Page() {
   return (

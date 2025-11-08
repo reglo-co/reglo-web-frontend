@@ -1,7 +1,7 @@
 'use client'
 
-import { useDebounce } from '@/modules/common/hooks/use-debounce'
-import { checkSlugAvailableService } from '@/modules/organizations/services'
+import { useDebounce } from '@hooks/use-debounce'
+import { checkSlugAvailableService } from '@organizations/services'
 import { useQuery } from '@tanstack/react-query'
 
 export function useSlugAvailable(slug: string) {

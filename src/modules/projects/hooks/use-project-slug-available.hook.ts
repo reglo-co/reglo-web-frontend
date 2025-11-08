@@ -1,6 +1,6 @@
 'use client'
 
-import { checkProjectSlugAvailableService } from '@/modules/projects/services'
+import { checkProjectSlugAvailableService } from '@projects/services'
 import { useQuery } from '@tanstack/react-query'
 
 export function useProjectSlugAvailable(

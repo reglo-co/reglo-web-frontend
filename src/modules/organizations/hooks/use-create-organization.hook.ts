@@ -1,7 +1,7 @@
 'use client'
 
-import { Organization } from '@/modules/organizations/types'
-import { createOrganizationService } from '@/modules/organizations/services'
+import { Organization } from '@organizations/types'
+import { createOrganizationService } from '@organizations/services'
 import { useMutation } from '@tanstack/react-query'
 
 export function useCreateOrganization() {

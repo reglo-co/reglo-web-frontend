@@ -1,7 +1,7 @@
 'use client'
 
-import { Logo } from '@/modules/common/ui'
-import { Button } from '@/modules/common/ui/primitives/button'
+import { Logo } from '@core/ui'
+import { Button } from '@ui/primitives/button'
 import { ArrowLeft, Coffee, Home } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'

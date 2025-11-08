@@ -17,19 +17,28 @@
     "baseUrl": ".",
     "paths": {
       // general
-      "@/*": ["./src/*"],
-      // common
-      "@entities/*": ["./src/modules/entities/*"],
-      "@hooks/*": ["./src/modules/common/hooks/*"],
-      "@lib/*": ["./src/modules/common/lib/*"],
-      "@providers/*": ["./src/modules/common/providers/*"],
-      "@stores/*": ["./src/modules/common/stores/*"],
-      "@styles/*": ["./src/modules/common/styles/*"],
+      "@app/*": ["./src/app/*"],
+
+      // core
+      "@core/*": ["./src/modules/core/*"],
+      "@entities/*": ["./src/modules/core/entities/*"],
+      "@hooks/*": ["./src/modules/core/hooks/*"],
+      "@lib/*": ["./src/modules/core/lib/*"],
+      "@providers/*": ["./src/modules/core/providers/*"],
+      "@stores/*": ["./src/modules/core/stores/*"],
+      "@styles/*": ["./src/modules/core/styles/*"],
       "@types/*": ["./src/types/*"],
-      "@ui/*": ["./src/modules/common/ui/*"],
+      "@ui/*": ["./src/modules/core/ui/*"],
+
       // modules
       "@organizations": ["./src/modules/organizations/index"],
-      "@organizations/*": ["./src/modules/organizations/*"]
+      "@organizations/*": ["./src/modules/organizations/*"],
+      "@plans": ["./src/modules/plans/index"],
+      "@plans/*": ["./src/modules/plans/*"],
+      "@projects": ["./src/modules/projects/index"],
+      "@projects/*": ["./src/modules/projects/*"],
+      "@users": ["./src/modules/users/index"],
+      "@users/*": ["./src/modules/users/*"]
     },
     "plugins": [
       {

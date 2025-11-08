@@ -1,10 +1,10 @@
-import { AppSidebar } from '@/modules/common/ui/app-sidebar/app-sidebar'
+import { AppSidebar } from '@ui/app-sidebar/app-sidebar'
 import { PropsWithChildren } from 'react'
 
 import {
   SidebarInset,
   SidebarProvider,
-} from '@/modules/common/ui/primitives/sidebar'
+} from '@ui/primitives/sidebar'
 
 export default function Page({ children }: PropsWithChildren) {
   return (

@@ -1,6 +1,6 @@
 'use client'
 
-import { useOrganizationBySlug } from '@/modules/organizations/hooks/use-organization-by-slug.hook'
+import { useOrganizationBySlug } from '@organizations/hooks/use-organization-by-slug.hook'
 import { usePathname } from 'next/navigation'
 
 export function useCurrentOrganization() {

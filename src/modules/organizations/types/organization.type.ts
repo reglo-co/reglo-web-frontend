@@ -1,4 +1,4 @@
-import { PlanNames } from '@/modules/plans/types'
+import { PlanNames } from '@plans/types'
 
 export interface Organization {
   id: string

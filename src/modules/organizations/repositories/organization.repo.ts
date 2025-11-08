@@ -1,5 +1,5 @@
-import { FirebaseCollection } from '@/modules/common/lib/firebase'
-import { Organization } from '@/modules/organizations/types'
+import { FirebaseCollection } from '@lib/firebase'
+import { Organization } from '@organizations/types'
 
 type MeAllParams = {
   ownerEmail: string

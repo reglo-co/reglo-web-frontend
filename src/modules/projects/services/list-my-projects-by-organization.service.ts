@@ -1,5 +1,5 @@
-import { api } from '@/modules/common/lib/api'
-import type { Project } from '@/modules/projects/types'
+import { api } from '@lib/api'
+import type { Project } from '@projects/types'
 
 type ListMyProjectsByOrganizationResponse = {
   list: Project[]

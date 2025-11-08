@@ -1,9 +1,9 @@
 'use client'
 
-import { useModal } from '@/modules/common/stores'
-import { Fieldset, Status } from '@/modules/common/ui'
-import { Logo } from '@/modules/common/ui/logo'
-import { sanitizeSlug } from '@/modules/organizations/helpers'
+import { useModal } from '@core/stores'
+import { Fieldset, Status } from '@core/ui'
+import { Logo } from '@ui/logo'
+import { sanitizeSlug } from '@organizations/helpers'
 import { Activity, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -22,12 +22,12 @@ import {
   EmptyMedia,
   EmptyTitle,
   Input,
-} from '@/modules/common/ui/primitives'
+} from '@ui/primitives'
 
 import {
   useCreateOrganization,
   useSlugAvailable,
-} from '@/modules/organizations/hooks'
+} from '@organizations/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 import { Check } from 'lucide-react'
 import Link from 'next/link'

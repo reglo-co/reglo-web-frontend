@@ -1,4 +1,4 @@
-import { api } from '@/modules/common/lib/api'
+import { api } from '@lib/api'
 
 type HasAccessResponse = {
   hasAccess: boolean
