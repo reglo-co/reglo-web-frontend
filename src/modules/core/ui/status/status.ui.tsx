@@ -20,7 +20,7 @@ export function Status({
         <div className="bg-destructive size-2.5 rounded-full" />
       )}
       {status === 'neutral' && (
-        <div className="size-2.5 rounded-full bg-gray-300" />
+        <div className="bg-foreground/30 size-2.5 rounded-full" />
       )}
     </div>
   )

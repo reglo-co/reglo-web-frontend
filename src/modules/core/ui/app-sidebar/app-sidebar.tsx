@@ -3,6 +3,7 @@
 import { NavMain } from '@ui/nav-main/nav-main'
 import { NavUser } from '@ui/nav-user/nav-user'
 import { TeamSwitcher } from '@ui/team-switcher/team-switcher'
+import { usePathname } from 'next/navigation'
 import * as React from 'react'
 
 import {
@@ -23,7 +24,6 @@ import {
   SidebarFooter,
   SidebarHeader,
 } from '@ui/primitives/sidebar'
-import { usePathname } from 'next/navigation'
 
 // This is sample data.
 const data = {
