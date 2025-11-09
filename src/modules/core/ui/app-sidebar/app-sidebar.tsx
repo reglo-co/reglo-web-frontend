@@ -1,8 +1,5 @@
 'use client'
 
-import { NavMain } from '@ui/nav-main/nav-main'
-import { NavUser } from '@ui/nav-user/nav-user'
-import { TeamSwitcher } from '@ui/team-switcher/team-switcher'
 import { usePathname } from 'next/navigation'
 import * as React from 'react'
 
@@ -18,12 +15,15 @@ import {
   Users,
 } from 'lucide-react'
 
+import { NavMain } from '@ui/nav-main/nav-main'
+import { NavUser } from '@ui/nav-user/nav-user'
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
 } from '@ui/primitives/sidebar'
+import { TeamSwitcher } from '@ui/team-switcher/team-switcher'
 
 // This is sample data.
 const data = {
@@ -93,7 +93,10 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  side,
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname()
   const pathnames = pathname.split('/').filter(Boolean)
 
@@ -107,7 +110,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const isProject = pathnames.length >= 2 && !hasReservedPathname
 
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="icon" side={side} {...props}>
       <SidebarHeader className="flex flex-col items-center justify-between gap-2">
         <TeamSwitcher />
       </SidebarHeader>
