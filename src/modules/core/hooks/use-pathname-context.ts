@@ -1,11 +1,22 @@
 'use client'
 import { usePathname } from 'next/navigation'
 
-export function usePathnameContext() {
-  const pathname = usePathname()
-  const pathnames = pathname.split('/').filter(Boolean)
-  const organization = pathnames[0]
-  const project = pathnames[1]
+const ORGANIZATION_SEGMENT_INDEX = 0
+const PROJECT_SEGMENT_INDEX = 1
 
-  return { organization, project }
+function extractPathSegments(pathname: string): string[] {
+  return pathname.split('/').filter(Boolean)
+}
+
+export function usePathnameContext() {
+  const currentPathname = usePathname()
+  const pathSegments = extractPathSegments(currentPathname)
+  
+  const organizationSlug = pathSegments[ORGANIZATION_SEGMENT_INDEX]
+  const projectSlug = pathSegments[PROJECT_SEGMENT_INDEX]
+
+  return { 
+    organization: organizationSlug, 
+    project: projectSlug 
+  }
 }

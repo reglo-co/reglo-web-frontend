@@ -37,14 +37,14 @@ const handler = auth0.withApiAuthRequired(async function handler(
   }
 
   const orgRepo = new OrganizationRepository()
-  const canAccessOrg = await orgRepo.me.hasAccess(organizationSlug, userEmail)
+  const canAccessOrg = await orgRepo.me.userHasAccessToOrganization(organizationSlug, userEmail)
 
   if (!canAccessOrg) {
     return ApiResponse.forbidden('Forbidden')
   }
 
   const projectRepo = new ProjectRepository()
-  const project = await projectRepo.oneBySlug(organizationSlug, projectSlug)
+  const project = await projectRepo.findOneBySlug(organizationSlug, projectSlug)
   if (!project) {
     return ApiResponse.notFound('Project not found')
   }
@@ -52,7 +52,7 @@ const handler = auth0.withApiAuthRequired(async function handler(
   const membersRepo = new ProjectMemberRepository()
 
   if (request.method === 'GET') {
-    const members = await membersRepo.byProject(organizationSlug, projectSlug)
+    const members = await membersRepo.findByProject(organizationSlug, projectSlug)
     const list = [
       {
         id: project.ownerEmail,

@@ -1,11 +1,15 @@
 import { FirebaseCollection } from '@lib/firebase'
-import { UpdateRecord, UpdateType } from '@updates/types/update.type'
+import { UpdateRecord } from '@updates/types/update.type'
+import { COLLECTION_NAMES } from '@repositories/repository.constants'
+import { getCurrentTimestamp } from '@repositories/repository.utils'
+
+const DEFAULT_LIMIT = 50
 
 export class UpdatesRepository {
   private readonly collection: FirebaseCollection
 
   constructor() {
-    this.collection = new FirebaseCollection('updates')
+    this.collection = new FirebaseCollection(COLLECTION_NAMES.UPDATES)
   }
 
   public async create(
@@ -13,12 +17,15 @@ export class UpdatesRepository {
   ): Promise<string> {
     const id = await this.collection.create({
       ...data,
-      createdAt: new Date().toUTCString(),
+      createdAt: getCurrentTimestamp(),
     })
     return id
   }
 
-  public async listByOrganizationSlug(orgSlug: string, limit = 50) {
+  public async findByOrganizationSlug(
+    orgSlug: string, 
+    limit: number = DEFAULT_LIMIT
+  ): Promise<UpdateRecord[]> {
     const result = await this.collection.query
       .equal('orgSlug', orgSlug)
       .limit(limit)
@@ -26,5 +33,4 @@ export class UpdatesRepository {
     return result as UpdateRecord[]
   }
 }
-
 

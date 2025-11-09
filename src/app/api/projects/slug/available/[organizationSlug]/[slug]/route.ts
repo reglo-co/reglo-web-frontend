@@ -23,7 +23,7 @@ export async function GET(
 
   try {
     const repository = new ProjectRepository()
-    const isAvailable = await repository.slugAvailable(slug, organizationSlug)
+    const isAvailable = await repository.isSlugAvailable(slug, organizationSlug)
     return ApiResponse.ok({ isAvailable })
   } catch (error) {
     if (error instanceof Error) {

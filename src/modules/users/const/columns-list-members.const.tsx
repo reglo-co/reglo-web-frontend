@@ -1,5 +1,5 @@
 import { useUser } from '@auth0/nextjs-auth0'
-import { getInitials, getTimeAgo } from '@core/helpers'
+import { extractInitialsFromName, formatRelativeTime } from '@core/helpers'
 import {
   Avatar,
   AvatarFallback,
@@ -53,7 +53,7 @@ export const COLUMNS_LIST_MEMBERS = (
               alt={member.name}
             />
             <AvatarFallback>
-              {getInitials(member.name || member.email)}
+              {extractInitialsFromName(member.name || member.email)}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
@@ -114,7 +114,7 @@ export const COLUMNS_LIST_MEMBERS = (
         <Tooltip>
           <TooltipTrigger asChild>
             <span className="text-muted-foreground pl-3">
-              {getTimeAgo(date)}
+              {formatRelativeTime(date)}
             </span>
           </TooltipTrigger>
           <TooltipContent side="bottom">

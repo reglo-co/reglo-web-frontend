@@ -20,7 +20,7 @@ const handler = auth0.withApiAuthRequired(async function handler(
   const repository = new OrganizationRepository()
 
   try {
-    const result = await repository.getOwnerEmail(slug)
+    const result = await repository.findOwnerEmail(slug)
     if (!result) {
       return ApiResponse.notFound('Organization not found')
     }

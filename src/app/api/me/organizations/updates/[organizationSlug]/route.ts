@@ -26,14 +26,14 @@ const handler = auth0.withApiAuthRequired(async function handler(
   }
 
   const orgRepo = new OrganizationRepository()
-  const canAccess = await orgRepo.me.hasAccess(organizationSlug, userEmail)
+  const canAccess = await orgRepo.me.userHasAccessToOrganization(organizationSlug, userEmail)
   if (!canAccess) {
     return ApiResponse.forbidden('Forbidden')
   }
 
   try {
     const repo = new UpdatesRepository()
-    const list = await repo.listByOrganizationSlug(organizationSlug, 50)
+    const list = await repo.findByOrganizationSlug(organizationSlug, 50)
     return ApiResponse.ok(list)
   } catch (error) {
     if (error instanceof Error) {

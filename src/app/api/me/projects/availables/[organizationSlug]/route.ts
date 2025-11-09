@@ -40,7 +40,7 @@ const handler = auth0.withApiAuthRequired(async function handler(
     const emailsSet = new Set<string>()
     for (const project of list) {
       if (project.ownerEmail) emailsSet.add(project.ownerEmail.toLowerCase())
-      const projectMembers = await membersRepo.byProject(
+      const projectMembers = await membersRepo.findByProject(
         organizationSlug,
         project.slug
       )
@@ -55,7 +55,7 @@ const handler = auth0.withApiAuthRequired(async function handler(
 
     const projects: ProjectTable[] = []
     for (const project of list) {
-      const projectMembers = await membersRepo.byProject(
+      const projectMembers = await membersRepo.findByProject(
         organizationSlug,
         project.slug
       )

@@ -20,7 +20,7 @@ const handler = auth0.withApiAuthRequired(async function handler(
   const repository = new OrganizationRepository()
 
   try {
-    const result = await repository.oneBySlug(slug)
+    const result = await repository.findOneBySlug(slug)
     return ApiResponse.ok(result)
   } catch (error) {
     return ApiResponse.internalServerError(

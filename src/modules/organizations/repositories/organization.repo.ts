@@ -1,139 +1,144 @@
 import { FirebaseCollection } from '@lib/firebase'
 import { Organization } from '@organizations/types'
 import { MemberRepository } from '@users/repositories/member.repo'
+import { COLLECTION_NAMES, ROLE } from '@repositories/repository.constants'
+import { getCurrentTimestamp, normalizeEmail } from '@repositories/repository.utils'
 
 export type OrganizationMemberRecord = {
   email: string
-  role: 'owner' | 'member'
+  role: typeof ROLE.OWNER | typeof ROLE.MEMBER
   joinedAt: string
 }
 
-type MeAllParams = {
+type FindAllCreatedByOwnerParams = {
   ownerEmail: string
 }
 
 export class MeOrganizationRepository {
-  public async createdAll({
-    ownerEmail,
-  }: MeAllParams): Promise<Organization[]> {
-    const collection = new FirebaseCollection('organizations')
-    const result = await collection.query
-      .equal('ownerEmail', ownerEmail)
-      .build()
+  private readonly collection: FirebaseCollection
 
-    if (result.length === 0) {
-      return []
-    }
-
-    return result as Organization[]
+  constructor() {
+    this.collection = new FirebaseCollection(COLLECTION_NAMES.ORGANIZATIONS)
   }
 
-  public async hasAccess(slug: string, userEmail: string) {
-    const collection = new FirebaseCollection('organizations')
-
-    const organizationsAsOwner = await collection.query
-      .equal('slug', slug)
-      .equal('ownerEmail', userEmail)
+  public async findAllCreatedByOwner({
+    ownerEmail,
+  }: FindAllCreatedByOwnerParams): Promise<Organization[]> {
+    const queryResult = await this.collection.query
+      .equal('ownerEmail', normalizeEmail(ownerEmail))
       .build()
 
-    if (organizationsAsOwner.length > 0) {
+    return queryResult as Organization[]
+  }
+
+  public async userHasAccessToOrganization(
+    organizationSlug: string, 
+    userEmail: string
+  ): Promise<boolean> {
+    const isUserOwner = await this.isUserOwnerOfOrganization(organizationSlug, userEmail)
+    
+    if (isUserOwner) {
       return true
     }
 
-    const memberRepo = new MemberRepository()
-    const members = await memberRepo.byOrganizationSlug(slug)
-    const isMember = members.some((m) => m.email === userEmail)
+    return await this.isUserMemberOfOrganization(organizationSlug, userEmail)
+  }
 
-    return isMember
+  private async isUserOwnerOfOrganization(
+    organizationSlug: string, 
+    userEmail: string
+  ): Promise<boolean> {
+    const organizationsWhereUserIsOwner = await this.collection.query
+      .equal('slug', organizationSlug)
+      .equal('ownerEmail', normalizeEmail(userEmail))
+      .build()
+
+    return organizationsWhereUserIsOwner.length > 0
+  }
+
+  private async isUserMemberOfOrganization(
+    organizationSlug: string, 
+    userEmail: string
+  ): Promise<boolean> {
+    const memberRepository = new MemberRepository()
+    const organizationMembers = await memberRepository.findByOrganizationSlug(organizationSlug)
+    
+    return organizationMembers.some(
+      (member) => normalizeEmail(member.email) === normalizeEmail(userEmail)
+    )
   }
 }
 
 export class OrganizationRepository {
-  public me: MeOrganizationRepository
+  private readonly collection: FirebaseCollection
+  public readonly me: MeOrganizationRepository
 
   constructor() {
+    this.collection = new FirebaseCollection(COLLECTION_NAMES.ORGANIZATIONS)
     this.me = new MeOrganizationRepository()
   }
 
-  public async oneBySlug(slug: string): Promise<Organization | null> {
-    const collection = new FirebaseCollection('organizations')
-    const result = await collection.query.equal('slug', slug).build()
+  public async findOneBySlug(organizationSlug: string): Promise<Organization | null> {
+    const queryResult = await this.collection.query
+      .equal('slug', organizationSlug)
+      .build()
 
-    if (result.length === 0) {
-      return null
-    }
-
-    return result[0] as Organization
+    return (queryResult[0] as Organization | undefined) ?? null
   }
 
-  public async manyBySlug(slugs: string[]): Promise<Organization[]> {
-    if (slugs.length === 0) {
+  public async findManyBySlugs(organizationSlugs: string[]): Promise<Organization[]> {
+    if (organizationSlugs.length === 0) {
       return []
     }
-    const collection = new FirebaseCollection('organizations')
-    const result = await collection.query.in('slug', slugs).build()
-    return result as Organization[]
+
+    const queryResult = await this.collection.query
+      .in('slug', organizationSlugs)
+      .build()
+
+    return queryResult as Organization[]
   }
 
   public async create(
-    organization: Omit<Organization, 'id' | 'createdAt' | 'updatedAt'>
-  ) {
-    const collection = new FirebaseCollection('organizations')
+    organizationData: Omit<Organization, 'id' | 'createdAt' | 'updatedAt'>
+  ): Promise<string> {
+    const currentTimestamp = getCurrentTimestamp()
 
-    try {
-      const result = await collection.create({
-        ...organization,
-        createdAt: new Date().toUTCString(),
-        updatedAt: new Date().toUTCString(),
-      })
+    const id = await this.collection.create({
+      ...organizationData,
+      ownerEmail: normalizeEmail(organizationData.ownerEmail),
+      createdAt: currentTimestamp,
+      updatedAt: currentTimestamp,
+    })
 
-      return result
-    } catch (error) {
-      console.error(`[OrganizationRepository.create] ${error}`)
-      return false
-    }
+    return id
   }
 
-  public async slugAvailable(slug: string) {
-    const collection = new FirebaseCollection('organizations')
-    const result = await collection.query.equal('slug', slug).build()
+  public async isSlugAvailable(slug: string): Promise<boolean> {
+    const existingOrganizations = await this.collection.query
+      .equal('slug', slug)
+      .build()
 
-    return result.length === 0
+    return existingOrganizations.length === 0
   }
 
-  public async members(slug: string): Promise<OrganizationMemberRecord[]> {
-    const collection = new FirebaseCollection('organizations')
-    const result = await collection.query.equal('slug', slug).build()
+  public async findMembers(organizationSlug: string): Promise<OrganizationMemberRecord[]> {
+    const organization = await this.findOneBySlug(organizationSlug)
 
-    if (result.length === 0) {
-      return []
-    }
-
-    const organization = result[0] as Organization
-
-    if (!organization.ownerEmail) {
+    if (!organization?.ownerEmail) {
       return []
     }
 
     return [
       {
         email: organization.ownerEmail,
-        role: 'owner',
+        role: ROLE.OWNER,
         joinedAt: organization.createdAt,
       },
     ]
   }
 
-  public async getOwnerEmail(organizationSlug: string): Promise<string | null> {
-    const collection = new FirebaseCollection('organizations')
-    const result = await collection.query
-      .equal('slug', organizationSlug)
-      .build()
-
-    if (result.length === 0) {
-      return null
-    }
-
-    return result[0].ownerEmail
+  public async findOwnerEmail(organizationSlug: string): Promise<string | null> {
+    const organization = await this.findOneBySlug(organizationSlug)
+    return organization?.ownerEmail ?? null
   }
 }

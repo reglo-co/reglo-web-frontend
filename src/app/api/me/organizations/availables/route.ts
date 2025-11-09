@@ -12,29 +12,36 @@ const handler = auth0.withApiAuthRequired(async function handler() {
     return ApiResponse.unauthorized('Unauthorized')
   }
 
-  const orgRepo = new OrganizationRepository()
-  const owned = await orgRepo.me.createdAll({ ownerEmail: userEmail })
+  const organizationRepository = new OrganizationRepository()
+  const ownedOrganizations = await organizationRepository.me.findAllCreatedByOwner({ ownerEmail: userEmail })
 
-  const membersRepo = new MemberRepository()
-  const membershipsFiltered = await membersRepo.byUserId(userId)
+  const memberRepository = new MemberRepository()
+  const userMemberships = await memberRepository.findByUserId(userId)
 
-  const orgsBySlug = new Map<string, Awaited<ReturnType<typeof orgRepo.oneBySlug>>>()
-  const memberOrgs = []
-  for (const m of membershipsFiltered) {
-    if (!orgsBySlug.has(m.orgSlug)) {
-      orgsBySlug.set(m.orgSlug, await orgRepo.oneBySlug(m.orgSlug))
+  const organizationsBySlug = new Map<string, Awaited<ReturnType<typeof organizationRepository.findOneBySlug>>>()
+  const memberOrganizations = []
+  
+  for (const membership of userMemberships) {
+    if (!organizationsBySlug.has(membership.orgSlug)) {
+      const organization = await organizationRepository.findOneBySlug(membership.orgSlug)
+      organizationsBySlug.set(membership.orgSlug, organization)
     }
-    const org = orgsBySlug.get(m.orgSlug)
-    if (org) memberOrgs.push(org)
-  }
-
-  const dedup = new Map<string, unknown>()
-  for (const org of [...owned, ...memberOrgs]) {
-    if (org && typeof org === 'object' && 'id' in org && (org as any).id) {
-      dedup.set((org as any).id as string, org)
+    const organization = organizationsBySlug.get(membership.orgSlug)
+    if (organization) {
+      memberOrganizations.push(organization)
     }
   }
-  const list = Array.from(dedup.values())
+
+  const uniqueOrganizationsById = new Map<string, unknown>()
+  const allOrganizations = [...ownedOrganizations, ...memberOrganizations]
+  
+  for (const organization of allOrganizations) {
+    if (organization && typeof organization === 'object' && 'id' in organization && (organization as any).id) {
+      uniqueOrganizationsById.set((organization as any).id as string, organization)
+    }
+  }
+  
+  const list = Array.from(uniqueOrganizationsById.values())
 
   return ApiResponse.ok({ list, total: list.length })
 })

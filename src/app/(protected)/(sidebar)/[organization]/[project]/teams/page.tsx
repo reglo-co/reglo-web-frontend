@@ -2,8 +2,8 @@
 
 import { useUser } from '@auth0/nextjs-auth0'
 import { useFeatureFlag } from '@core/feature-flags'
-import { getInitials } from '@core/helpers'
-import { useFakeLoading } from '@core/hooks/use-fake-loading.hoos'
+import { extractInitialsFromName } from '@core/helpers'
+import { useFakeLoading } from '@core/hooks/use-fake-loading.hook'
 import { usePathnameContext } from '@core/hooks/use-pathname-context'
 import { Avatar, AvatarFallback, AvatarImage } from '@core/ui/primitives'
 import type { ProjectMember } from '@projects-members'
@@ -159,7 +159,7 @@ export default function Page() {
                               alt={member.name || member.email}
                             />
                             <AvatarFallback>
-                              {getInitials(member.name || member.email)}
+                              {extractInitialsFromName(member.name || member.email)}
                             </AvatarFallback>
                           </Avatar>
                           <span className="font-medium">

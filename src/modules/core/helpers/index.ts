@@ -1,27 +1,50 @@
-export function getInitials(name: string) {
-  const parts = name.trim().split(' ')
-  const first = parts.at(0)?.[0] ?? ''
-  const last = parts.at(-1)?.[0] ?? ''
-  return `${first}${last}`.toUpperCase()
+export function extractInitialsFromName(fullName: string): string {
+  const nameParts = fullName.trim().split(' ')
+  const firstInitial = nameParts.at(0)?.[0] ?? ''
+  const lastInitial = nameParts.at(-1)?.[0] ?? ''
+  return `${firstInitial}${lastInitial}`.toUpperCase()
 }
 
-export function getTimeAgo(date: Date): string {
-  const diff = Date.now() - date.getTime()
-  const seconds = Math.floor(diff / 1000)
+const SECONDS_PER_MINUTE = 60
+const MINUTES_PER_HOUR = 60
+const HOURS_PER_DAY = 24
+const DAYS_PER_MONTH = 30
+const MONTHS_PER_YEAR = 12
 
-  if (seconds < 60) return 'Há menos de 1 minuto'
-  const minutes = Math.floor(seconds / 60)
-  if (minutes < 60) return `Há ${minutes} minuto${minutes > 1 ? 's' : ''}`
+const MILLISECONDS_PER_SECOND = 1000
 
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `Há ${hours} hora${hours > 1 ? 's' : ''}`
+function pluralize(count: number, singular: string, plural: string): string {
+  return count > 1 ? plural : singular
+}
 
-  const days = Math.floor(hours / 24)
-  if (days < 30) return `Há ${days} dia${days > 1 ? 's' : ''}`
+export function formatRelativeTime(date: Date): string {
+  const millisecondsDifference = Date.now() - date.getTime()
+  const totalSeconds = Math.floor(millisecondsDifference / MILLISECONDS_PER_SECOND)
 
-  const months = Math.floor(days / 30)
-  if (months < 12) return `Há ${months} mês${months > 1 ? 'es' : ''}`
+  if (totalSeconds < SECONDS_PER_MINUTE) {
+    return 'Há menos de 1 minuto'
+  }
 
-  const years = Math.floor(months / 12)
-  return `Há ${years} ano${years > 1 ? 's' : ''}`
+  const totalMinutes = Math.floor(totalSeconds / SECONDS_PER_MINUTE)
+  if (totalMinutes < MINUTES_PER_HOUR) {
+    return `Há ${totalMinutes} ${pluralize(totalMinutes, 'minuto', 'minutos')}`
+  }
+
+  const totalHours = Math.floor(totalMinutes / MINUTES_PER_HOUR)
+  if (totalHours < HOURS_PER_DAY) {
+    return `Há ${totalHours} ${pluralize(totalHours, 'hora', 'horas')}`
+  }
+
+  const totalDays = Math.floor(totalHours / HOURS_PER_DAY)
+  if (totalDays < DAYS_PER_MONTH) {
+    return `Há ${totalDays} ${pluralize(totalDays, 'dia', 'dias')}`
+  }
+
+  const totalMonths = Math.floor(totalDays / DAYS_PER_MONTH)
+  if (totalMonths < MONTHS_PER_YEAR) {
+    return `Há ${totalMonths} ${pluralize(totalMonths, 'mês', 'meses')}`
+  }
+
+  const totalYears = Math.floor(totalMonths / MONTHS_PER_YEAR)
+  return `Há ${totalYears} ${pluralize(totalYears, 'ano', 'anos')}`
 }

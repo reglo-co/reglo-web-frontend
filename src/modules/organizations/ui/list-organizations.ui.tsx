@@ -4,7 +4,7 @@ import { useModal } from '@core/stores/modal.store'
 import { Button } from '@ui/primitives'
 import { Loader2, Plus, RefreshCcw, RotateCcw } from 'lucide-react'
 
-import { useFakeLoading } from '@core/hooks/use-fake-loading.hoos'
+import { useFakeLoading } from '@core/hooks/use-fake-loading.hook'
 import { Logo } from '@core/ui'
 import { useListMyPendingInvites, useRespondInvite } from '@invite/hooks'
 import { useListMyAvailablesOrganizations } from '@organizations/hooks'

@@ -25,7 +25,7 @@ const handler = auth0.withApiAuthRequired(async function handler(
   const repository = new ProjectRepository()
 
   try {
-    const result = await repository.oneBySlug(
+    const result = await repository.findOneBySlug(
       organizationSlug,
       projectSlug
     )

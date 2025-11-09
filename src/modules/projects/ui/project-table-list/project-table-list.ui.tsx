@@ -1,6 +1,6 @@
 'use client'
 
-import { useFakeLoading } from '@core/hooks/use-fake-loading.hoos'
+import { useFakeLoading } from '@core/hooks/use-fake-loading.hook'
 import { useModal } from '@core/stores'
 import { COLUMNS_LIST_PROJECTS } from '@projects/const'
 import { ProjectTable } from '@projects/types'

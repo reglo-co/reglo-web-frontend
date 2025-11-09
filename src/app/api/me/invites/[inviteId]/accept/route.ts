@@ -28,7 +28,7 @@ const handler = auth0.withApiAuthRequired(async function handler(
   }
 
   const invites = new InviteRepository()
-  const invite = await invites.withId(inviteId)
+  const invite = await invites.findById(inviteId)
   if (!invite) {
     return ApiResponse.notFound('Invite not found')
   }

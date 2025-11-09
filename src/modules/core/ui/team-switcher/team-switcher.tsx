@@ -38,9 +38,6 @@ export function TeamSwitcher() {
   const { isMobile } = useSidebar()
   const mounted = useMounted()
 
-  console.log('organization', organization)
-  console.log('project', project)
-
   if (!organization) {
     return <Skeleton className="h-10 w-full" />
   }
@@ -116,17 +113,14 @@ export function TeamSwitcher() {
                 Meus projetos
               </DropdownMenuLabel>
               {projects.map((project) => (
-                <Link
-                  href={`/${organization.slug}/${project.slug}`}
-                  key={project.slug}
-                >
-                  <DropdownMenuItem key={project.name} className="gap-2.5 p-2">
+                <DropdownMenuItem asChild key={project.slug} className="gap-2.5 p-2">
+                  <Link href={`/${organization.slug}/${project.slug}`}>
                     <Mailbox className="size-4" />
                     <span className="truncate pt-0.5 font-medium">
                       {project.name}
                     </span>
-                  </DropdownMenuItem>
-                </Link>
+                  </Link>
+                </DropdownMenuItem>
               ))}
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -143,12 +137,12 @@ export function TeamSwitcher() {
                 Minhas organizações
               </DropdownMenuLabel>
               {teams.map((team) => (
-                <Link href={`/${team.slug}`} key={team.slug}>
-                  <DropdownMenuItem key={team.name} className="gap-2.5 p-2">
+                <DropdownMenuItem asChild key={team.slug} className="gap-2.5 p-2">
+                  <Link href={`/${team.slug}`}>
                     <Logo.Symbol className="size-3.5 shrink-0" />
                     <span className="truncate font-medium">{team.name}</span>
-                  </DropdownMenuItem>
-                </Link>
+                  </Link>
+                </DropdownMenuItem>
               ))}
               <DropdownMenuSeparator />
               <DropdownMenuItem

@@ -1,4 +1,9 @@
 import { FirebaseCollection } from '@lib/firebase'
+import { COLLECTION_NAMES } from '@repositories/repository.constants'
+import {
+  getCurrentTimestamp,
+  normalizeEmail,
+} from '@repositories/repository.utils'
 
 export type ProjectMemberRecord = {
   id: string
@@ -10,28 +15,30 @@ export type ProjectMemberRecord = {
 }
 
 export class ProjectMemberRepository {
-  constructor() {}
+  private readonly collection: FirebaseCollection
 
-  public async byProject(
+  constructor() {
+    this.collection = new FirebaseCollection(COLLECTION_NAMES.PROJECT_MEMBERS)
+  }
+
+  public async findByProject(
     orgSlug: string,
     projectSlug: string
   ): Promise<ProjectMemberRecord[]> {
-    const collection = new FirebaseCollection('projects_members')
-    const result = await collection.query
+    const result = await this.collection.query
       .equal('orgSlug', orgSlug)
       .equal('projectSlug', projectSlug)
       .build()
     return result as ProjectMemberRecord[]
   }
 
-  public async byUserInOrganization(
+  public async findByUserInOrganization(
     orgSlug: string,
     email: string
   ): Promise<ProjectMemberRecord[]> {
-    const collection = new FirebaseCollection('projects_members')
-    const result = await collection.query
+    const result = await this.collection.query
       .equal('orgSlug', orgSlug)
-      .equal('email', email.toLowerCase())
+      .equal('email', normalizeEmail(email))
       .build()
     return result as ProjectMemberRecord[]
   }
@@ -41,11 +48,10 @@ export class ProjectMemberRepository {
     projectSlug: string,
     email: string
   ): Promise<ProjectMemberRecord | null> {
-    const collection = new FirebaseCollection('projects_members')
-    const result = await collection.query
+    const result = await this.collection.query
       .equal('orgSlug', orgSlug)
       .equal('projectSlug', projectSlug)
-      .equal('email', email.toLowerCase())
+      .equal('email', normalizeEmail(email))
       .build()
     return (result?.[0] as ProjectMemberRecord | undefined) ?? null
   }
@@ -53,17 +59,15 @@ export class ProjectMemberRepository {
   public async create(
     record: Omit<ProjectMemberRecord, 'id' | 'joinedAt'>
   ): Promise<string> {
-    const collection = new FirebaseCollection('projects_members')
-    const id = await collection.create({
+    const id = await this.collection.create({
       ...record,
-      email: record.email.toLowerCase(),
-      joinedAt: new Date().toUTCString(),
+      email: normalizeEmail(record.email),
+      joinedAt: getCurrentTimestamp(),
     })
     return id
   }
 
-  public async delete(id: string) {
-    const collection = new FirebaseCollection('projects_members')
-    await collection.delete(id)
+  public async delete(id: string): Promise<void> {
+    await this.collection.delete(id)
   }
 }

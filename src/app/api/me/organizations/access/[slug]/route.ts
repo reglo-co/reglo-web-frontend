@@ -27,7 +27,7 @@ const handler = auth0.withApiAuthRequired(async function handler(
   const repository = new OrganizationRepository()
 
   try {
-    const hasAccess = await repository.me.hasAccess(slug, ownerEmail)
+    const hasAccess = await repository.me.userHasAccessToOrganization(slug, ownerEmail)
 
     return ApiResponse.ok({ hasAccess })
   } catch (error: unknown) {

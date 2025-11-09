@@ -31,7 +31,7 @@ const handler = auth0.withApiAuthRequired(async function handler(
   }
 
   const orgRepo = new OrganizationRepository()
-  const canAccess = await orgRepo.me.hasAccess(organizationSlug, userEmail)
+  const canAccess = await orgRepo.me.userHasAccessToOrganization(organizationSlug, userEmail)
   if (!canAccess) {
     return ApiResponse.forbidden('Forbidden')
   }
@@ -45,7 +45,7 @@ const handler = auth0.withApiAuthRequired(async function handler(
     return ApiResponse.badRequest('Invalid payload')
   }
   const membersRepo = new MemberRepository()
-  const member = await membersRepo.withId(parsed.data.memberId)
+  const member = await membersRepo.findById(parsed.data.memberId)
   await membersRepo.delete(parsed.data.memberId)
   await recordMemberRemoved({
     orgId: member?.orgId,

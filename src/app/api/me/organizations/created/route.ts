@@ -13,7 +13,7 @@ const handler = auth0.withApiAuthRequired(async function handler() {
   const repository = new OrganizationRepository()
 
   try {
-    const result = await repository.me.createdAll({ ownerEmail })
+    const result = await repository.me.findAllCreatedByOwner({ ownerEmail })
 
     return ApiResponse.ok({
       list: result,

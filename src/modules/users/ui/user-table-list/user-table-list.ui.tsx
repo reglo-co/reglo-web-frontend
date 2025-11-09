@@ -1,11 +1,18 @@
 'use client'
 
-import { useFakeLoading } from '@core/hooks/use-fake-loading.hoos'
+import { useFakeLoading } from '@core/hooks/use-fake-loading.hook'
 import { Logo } from '@core/ui'
 import { useInviteMembers } from '@invite/hooks'
 import { useOrganizationBySlug } from '@organizations/hooks/use-organization-by-slug.hook'
 import { PLANS } from '@plans/config/plans.config'
 import { useQueryClient } from '@tanstack/react-query'
+import { Button } from '@ui/primitives/button'
+import { COLUMNS_LIST_MEMBERS } from '@users/const'
+import { OrganizationMember } from '@users/types'
+import { Loader2, Plus, RefreshCcw, RotateCcw, Send, X } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { z } from 'zod'
+
 import {
   SortingState,
   flexRender,
@@ -13,6 +20,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+
 import {
   Badge,
   Dialog,
@@ -27,12 +35,6 @@ import {
   TableHeader,
   TableRow,
 } from '@ui/primitives'
-import { Button } from '@ui/primitives/button'
-import { COLUMNS_LIST_MEMBERS } from '@users/const'
-import { OrganizationMember } from '@users/types'
-import { Loader2, Plus, RefreshCcw, RotateCcw, Send, X } from 'lucide-react'
-import { useMemo, useState } from 'react'
-import { z } from 'zod'
 
 type UserTableListProps = {
   list: OrganizationMember[]
@@ -85,53 +87,97 @@ export function UserTableList({
     [list]
   )
 
-  const availableToInvite = Math.max(maxCollaborators - activeCount, 0)
-  const canAddMore = emails.length < availableToInvite
+  const EMAIL_SEPARATOR = ','
+  const SUBMIT_KEYS = ['Enter', ',']
 
-  function addEmailFromInput(value: string) {
-    const schema = z.string().email()
-    const parts = value
-      .split(',')
-      .map((e) => e.trim().toLowerCase())
+  const availableInviteSlots = Math.max(maxCollaborators - activeCount, 0)
+  const canAddMoreEmails = emails.length < availableInviteSlots
+
+  function parseEmailsFromInput(rawInput: string): string[] {
+    return rawInput
+      .split(EMAIL_SEPARATOR)
+      .map((email) => email.trim().toLowerCase())
       .filter(Boolean)
-    const next: string[] = []
-    for (const p of parts) {
-      if (!canAddMore && emails.length + next.length >= availableToInvite) break
-      const res = schema.safeParse(p)
+  }
+
+  function isValidEmail(email: string): boolean {
+    const emailSchema = z.string().email()
+    return emailSchema.safeParse(email).success
+  }
+
+  function isEmailAlreadyAdded(
+    email: string,
+    existingEmails: string[],
+    newEmails: string[]
+  ): boolean {
+    return existingEmails.includes(email) || newEmails.includes(email)
+  }
+
+  function hasReachedInviteLimit(
+    currentEmailCount: number,
+    newEmailCount: number
+  ): boolean {
+    return currentEmailCount + newEmailCount >= availableInviteSlots
+  }
+
+  function extractValidUniqueEmails(rawInput: string): string[] {
+    const parsedEmails = parseEmailsFromInput(rawInput)
+    const validUniqueEmails: string[] = []
+
+    for (const email of parsedEmails) {
+      if (hasReachedInviteLimit(emails.length, validUniqueEmails.length)) {
+        break
+      }
+
       if (
-        res.success &&
-        !emails.includes(res.data) &&
-        !next.includes(res.data)
+        isValidEmail(email) &&
+        !isEmailAlreadyAdded(email, emails, validUniqueEmails)
       ) {
-        next.push(res.data)
+        validUniqueEmails.push(email)
       }
     }
-    if (next.length) {
-      setEmails((prev) => [...prev, ...next].slice(0, availableToInvite))
+
+    return validUniqueEmails
+  }
+
+  function addEmailsFromInput(rawInput: string) {
+    const validEmails = extractValidUniqueEmails(rawInput)
+
+    if (validEmails.length > 0) {
+      setEmails((previousEmails) =>
+        [...previousEmails, ...validEmails].slice(0, availableInviteSlots)
+      )
     }
   }
 
-  function onChangeTextarea(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    const value = e.target.value
-    if (value.includes(',')) {
-      addEmailFromInput(value)
-      const lastChunk = value.split(',').at(-1) ?? ''
-      setInputValue(canAddMore ? lastChunk : '')
+  function handleTextareaChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+    const currentValue = event.target.value
+
+    if (currentValue.includes(EMAIL_SEPARATOR)) {
+      addEmailsFromInput(currentValue)
+      const lastSegment = currentValue.split(EMAIL_SEPARATOR).at(-1) ?? ''
+      setInputValue(canAddMoreEmails ? lastSegment : '')
     } else {
-      setInputValue(value)
+      setInputValue(currentValue)
     }
   }
 
-  function onKeyDownTextarea(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if ((e.key === 'Enter' || e.key === ',') && inputValue) {
-      e.preventDefault()
-      addEmailFromInput(inputValue + ',')
+  function handleTextareaKeyDown(
+    event: React.KeyboardEvent<HTMLTextAreaElement>
+  ) {
+    const shouldSubmitEmail = SUBMIT_KEYS.includes(event.key) && inputValue
+
+    if (shouldSubmitEmail) {
+      event.preventDefault()
+      addEmailsFromInput(inputValue + EMAIL_SEPARATOR)
       setInputValue('')
     }
   }
 
-  function removeEmail(email: string) {
-    setEmails((prev) => prev.filter((e) => e !== email))
+  function removeEmailFromList(emailToRemove: string) {
+    setEmails((previousEmails) =>
+      previousEmails.filter((email) => email !== emailToRemove)
+    )
   }
 
   function onSubmitInvites() {
@@ -180,19 +226,19 @@ export function UserTableList({
           <DialogDescription asChild>
             <div className="flex w-full flex-col gap-3">
               <div className="text-muted-foreground text-sm">
-                Convite ({emails.length}/{availableToInvite})
+                Convite ({emails.length}/{availableInviteSlots})
               </div>
               <div className="relative">
                 <textarea
                   value={inputValue}
-                  onChange={onChangeTextarea}
-                  onKeyDown={onKeyDownTextarea}
+                  onChange={handleTextareaChange}
+                  onKeyDown={handleTextareaKeyDown}
                   placeholder={
-                    canAddMore || inputValue
+                    canAddMoreEmails || inputValue
                       ? `Digite o e-mail do usuário...`
                       : 'Limite de convites atingido'
                   }
-                  disabled={!canAddMore && !inputValue}
+                  disabled={!canAddMoreEmails && !inputValue}
                   className="focus:ring-ring min-h-24 w-full resize-none rounded-md border p-3 outline-none focus:ring-2"
                 />
                 {inputValue.length > 0 && (
@@ -213,7 +259,7 @@ export function UserTableList({
                       <button
                         aria-label="remove"
                         className="text-muted-foreground hover:text-foreground"
-                        onClick={() => removeEmail(email)}
+                        onClick={() => removeEmailFromList(email)}
                       >
                         <X className="size-3" />
                       </button>
@@ -223,7 +269,7 @@ export function UserTableList({
               </div>
               <div className="flex items-center justify-between pt-10">
                 <span className="text-muted-foreground text-sm">
-                  Convites disponíveis: {availableToInvite}
+                  Convites disponíveis: {availableInviteSlots}
                 </span>
                 <div className="flex gap-2">
                   <Button

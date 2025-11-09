@@ -11,7 +11,7 @@ const handler = auth0.withApiAuthRequired(async function handler() {
   }
 
   const repo = new InviteRepository()
-  const list = await repo.pendingByEmail(userEmail.toLowerCase())
+  const list = await repo.findPendingByEmail(userEmail.toLowerCase())
   return ApiResponse.ok({ list, total: list.length })
 })
 

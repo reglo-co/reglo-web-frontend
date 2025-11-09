@@ -2,26 +2,51 @@ import { auth0 } from '@lib/auth0'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
+const PUBLIC_ROUTES = {
+  ROOT: '/',
+  LOGIN: '/auth/login',
+  CALLBACK: '/auth/callback',
+  LOGOUT: '/auth/logout',
+} as const
+
 function isPublicRoute(pathname: string): boolean {
-  if (pathname === '/') return true
-  if (pathname.startsWith('/auth/login')) return true
-  if (pathname.startsWith('/auth/callback')) return true
-  if (pathname.startsWith('/auth/logout')) return true
-  return false
+  const publicRoutePaths = Object.values(PUBLIC_ROUTES)
+
+  return publicRoutePaths.some(
+    (route) => pathname === route || pathname.startsWith(route)
+  )
 }
 
-export async function proxy(request: NextRequest) {
-  if (isPublicRoute(request.nextUrl.pathname)) {
-    return await auth0.middleware(request)
-  }
+function createLoginRedirect(requestUrl: string): NextResponse {
+  return NextResponse.redirect(new URL(PUBLIC_ROUTES.LOGIN, requestUrl))
+}
 
-  const session = await auth0.getSession()
-
-  if (!session) {
-    return NextResponse.redirect(new URL('/auth/login', request.url))
-  }
-
+async function handleAuthenticatedRequest(
+  request: NextRequest
+): Promise<NextResponse> {
   return await auth0.middleware(request)
+}
+
+async function handleUnauthenticatedRequest(
+  request: NextRequest
+): Promise<NextResponse> {
+  const userSession = await auth0.getSession()
+
+  if (!userSession) {
+    return createLoginRedirect(request.url)
+  }
+
+  return await handleAuthenticatedRequest(request)
+}
+
+export async function proxy(request: NextRequest): Promise<NextResponse> {
+  const currentPathname = request.nextUrl.pathname
+
+  if (isPublicRoute(currentPathname)) {
+    return await handleAuthenticatedRequest(request)
+  }
+
+  return await handleUnauthenticatedRequest(request)
 }
 
 export const config = {

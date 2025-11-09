@@ -11,30 +11,60 @@ export type FeatureKey =
   | 'owner'
   | 'projectOwner'
 
+function normalizeEmail(email: string | undefined): string {
+  return email?.toLowerCase() ?? ''
+}
+
+function isUserOrganizationOwner(
+  userEmail: string | undefined,
+  ownerEmail: string | undefined
+): boolean {
+  return userEmail === ownerEmail
+}
+
+function isUserProjectOwner(
+  userEmail: string | undefined,
+  projectOwnerEmail: string | undefined
+): boolean {
+  const normalizedUserEmail = normalizeEmail(userEmail)
+  const normalizedProjectOwnerEmail = normalizeEmail(projectOwnerEmail)
+
+  return (
+    normalizedUserEmail !== '' &&
+    normalizedProjectOwnerEmail !== '' &&
+    normalizedUserEmail === normalizedProjectOwnerEmail
+  )
+}
+
+function hasOrganizationContext(context: unknown): boolean {
+  if (!context || typeof context !== 'object') {
+    return false
+  }
+
+  const contextObject = context as Record<string, unknown>
+  return (
+    'orgSlug' in contextObject &&
+    typeof contextObject.orgSlug === 'string' &&
+    contextObject.orgSlug !== ''
+  )
+}
+
 export function useFeatureFlag(key: FeatureKey, context?: unknown): boolean {
   const { user } = useUser()
   const currentOrganization = useCurrentOrganization()
   const { ownerEmail } = useOwnerEmail(currentOrganization?.slug as string)
-  const project = useCurrentProject()
+  const currentProject = useCurrentProject()
 
   if (key === 'owner') {
-    return user?.email === ownerEmail
+    return isUserOrganizationOwner(user?.email, ownerEmail ?? undefined)
   }
 
   if (key === 'projectOwner') {
-    const projectOwner = project?.ownerEmail?.toLowerCase()
-    const current = user?.email?.toLowerCase()
-    return !!current && !!projectOwner && current === projectOwner
+    return isUserProjectOwner(user?.email, currentProject?.ownerEmail)
   }
 
   if (key === 'updates') {
-    const hasOrg =
-      !!context &&
-      typeof context === 'object' &&
-      'orgSlug' in (context as Record<string, unknown>) &&
-      !!(context as { orgSlug?: string }).orgSlug
-
-    return hasOrg
+    return hasOrganizationContext(context)
   }
 
   return true

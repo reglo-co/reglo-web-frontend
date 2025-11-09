@@ -1,125 +1,125 @@
 import { FirebaseCollection } from '@lib/firebase'
 import { Project } from '@projects/types'
+import { ProjectMemberRepository } from '@projects-members/repositories/project-member.repo'
+import { COLLECTION_NAMES } from '@repositories/repository.constants'
+import { 
+  deduplicateByKey, 
+  getCurrentTimestamp, 
+  normalizeEmail, 
+  queryInChunks 
+} from '@repositories/repository.utils'
 
-type MeAvailablesParams = {
+type AvailablesByOrganizationParams = {
   organizationSlug: string
   userEmail: string
 }
 
 export class MeProjectRepository {
+  private readonly collection: FirebaseCollection
+
+  constructor() {
+    this.collection = new FirebaseCollection(COLLECTION_NAMES.PROJECTS)
+  }
+
   public async availablesByOrganization({
     organizationSlug,
     userEmail,
-  }: MeAvailablesParams): Promise<Project[]> {
-    const collection = new FirebaseCollection('projects')
-    const owned = await collection.query
+  }: AvailablesByOrganizationParams): Promise<Project[]> {
+    const normalizedEmail = normalizeEmail(userEmail)
+
+    const ownedProjects = await this.collection.query
       .equal('organizationSlug', organizationSlug)
-      .equal('ownerEmail', userEmail)
+      .equal('ownerEmail', normalizedEmail)
       .build()
 
-    // include projects where user is a member (projects_members)
-    const { ProjectMemberRepository } = await import(
-      '@projects-members/repositories'
-    )
-    const memberRepo = new ProjectMemberRepository()
-    const memberships = await memberRepo.byUserInOrganization(
-      organizationSlug,
-      userEmail
-    )
-    const memberProjectSlugs = Array.from(
-      new Set(memberships.map((m) => m.projectSlug))
-    )
+    const memberProjects = await this.findMemberProjects(organizationSlug, normalizedEmail)
 
-    let memberProjects: Project[] = []
-    if (memberProjectSlugs.length > 0) {
-      memberProjects = await this.manyBySlugs(organizationSlug, memberProjectSlugs)
-    }
-
-    const all = [...(owned as Project[]), ...memberProjects]
-    const seen = new Set<string>()
-    const deduped = all.filter((p) => {
-      const key = `${p.organizationSlug}:${p.slug}`
-      if (seen.has(key)) return false
-      seen.add(key)
-      return true
-    })
-
-    return deduped
+    const allProjects = [...(ownedProjects as Project[]), ...memberProjects]
+    
+    return deduplicateByKey(allProjects, (project) => 
+      `${project.organizationSlug}:${project.slug}`
+    )
   }
 
-  private async manyBySlugs(
+  private async findMemberProjects(
+    organizationSlug: string, 
+    normalizedEmail: string
+  ): Promise<Project[]> {
+    const memberRepo = new ProjectMemberRepository()
+    const memberships = await memberRepo.findByUserInOrganization(
+      organizationSlug,
+      normalizedEmail
+    )
+
+    const memberProjectSlugs = Array.from(
+      new Set(memberships.map((membership) => membership.projectSlug))
+    )
+
+    if (memberProjectSlugs.length === 0) {
+      return []
+    }
+
+    return await this.findManyBySlugs(organizationSlug, memberProjectSlugs)
+  }
+
+  private async findManyBySlugs(
     organizationSlug: string,
     slugs: string[]
   ): Promise<Project[]> {
-    if (!slugs.length) return []
-    const collection = new FirebaseCollection('projects')
-    // Firestore 'in' supports up to 10 elements; if more, chunk
-    const chunks: string[][] = []
-    for (let i = 0; i < slugs.length; i += 10) {
-      chunks.push(slugs.slice(i, i + 10))
-    }
-    const results: Project[] = []
-    for (const chunk of chunks) {
-      const res = (await collection.query
-        .equal('organizationSlug', organizationSlug)
-        .in('slug', chunk)
-        .build()) as Project[]
-      results.push(...res)
-    }
-    return results
+    return await queryInChunks<Project>(
+      this.collection,
+      'slug',
+      slugs,
+      { organizationSlug }
+    )
   }
 }
 
 export class ProjectRepository {
-  public me: MeProjectRepository
+  private readonly collection: FirebaseCollection
+  public readonly me: MeProjectRepository
 
   constructor() {
+    this.collection = new FirebaseCollection(COLLECTION_NAMES.PROJECTS)
     this.me = new MeProjectRepository()
   }
 
-  public async oneBySlug(
+  public async findOneBySlug(
     organizationSlug: string,
-    slug: string
+    projectSlug: string
   ): Promise<Project | null> {
-    const collection = new FirebaseCollection('projects')
-    const result = await collection.query
-      .equal('slug', slug)
+    const queryResult = await this.collection.query
+      .equal('slug', projectSlug)
       .equal('organizationSlug', organizationSlug)
       .build()
 
-    if (result.length === 0) {
-      return null
-    }
-
-    return result[0] as Project
+    return (queryResult[0] as Project | undefined) ?? null
   }
 
   public async create(
-    project: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>
-  ) {
-    const collection = new FirebaseCollection('projects')
+    projectData: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>
+  ): Promise<string> {
+    const currentTimestamp = getCurrentTimestamp()
 
-    try {
-      await collection.create({
-        ...project,
-        createdAt: new Date().toUTCString(),
-        updatedAt: new Date().toUTCString(),
-      })
+    const id = await this.collection.create({
+      ...projectData,
+      ownerEmail: normalizeEmail(projectData.ownerEmail),
+      createdAt: currentTimestamp,
+      updatedAt: currentTimestamp,
+    })
 
-      return project.slug
-    } catch (error) {
-      console.error(`[ProjectRepository.create] ${error}`)
-      return false
-    }
+    return id
   }
 
-  public async slugAvailable(slug: string, organizationSlug: string) {
-    const collection = new FirebaseCollection('projects')
-    const result = await collection.query
-      .equal('slug', slug)
+  public async isSlugAvailable(
+    projectSlug: string, 
+    organizationSlug: string
+  ): Promise<boolean> {
+    const existingProjects = await this.collection.query
+      .equal('slug', projectSlug)
       .equal('organizationSlug', organizationSlug)
       .build()
 
-    return result.length === 0
+    return existingProjects.length === 0
   }
 }

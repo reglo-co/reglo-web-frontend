@@ -30,20 +30,20 @@ const handler = auth0.withApiAuthRequired(async function handler(
 
   const repository = new OrganizationRepository()
 
-  const canAccess = await repository.me.hasAccess(organizationSlug, userEmail)
+  const canAccess = await repository.me.userHasAccessToOrganization(organizationSlug, userEmail)
 
   if (!canAccess) {
     return ApiResponse.forbidden('Forbidden')
   }
 
   try {
-    const records = await repository.members(organizationSlug)
+    const records = await repository.findMembers(organizationSlug)
     const membersRepo = new MemberRepository()
     const invitesRepo = new InviteRepository()
 
-    const memberRecords = await membersRepo.byOrganizationSlug(organizationSlug)
+    const memberRecords = await membersRepo.findByOrganizationSlug(organizationSlug)
     const pendingInvites =
-      await invitesRepo.pendingByOrganizationSlug(organizationSlug)
+      await invitesRepo.findPendingByOrganizationSlug(organizationSlug)
 
     const ownerRecords = [...records]
 

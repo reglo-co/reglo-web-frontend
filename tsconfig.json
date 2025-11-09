@@ -26,6 +26,7 @@
       "@hooks/*": ["./src/modules/core/hooks/*"],
       "@lib/*": ["./src/modules/core/lib/*"],
       "@providers/*": ["./src/modules/core/providers/*"],
+      "@repositories/*": ["./src/modules/repositories/*"],
       "@stores/*": ["./src/modules/core/stores/*"],
       "@styles/*": ["./src/modules/core/styles/*"],
       "@types/*": ["./src/types/*"],

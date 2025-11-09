@@ -1,4 +1,4 @@
-import { getInitials, getTimeAgo } from '@core/helpers'
+import { extractInitialsFromName, formatRelativeTime } from '@core/helpers'
 import { TableHeaderButton } from '@projects/ui'
 import { ColumnDef } from '@tanstack/react-table'
 import { Mailbox } from 'lucide-react'
@@ -54,7 +54,7 @@ export const COLUMNS_LIST_PROJECTS: ColumnDef<ProjectTable>[] = [
       const value = String(getValue())
       const date = new Date(value)
       return (
-        <span className="text-muted-foreground pl-3">{getTimeAgo(date)}</span>
+        <span className="text-muted-foreground pl-3">{formatRelativeTime(date)}</span>
       )
     },
   },
@@ -79,7 +79,7 @@ export const COLUMNS_LIST_PROJECTS: ColumnDef<ProjectTable>[] = [
                   className="ring-background size-5 ring-2"
                 >
                   <AvatarImage src={person.avatarUrl} alt={person.name} />
-                  <AvatarFallback>{getInitials(person.name)}</AvatarFallback>
+                  <AvatarFallback>{extractInitialsFromName(person.name)}</AvatarFallback>
                 </Avatar>
               ))}
               {remaining > 0 && (
