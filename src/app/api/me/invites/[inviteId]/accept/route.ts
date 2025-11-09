@@ -2,6 +2,7 @@ import { ApiResponse } from '@core/entities'
 import { InviteRepository } from '@invite/repositories/invite.repo'
 import { auth0 } from '@lib/auth0'
 import { MemberRepository } from '@users/repositories/member.repo'
+import { recordMemberAdded } from '@updates/api/record-update.api'
 
 const handler = auth0.withApiAuthRequired(async function handler(
   _: Request,
@@ -19,6 +20,8 @@ const handler = auth0.withApiAuthRequired(async function handler(
   const session = await auth0.getSession()
   const userEmail = session?.user?.email
   const userId = (session?.user as { sub?: string } | undefined)?.sub
+  const actorName =
+    (session?.user as { name?: string } | undefined)?.name ?? userEmail
 
   if (!userEmail || !userId) {
     return ApiResponse.unauthorized('Unauthorized')
@@ -45,6 +48,13 @@ const handler = auth0.withApiAuthRequired(async function handler(
     role: 'member',
   })
   await invites.updateStatus(invite.id, 'accepted')
+  await recordMemberAdded({
+    orgId: invite.orgId,
+    orgSlug: invite.orgSlug,
+    memberEmail: invite.email.toLowerCase(),
+    actorId: userId,
+    actorName: actorName ?? userEmail,
+  })
   return ApiResponse.ok(true)
 })
 

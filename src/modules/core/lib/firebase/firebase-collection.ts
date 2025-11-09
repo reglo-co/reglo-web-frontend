@@ -14,6 +14,7 @@ export type FirebaseCollectionName =
   | 'projects'
   | 'invite'
   | 'members'
+  | 'updates'
 
 export class FirebaseCollection {
   private readonly collection: CollectionReference<DocumentData>

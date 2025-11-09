@@ -22,6 +22,7 @@ export type API_ENDPOINTS =
   | `me/projects/availables/${string}`
   | `projects/${string}/${string}`
   | 'users/by-email'
+  | `me/organizations/updates/${string}`
 
 const prefixUrl = env.NEXT_PUBLIC_API_URL
 
@@ -73,11 +74,24 @@ const kyInstance = ky.create({
         if (error.response) {
           const status = error.response.status
           if (status >= 500) {
-            console.error('[API] Server error:', {
-              url: error.request.url,
-              status,
-              message: error.message,
-            })
+            ;(async () => {
+              try {
+                const cloned = error.response.clone()
+                const text = await cloned.text()
+                console.error('[API] Server error:', {
+                  url: error.request.url,
+                  status,
+                  message: error.message,
+                  body: text,
+                })
+              } catch {
+                console.error('[API] Server error:', {
+                  url: error.request.url,
+                  status,
+                  message: error.message,
+                })
+              }
+            })()
           }
         }
         return error

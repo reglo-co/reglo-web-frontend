@@ -1,12 +1,21 @@
 import { ApiResponse } from '@core/entities'
-import { OrganizationRepository } from '@organizations/repositories'
 import { auth0 } from '@lib/auth0'
+import { OrganizationRepository } from '@organizations/repositories'
+import { recordOrganizationCreated } from '@updates/api/record-update.api'
 
 const handler = auth0.withApiAuthRequired(async function handler(
   request: Request
 ) {
   const session = await auth0.getSession()
   const ownerEmail = session?.user?.email
+  const actorId =
+    (session?.user as { sub?: string } | undefined)?.sub ??
+    ownerEmail ??
+    'unknown'
+  const actorName =
+    (session?.user as { name?: string } | undefined)?.name ??
+    ownerEmail ??
+    'unknown'
   const { name, slug } = await request.json()
 
   if (!ownerEmail) {
@@ -16,14 +25,23 @@ const handler = auth0.withApiAuthRequired(async function handler(
   const repository = new OrganizationRepository()
 
   try {
-    const result = await repository.create({
+    const orgId = await repository.create({
       name,
       slug,
       ownerEmail,
       plan: 'starter',
     })
 
-    return ApiResponse.created(result)
+    if (orgId && typeof orgId === 'string') {
+      await recordOrganizationCreated({
+        orgId,
+        orgSlug: slug,
+        actorId,
+        actorName,
+      })
+    }
+
+    return ApiResponse.created(orgId)
   } catch (error) {
     if (error instanceof Error) {
       return ApiResponse.internalServerError(

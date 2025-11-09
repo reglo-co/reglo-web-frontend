@@ -21,7 +21,7 @@ export function BreadcrumbAuto({ breadcrumb }: BreadcrumbAutoProps) {
             {index > 0 && <BreadcrumbSeparator />}
             <BreadcrumbItem className="text-support">
               {breadcrumb.length === index + 1 ? (
-                <span className="text-primary cursor-default">
+                <span className="text-foreground cursor-default">
                   {item.title}
                 </span>
               ) : (

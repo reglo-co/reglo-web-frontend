@@ -41,7 +41,9 @@
       "@users": ["./src/modules/users/index"],
       "@users/*": ["./src/modules/users/*"],
       "@invite": ["./src/modules/invite/index"],
-      "@invite/*": ["./src/modules/invite/*"]
+      "@invite/*": ["./src/modules/invite/*"],
+      "@updates": ["./src/modules/updates/index"],
+      "@updates/*": ["./src/modules/updates/*"]
     },
     "plugins": [
       {

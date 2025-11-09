@@ -163,7 +163,7 @@ export function UserTableList({
             onClick={() => setShowInvite((v) => !v)}
           >
             <Plus className="size-3.5" />
-            <span className="pt-0.5 text-sm font-medium">Novo usuário</span>
+            <span className="pt-0.5 text-sm font-medium">Convidar</span>
           </Button>
         </div>
       </div>

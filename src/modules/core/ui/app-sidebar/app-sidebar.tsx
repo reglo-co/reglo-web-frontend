@@ -12,6 +12,7 @@ import {
   GitBranch,
   Inbox,
   Mailbox,
+  Newspaper,
   Users,
 } from 'lucide-react'
 
@@ -67,6 +68,11 @@ const data = {
       title: 'Pessoas',
       url: '/people',
       icon: Users,
+    },
+    {
+      title: 'Atualizações',
+      url: '/updates',
+      icon: Newspaper,
     },
   ],
   navProject: [

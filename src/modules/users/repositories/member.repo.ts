@@ -17,6 +17,11 @@ export class MemberRepository {
     this.collection = new FirebaseCollection('members')
   }
 
+  public async withId(id: string): Promise<MemberRecord | null> {
+    const result = (await this.collection.withId(id)) as MemberRecord | undefined
+    return result ?? null
+  }
+
   public async byOrganizationSlug(orgSlug: string): Promise<MemberRecord[]> {
     const result = await this.collection.query.equal('orgSlug', orgSlug).build()
     return result as MemberRecord[]
