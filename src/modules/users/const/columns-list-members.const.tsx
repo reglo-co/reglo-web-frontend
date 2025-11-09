@@ -1,3 +1,4 @@
+import { useUser } from '@auth0/nextjs-auth0'
 import { getInitials, getTimeAgo } from '@core/helpers'
 import {
   Avatar,
@@ -7,7 +8,19 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@core/ui/primitives'
+import { useCancelInvite } from '@invite/hooks'
+import { useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
+import { Badge } from '@ui/primitives'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@ui/primitives/dropdown-menu'
+import { useRemoveMember } from '@users/hooks/use-remove-member.hook'
+import { Loader2, MoreHorizontal, Trash2, XCircle } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { OrganizationMember } from '../types'
 import { TableHeaderButton } from '../ui/table-header-button'
 
@@ -16,7 +29,9 @@ const ROLE_LABEL: Record<OrganizationMember['role'], string> = {
   member: 'Membro',
 }
 
-export const COLUMNS_LIST_MEMBERS: ColumnDef<OrganizationMember>[] = [
+export const COLUMNS_LIST_MEMBERS = (
+  organization: string
+): ColumnDef<OrganizationMember>[] => [
   {
     id: 'name',
     accessorKey: 'name',
@@ -61,6 +76,27 @@ export const COLUMNS_LIST_MEMBERS: ColumnDef<OrganizationMember>[] = [
     },
   },
   {
+    id: 'status',
+    header: () => <TableHeaderButton dir={false}>Status</TableHeaderButton>,
+    cell: ({ row }) => {
+      const member = row.original
+      if (member.status === 'pending') {
+        return (
+          <div className="pl-3">
+            <Badge variant="secondary">Convite enviado</Badge>
+          </div>
+        )
+      }
+      return (
+        <span className="pl-3">
+          <Badge variant="secondary" className="bg-success text-foreground">
+            Ativo
+          </Badge>
+        </span>
+      )
+    },
+  },
+  {
     id: 'joinedAt',
     accessorKey: 'joinedAt',
     header: ({ column }) => {
@@ -88,6 +124,93 @@ export const COLUMNS_LIST_MEMBERS: ColumnDef<OrganizationMember>[] = [
             }).format(date)}
           </TooltipContent>
         </Tooltip>
+      )
+    },
+  },
+  {
+    id: 'actions',
+    header: () => <TableHeaderButton dir={false}>Ações</TableHeaderButton>,
+    cell: ({ row }) => {
+      const { user } = useUser()
+      const member = row.original
+      const cancelInvite = useCancelInvite(organization)
+      const removeMember = useRemoveMember(organization)
+      const canRemove = member.role !== 'owner' && member.status !== 'pending'
+      const canCancel = member.status === 'pending'
+      const isCurrentUser = user?.email === member.email
+      const router = useRouter()
+      const queryClient = useQueryClient()
+
+      if (member.role === 'owner') {
+        return null
+      }
+
+      async function handlerExcludeMember() {
+        if (isCurrentUser) {
+          try {
+            await removeMember.mutateAsync({
+              memberId: member.id,
+              skipInvalidate: true,
+            })
+            queryClient.removeQueries({
+              queryKey: ['list-my-organizations-availables'],
+            })
+            queryClient.removeQueries({
+              queryKey: ['list-my-pending-invites'],
+            })
+            queryClient.invalidateQueries({
+              predicate: (q) =>
+                Array.isArray(q.queryKey) &&
+                q.queryKey[0] === 'list-organization-members',
+            })
+            router.replace('/console')
+          } catch {
+            console.error('Erro ao excluir membro')
+          }
+        } else {
+          removeMember.mutate({ memberId: member.id })
+        }
+      }
+
+      return (
+        <div className="pl-3">
+          <DropdownMenu>
+            <DropdownMenuTrigger className="text-muted-foreground hover:bg-accent flex h-8 w-8 items-center justify-center rounded-md border">
+              <MoreHorizontal className="size-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="rounded-lg">
+              {canCancel && (
+                <DropdownMenuItem
+                  onClick={() => cancelInvite.mutate(member.id)}
+                  className="text-destructive focus:text-destructive"
+                >
+                  {cancelInvite.isPending ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <XCircle className="text-destructive" />
+                  )}
+                  <span>Cancelar convite</span>
+                </DropdownMenuItem>
+              )}
+              {canRemove && (
+                <DropdownMenuItem
+                  onClick={handlerExcludeMember}
+                  className="text-destructive focus:text-destructive"
+                >
+                  {removeMember.isPending ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="text-destructive" />
+                  )}
+
+                  <span>
+                    {isCurrentUser ? 'Sair da organização' : 'Excluir membro'}
+                  </span>
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       )
     },
   },

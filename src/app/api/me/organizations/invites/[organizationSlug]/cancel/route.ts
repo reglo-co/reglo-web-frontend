@@ -1,0 +1,51 @@
+import { ApiResponse } from '@core/entities'
+import { InviteRepository } from '@invite/repositories/invite.repo'
+import { auth0 } from '@lib/auth0'
+import { OrganizationRepository } from '@organizations/repositories'
+import { z } from 'zod'
+
+const handler = auth0.withApiAuthRequired(async function handler(
+  req: Request,
+  context: { params?: Promise<Record<string, string | string[]>> }
+) {
+  if (!context.params) {
+    return ApiResponse.badRequest('Missing organization slug')
+  }
+
+  const params = await context.params
+  const organizationSlug = params.organizationSlug
+
+  if (!organizationSlug || typeof organizationSlug !== 'string') {
+    return ApiResponse.badRequest('Invalid organization slug')
+  }
+
+  const session = await auth0.getSession()
+  const userEmail = session?.user?.email
+
+  if (!userEmail) {
+    return ApiResponse.unauthorized('Unauthorized')
+  }
+
+  const orgRepo = new OrganizationRepository()
+  const canAccess = await orgRepo.me.hasAccess(organizationSlug, userEmail)
+  if (!canAccess) {
+    return ApiResponse.forbidden('Forbidden')
+  }
+
+  const body = await req.json().catch(() => ({}))
+  const schema = z.object({
+    inviteId: z.string().min(1),
+  })
+  const parsed = schema.safeParse(body)
+  if (!parsed.success) {
+    return ApiResponse.badRequest('Invalid payload')
+  }
+  const invitesRepo = new InviteRepository()
+  await invitesRepo.cancelById(parsed.data.inviteId)
+  return ApiResponse.ok(true)
+})
+
+export const POST = handler as (
+  req: Request,
+  context: { params?: Promise<Record<string, string | string[]>> }
+) => Promise<Response> | Response

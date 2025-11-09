@@ -10,7 +10,7 @@ export async function listOrganizationMembersService(
     )
     return response
   } catch (error) {
-    console.error(error)
+    // console.error(error)
     return {
       list: [],
       total: 0,

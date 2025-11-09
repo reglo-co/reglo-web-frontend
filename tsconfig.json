@@ -39,7 +39,9 @@
       "@projects": ["./src/modules/projects/index"],
       "@projects/*": ["./src/modules/projects/*"],
       "@users": ["./src/modules/users/index"],
-      "@users/*": ["./src/modules/users/*"]
+      "@users/*": ["./src/modules/users/*"],
+      "@invite": ["./src/modules/invite/index"],
+      "@invite/*": ["./src/modules/invite/*"]
     },
     "plugins": [
       {

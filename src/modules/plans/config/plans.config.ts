@@ -7,7 +7,7 @@ export const PLANS: Plan[] = [
     show: true,
     description: 'Ideal para explorar a Reglo e testar as funcionalidades.',
     features: {
-      maxCollaborators: 1,
+      maxCollaborators: 3,
       maxProjects: 2,
       maxRules: 40,
       maxTeams: 1,

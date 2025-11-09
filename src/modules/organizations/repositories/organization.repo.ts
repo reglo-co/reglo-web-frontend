@@ -1,5 +1,6 @@
 import { FirebaseCollection } from '@lib/firebase'
 import { Organization } from '@organizations/types'
+import { MemberRepository } from '@users/repositories/member.repo'
 
 export type OrganizationMemberRecord = {
   email: string
@@ -30,12 +31,20 @@ export class MeOrganizationRepository {
   public async hasAccess(slug: string, userEmail: string) {
     const collection = new FirebaseCollection('organizations')
 
-    const organizations = await collection.query
+    const organizationsAsOwner = await collection.query
       .equal('slug', slug)
       .equal('ownerEmail', userEmail)
       .build()
 
-    return organizations.length > 0
+    if (organizationsAsOwner.length > 0) {
+      return true
+    }
+
+    const memberRepo = new MemberRepository()
+    const members = await memberRepo.byOrganizationSlug(slug)
+    const isMember = members.some((m) => m.email === userEmail)
+
+    return isMember
   }
 }
 
@@ -55,6 +64,15 @@ export class OrganizationRepository {
     }
 
     return result[0] as Organization
+  }
+
+  public async manyBySlug(slugs: string[]): Promise<Organization[]> {
+    if (slugs.length === 0) {
+      return []
+    }
+    const collection = new FirebaseCollection('organizations')
+    const result = await collection.query.in('slug', slugs).build()
+    return result as Organization[]
   }
 
   public async create(

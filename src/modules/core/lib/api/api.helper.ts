@@ -11,6 +11,12 @@ export type API_ENDPOINTS =
   | 'me/organizations/availables'
   | `me/organizations/access/${string}`
   | `me/organizations/members/${string}`
+  | `me/organizations/members/${string}/delete`
+  | `me/organizations/invites/${string}`
+  | `me/organizations/invites/${string}/cancel`
+  | 'me/invites/pending'
+  | `me/invites/${string}/accept`
+  | `me/invites/${string}/reject`
   | `projects/slug/available/${string}/${string}`
   | 'projects/create'
   | `me/projects/availables/${string}`
