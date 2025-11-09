@@ -3,11 +3,13 @@
 import { listMyProjectsByOrganizationService } from '@projects/services'
 import { useQuery } from '@tanstack/react-query'
 
-export function useListOrganizationProjects(organizationSlug: string) {
+export function useListOrganizationProjects(organizationSlug?: string) {
   const response = useQuery({
     queryKey: ['list-organization-projects', organizationSlug],
     queryFn: async () => {
-      const result = await listMyProjectsByOrganizationService(organizationSlug!)
+      const result = await listMyProjectsByOrganizationService(
+        organizationSlug!
+      )
       return result
     },
     enabled: !!organizationSlug,
@@ -24,5 +26,3 @@ export function useListOrganizationProjects(organizationSlug: string) {
     error: response.error,
   }
 }
-
-

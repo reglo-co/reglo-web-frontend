@@ -5,7 +5,6 @@ import { Container } from '@core/ui'
 import { Skeleton } from '@core/ui/primitives'
 import { useListOrganizationProjects } from '@projects/hooks'
 import { ProjectEmpty, ProjectTableList } from '@projects/ui'
-import { CreateProjectDialog } from '@projects/ui/dialogs'
 import { useParams } from 'next/navigation'
 
 export default function Page() {
@@ -38,7 +37,6 @@ export default function Page() {
     return (
       <Container className="pt-10">
         <ProjectEmpty className="-mt-18" />
-        <CreateProjectDialog />
       </Container>
     )
   }
@@ -50,7 +48,6 @@ export default function Page() {
         organization={organization}
         isFetching={isFetching}
       />
-      <CreateProjectDialog />
     </Container>
   )
 }

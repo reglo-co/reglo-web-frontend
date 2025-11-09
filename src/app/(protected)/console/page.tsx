@@ -13,8 +13,6 @@ export default function Page() {
   const showEmptyOrganizations = total === 0 && !isLoading
   const showListOrganizations = total > 0 && !isLoading
 
-  console.log('total', total)
-
   return (
     <Fragment>
       <HeaderConsole />

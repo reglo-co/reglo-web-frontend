@@ -39,7 +39,7 @@ export default function Page() {
       return new Intl.DateTimeFormat('pt-BR', {
         dateStyle: 'short',
         timeStyle: 'short',
-        timeZone: 'UTC',
+        timeZone: 'America/Sao_Paulo',
       }).format(d)
     } catch {
       return value
@@ -75,10 +75,10 @@ export default function Page() {
                 return (
                   <div key={item.id} className="flex flex-col">
                     <div className="flex items-start gap-3 py-4">
-                      <div className="rounded-full border p-2">
+                      <div className="mt-0.5 rounded-full border p-2">
                         <Icon className="size-4" />
                       </div>
-                      <div className="flex flex-1 flex-col">
+                      <div className="flex flex-1 flex-col gap-1">
                         <div className="text-sm">{item.message}</div>
                         <div
                           className="text-muted-foreground text-xs"

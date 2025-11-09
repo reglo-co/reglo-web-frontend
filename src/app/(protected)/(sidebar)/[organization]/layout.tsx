@@ -6,6 +6,7 @@ import {
   SidebarTrigger,
 } from '@core/ui/primitives'
 import { OrganizationProtected } from '@core/ui/protected'
+import { CreateProjectDialog } from '@projects/ui'
 import { PropsWithChildren } from 'react'
 
 export default async function Layout({
@@ -26,6 +27,7 @@ export default async function Layout({
           {children}
         </SidebarInset>
       </SidebarProvider>
+      <CreateProjectDialog />
     </OrganizationProtected>
   )
 }
