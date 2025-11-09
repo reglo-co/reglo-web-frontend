@@ -26,7 +26,10 @@ const handler = auth0.withApiAuthRequired(async function handler(
   }
 
   const orgRepo = new OrganizationRepository()
-  const canAccess = await orgRepo.me.userHasAccessToOrganization(organizationSlug, userEmail)
+  const canAccess = await orgRepo.me.userHasAccessToOrganization(
+    organizationSlug,
+    userEmail
+  )
   if (!canAccess) {
     return ApiResponse.forbidden('Forbidden')
   }
@@ -51,5 +54,3 @@ export const GET = handler as (
   req: Request,
   context: { params?: Promise<Record<string, string | string[]>> }
 ) => Promise<Response> | Response
-
-

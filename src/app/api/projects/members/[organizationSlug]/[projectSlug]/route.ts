@@ -1,8 +1,8 @@
 import { ApiResponse } from '@core/entities'
 import { auth0 } from '@lib/auth0'
 import { OrganizationRepository } from '@organizations/repositories'
-import { ProjectRepository } from '@projects/repositories'
 import { ProjectMemberRepository } from '@projects-members/repositories'
+import { ProjectRepository } from '@projects/repositories'
 
 type RouteContext = {
   params?: Promise<Record<string, string | string[]>>
@@ -37,7 +37,10 @@ const handler = auth0.withApiAuthRequired(async function handler(
   }
 
   const orgRepo = new OrganizationRepository()
-  const canAccessOrg = await orgRepo.me.userHasAccessToOrganization(organizationSlug, userEmail)
+  const canAccessOrg = await orgRepo.me.userHasAccessToOrganization(
+    organizationSlug,
+    userEmail
+  )
 
   if (!canAccessOrg) {
     return ApiResponse.forbidden('Forbidden')
@@ -52,7 +55,10 @@ const handler = auth0.withApiAuthRequired(async function handler(
   const membersRepo = new ProjectMemberRepository()
 
   if (request.method === 'GET') {
-    const members = await membersRepo.findByProject(organizationSlug, projectSlug)
+    const members = await membersRepo.findByProject(
+      organizationSlug,
+      projectSlug
+    )
     const list = [
       {
         id: project.ownerEmail,
@@ -132,5 +138,3 @@ export const DELETE = handler as (
   req: Request,
   context: RouteContext
 ) => Promise<Response> | Response
-
-

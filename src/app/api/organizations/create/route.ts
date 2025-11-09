@@ -32,14 +32,12 @@ const handler = auth0.withApiAuthRequired(async function handler(
       plan: 'starter',
     })
 
-    if (orgId && typeof orgId === 'string') {
-      await recordOrganizationCreated({
-        orgId,
-        orgSlug: slug,
-        actorId,
-        actorName,
-      })
-    }
+    await recordOrganizationCreated({
+      orgId,
+      orgSlug: slug,
+      actorId,
+      actorName,
+    })
 
     return ApiResponse.created(orgId)
   } catch (error) {

@@ -1,8 +1,8 @@
 import { ApiResponse } from '@core/entities'
 import { InviteRepository } from '@invite/repositories/invite.repo'
 import { auth0 } from '@lib/auth0'
-import { MemberRepository } from '@users/repositories/member.repo'
 import { recordMemberAdded } from '@updates/api/record-update.api'
+import { MemberRepository } from '@users/repositories/member.repo'
 
 const handler = auth0.withApiAuthRequired(async function handler(
   _: Request,

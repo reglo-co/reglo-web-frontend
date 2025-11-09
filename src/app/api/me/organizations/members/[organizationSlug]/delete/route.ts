@@ -1,9 +1,9 @@
 import { ApiResponse } from '@core/entities'
 import { auth0 } from '@lib/auth0'
 import { OrganizationRepository } from '@organizations/repositories'
+import { recordMemberRemoved } from '@updates/api/record-update.api'
 import { MemberRepository } from '@users/repositories/member.repo'
 import { z } from 'zod'
-import { recordMemberRemoved } from '@updates/api/record-update.api'
 
 const handler = auth0.withApiAuthRequired(async function handler(
   req: Request,
@@ -22,16 +22,24 @@ const handler = auth0.withApiAuthRequired(async function handler(
 
   const session = await auth0.getSession()
   const userEmail = session?.user?.email
-  const actorId = (session?.user as { sub?: string } | undefined)?.sub ?? userEmail ?? 'unknown'
+  const actorId =
+    (session?.user as { sub?: string } | undefined)?.sub ??
+    userEmail ??
+    'unknown'
   const actorName =
-    (session?.user as { name?: string } | undefined)?.name ?? userEmail ?? 'unknown'
+    (session?.user as { name?: string } | undefined)?.name ??
+    userEmail ??
+    'unknown'
 
   if (!userEmail) {
     return ApiResponse.unauthorized('Unauthorized')
   }
 
   const orgRepo = new OrganizationRepository()
-  const canAccess = await orgRepo.me.userHasAccessToOrganization(organizationSlug, userEmail)
+  const canAccess = await orgRepo.me.userHasAccessToOrganization(
+    organizationSlug,
+    userEmail
+  )
   if (!canAccess) {
     return ApiResponse.forbidden('Forbidden')
   }
@@ -61,5 +69,3 @@ export const POST = handler as (
   req: Request,
   context: { params?: Promise<Record<string, string | string[]>> }
 ) => Promise<Response> | Response
-
-

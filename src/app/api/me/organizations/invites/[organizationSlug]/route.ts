@@ -28,7 +28,10 @@ const handler = auth0.withApiAuthRequired(async function handler(
   }
 
   const orgRepo = new OrganizationRepository()
-  const canAccess = await orgRepo.me.userHasAccessToOrganization(organizationSlug, userEmail)
+  const canAccess = await orgRepo.me.userHasAccessToOrganization(
+    organizationSlug,
+    userEmail
+  )
   if (!canAccess) {
     return ApiResponse.forbidden('Forbidden')
   }
@@ -53,7 +56,8 @@ const handler = auth0.withApiAuthRequired(async function handler(
   const membersRepo = new MemberRepository()
   const invitesRepo = new InviteRepository()
 
-  const existingMembers = await membersRepo.findByOrganizationSlug(organizationSlug)
+  const existingMembers =
+    await membersRepo.findByOrganizationSlug(organizationSlug)
   const existingMemberEmails = new Set(
     existingMembers.map((m) => m.email.toLowerCase())
   )
