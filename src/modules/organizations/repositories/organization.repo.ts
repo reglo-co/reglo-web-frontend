@@ -1,6 +1,12 @@
 import { FirebaseCollection } from '@lib/firebase'
 import { Organization } from '@organizations/types'
 
+export type OrganizationMemberRecord = {
+  email: string
+  role: 'owner' | 'member'
+  joinedAt: string
+}
+
 type MeAllParams = {
   ownerEmail: string
 }
@@ -75,5 +81,28 @@ export class OrganizationRepository {
     const result = await collection.query.equal('slug', slug).build()
 
     return result.length === 0
+  }
+
+  public async members(slug: string): Promise<OrganizationMemberRecord[]> {
+    const collection = new FirebaseCollection('organizations')
+    const result = await collection.query.equal('slug', slug).build()
+
+    if (result.length === 0) {
+      return []
+    }
+
+    const organization = result[0] as Organization
+
+    if (!organization.ownerEmail) {
+      return []
+    }
+
+    return [
+      {
+        email: organization.ownerEmail,
+        role: 'owner',
+        joinedAt: organization.createdAt,
+      },
+    ]
   }
 }

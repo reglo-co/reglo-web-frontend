@@ -10,6 +10,7 @@ export type API_ENDPOINTS =
   | 'me/organizations/created'
   | 'me/organizations/availables'
   | `me/organizations/access/${string}`
+  | `me/organizations/members/${string}`
   | `projects/slug/available/${string}/${string}`
   | 'projects/create'
   | `me/projects/availables/${string}`
