@@ -9,7 +9,10 @@ export function useRemoveMember(organizationSlug: string) {
     mutationFn: async (variables: {
       memberId: string
       skipInvalidate?: boolean
-    }) => removeMemberService(organizationSlug, variables.memberId),
+    }) => {
+      const result = await removeMemberService(organizationSlug, variables.memberId)
+      return result.getDataOrDefault(false)
+    },
     onSuccess: (_data, variables) => {
       if (!variables?.skipInvalidate) {
         queryClient.invalidateQueries({

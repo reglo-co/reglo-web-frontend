@@ -16,9 +16,11 @@ export function useToggleProjectMember(
     mutationFn: async (params: { email: string; next: boolean }) => {
       const { email, next } = params
       if (next) {
-        await addProjectMemberService(organizationSlug, projectSlug, email)
+        const result = await addProjectMemberService(organizationSlug, projectSlug, email)
+        return result.getDataOrDefault(undefined)
       } else {
-        await removeProjectMemberService(organizationSlug, projectSlug, email)
+        const result = await removeProjectMemberService(organizationSlug, projectSlug, email)
+        return result.getDataOrDefault(undefined)
       }
     },
     onSuccess: () => {

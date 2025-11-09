@@ -6,7 +6,7 @@ export function useOwnerEmail(organizationSlug: string) {
     queryKey: ['owner-email', organizationSlug],
     queryFn: async () => {
       const result = await getOwnerEmail(organizationSlug)
-      return result
+      return result.getDataOrDefault(null)
     },
     enabled: !!organizationSlug,
     gcTime: 0,

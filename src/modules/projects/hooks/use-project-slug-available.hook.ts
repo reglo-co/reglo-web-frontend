@@ -11,8 +11,10 @@ export function useProjectSlugAvailable(
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ['project-slug-available', organizationSlug, slug],
-    queryFn: async () =>
-      checkProjectSlugAvailableService(organizationSlug!, slug!),
+    queryFn: async () => {
+      const result = await checkProjectSlugAvailableService(organizationSlug!, slug!)
+      return result.getDataOrDefault(false)
+    },
     enabled,
     gcTime: 0,
     staleTime: 0,

@@ -41,7 +41,8 @@ const handler = auth0.withApiAuthRequired(async function handler(
   }
 
   try {
-    const usersResult = await getAuth0UsersByEmailServer(emails)
+    const result = await getAuth0UsersByEmailServer(emails)
+    const usersResult = result.getDataOrDefault([])
     const users = usersResult.map(({ email, name, avatarUrl }) => ({
       email,
       name,

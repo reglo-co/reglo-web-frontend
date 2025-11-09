@@ -13,7 +13,8 @@ export function useListOrganizationMembers(organizationSlug?: string) {
           total: 0,
         }
       }
-      return listOrganizationMembersService(organizationSlug)
+      const result = await listOrganizationMembersService(organizationSlug)
+      return result.getDataOrDefault({ list: [], total: 0 })
     },
     enabled: !!organizationSlug,
   })

@@ -115,7 +115,8 @@ const handler = auth0.withApiAuthRequired(async function handler(
       membersRepo
     )
 
-    const users = await getAuth0UsersByEmailServer(Array.from(emailsSet))
+    const usersResult = await getAuth0UsersByEmailServer(Array.from(emailsSet))
+    const users = usersResult.getDataOrDefault([])
     const usersByEmail = new Map(
       users.map((user) => [user.email.toLowerCase(), user])
     )

@@ -6,7 +6,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 export function useRespondInvite() {
   const queryClient = useQueryClient()
   const accept = useMutation({
-    mutationFn: async (inviteId: string) => acceptInviteService(inviteId),
+    mutationFn: async (inviteId: string) => {
+      const result = await acceptInviteService(inviteId)
+      return result.getDataOrDefault(false)
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['list-my-pending-invites'] })
       queryClient.invalidateQueries({ queryKey: ['list-my-organizations'] })
@@ -21,7 +24,10 @@ export function useRespondInvite() {
     },
   })
   const reject = useMutation({
-    mutationFn: async (inviteId: string) => rejectInviteService(inviteId),
+    mutationFn: async (inviteId: string) => {
+      const result = await rejectInviteService(inviteId)
+      return result.getDataOrDefault(false)
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['list-my-pending-invites'] })
     },

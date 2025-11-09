@@ -6,7 +6,10 @@ import { listMyAvailablesOrganizationsService } from '@organizations/services/li
 export function useListMyAvailablesOrganizations() {
   const response = useQuery({
     queryKey: ['list-my-organizations-availables'],
-    queryFn: async () => listMyAvailablesOrganizationsService(),
+    queryFn: async () => {
+      const result = await listMyAvailablesOrganizationsService()
+      return result.getDataOrDefault({ list: [], total: 0 })
+    },
   })
 
   return {

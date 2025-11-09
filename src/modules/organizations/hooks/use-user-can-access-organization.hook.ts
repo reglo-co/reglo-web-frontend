@@ -8,13 +8,13 @@ export function useUserCanAccessOrganization(slug: string) {
     queryKey: ['user-can-access-organization', slug],
     queryFn: async () => {
       const result = await userCanAccessOrganizationService(slug!)
-      return result
+      return result.getDataOrDefault(false)
     },
     enabled: !!slug,
   })
 
   return {
-    userCanAccessOrganization: response.data,
+    userCanAccessOrganization: response.data ?? false,
     isLoading: response.isLoading,
     isSuccess: response.isSuccess,
     isFetching: response.isFetching,

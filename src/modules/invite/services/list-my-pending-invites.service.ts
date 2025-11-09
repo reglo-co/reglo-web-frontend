@@ -1,11 +1,21 @@
-import { api } from '@lib/api'
+import { Result } from '@core/entities'
+import { executeService } from '@core/lib/service-helpers'
 import { Invite } from '@invite/types'
+import { api } from '@lib/api'
 
-export async function listMyPendingInvitesService(): Promise<{
+const SERVICE_NAME = 'listMyPendingInvitesService'
+
+type ListMyPendingInvitesResponse = {
   list: Invite[]
   total: number
-}> {
-  return api.get<{ list: Invite[]; total: number }>('me/invites/pending')
 }
 
-
+export async function listMyPendingInvitesService(): Promise<
+  Result<ListMyPendingInvitesResponse>
+> {
+  return executeService(
+    SERVICE_NAME,
+    () => api.get<ListMyPendingInvitesResponse>('me/invites/pending'),
+    { fallback: { list: [], total: 0 } }
+  )
+}

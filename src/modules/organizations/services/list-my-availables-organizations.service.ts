@@ -1,13 +1,21 @@
+import { Result } from '@core/entities'
+import { executeService } from '@core/lib/service-helpers'
 import { api } from '@lib/api'
 import { Organization } from '@organizations/types'
 
-export async function listMyAvailablesOrganizationsService(): Promise<{
+const SERVICE_NAME = 'listMyAvailablesOrganizationsService'
+
+type ListOrganizationsResponse = {
   list: Organization[]
   total: number
-}> {
-  return api.get<{ list: Organization[]; total: number }>(
-    'me/organizations/availables'
-  )
 }
 
-
+export async function listMyAvailablesOrganizationsService(): Promise<
+  Result<ListOrganizationsResponse>
+> {
+  return executeService(
+    SERVICE_NAME,
+    () => api.get<ListOrganizationsResponse>('me/organizations/availables'),
+    { fallback: { list: [], total: 0 } }
+  )
+}

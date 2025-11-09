@@ -12,7 +12,10 @@ export function useUsersByEmail(emails: string[]) {
     error,
   } = useQuery({
     queryKey: ['auth0-users-by-email', ownerEmails],
-    queryFn: () => getAuth0UsersByEmailService(ownerEmails),
+    queryFn: async () => {
+      const result = await getAuth0UsersByEmailService(ownerEmails)
+      return result.getDataOrDefault([])
+    },
     enabled: ownerEmails.length > 0,
   })
 

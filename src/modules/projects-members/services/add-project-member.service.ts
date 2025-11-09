@@ -1,13 +1,18 @@
+import { Result } from '@core/entities'
 import { api } from '@lib/api'
+import { executeService } from '@core/lib/service-helpers'
+
+const SERVICE_NAME = 'addProjectMemberService'
 
 export async function addProjectMemberService(
   organizationSlug: string,
   projectSlug: string,
   email: string
-) {
-  await api.post(`projects/members/${organizationSlug}/${projectSlug}`, {
-    email,
-  })
+): Promise<Result<void>> {
+  return executeService(
+    SERVICE_NAME,
+    () => api.post<void>(`projects/members/${organizationSlug}/${projectSlug}`, { email })
+  )
 }
 
 

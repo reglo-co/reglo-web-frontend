@@ -1,4 +1,8 @@
+import { Result } from '@core/entities'
+import { ServiceLogger, executeService } from '@core/lib/service-helpers'
 import { env } from '@env'
+
+const SERVICE_NAME = 'getAuth0UsersByEmailServer'
 
 type Auth0ManagementTokenResponse = {
   access_token: string
@@ -41,7 +45,7 @@ async function getManagementToken(): Promise<string> {
 
   if (!response.ok) {
     const text = await response.text()
-    throw new Error(`[Auth0] token error: ${response.status} ${text}`)
+    throw new Error(`Auth0 token error: ${response.status} ${text}`)
   }
 
   const json = (await response.json()) as Auth0ManagementTokenResponse
@@ -52,48 +56,80 @@ async function fetchUserByEmail(
   token: string,
   email: string
 ): Promise<Auth0UserProfile | null> {
-  const audience = env.AUTH0_API_AUDIENCE
+  const result = await executeService(
+    `${SERVICE_NAME}.fetchUserByEmail`,
+    async () => {
+      const audience = env.AUTH0_API_AUDIENCE
 
-  const url = new URL(`${audience}/users-by-email`)
-  url.searchParams.set('email', email)
-  url.searchParams.set('fields', 'user_id,email,name,picture')
-  url.searchParams.set('include_fields', 'true')
+      const url = new URL(`${audience}/users-by-email`)
+      url.searchParams.set('email', email)
+      url.searchParams.set('fields', 'user_id,email,name,picture')
+      url.searchParams.set('include_fields', 'true')
 
-  const response = await fetch(url, {
-    headers: {
-      authorization: `Bearer ${token}`,
+      const response = await fetch(url, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+        cache: 'no-store',
+      })
+
+      if (!response.ok) {
+        const text = await response.text()
+        throw new Error(
+          `Auth0 users-by-email error: ${response.status} ${text}`
+        )
+      }
+
+      const data = (await response.json()) as Auth0ApiUser[]
+      const user = data[0]
+      if (!user) return null
+
+      const profile: Auth0UserProfile = {
+        id: user.user_id,
+        email: user.email,
+        name: user.name || user.email,
+        avatarUrl: user.picture,
+      }
+      return profile
     },
-    cache: 'no-store',
-  })
+    { fallback: null }
+  )
 
-  if (!response.ok) {
-    const text = await response.text()
-    throw new Error(`[Auth0] users-by-email error: ${response.status} ${text}`)
-  }
-
-  const data = (await response.json()) as Auth0ApiUser[]
-  const user = data[0]
-  if (!user) return null
-
-  const profile: Auth0UserProfile = {
-    id: user.user_id,
-    email: user.email,
-    name: user.name || user.email,
-    avatarUrl: user.picture,
-  }
-  return profile
+  return result.getDataOrDefault(null)
 }
 
 export async function getAuth0UsersByEmailServer(
   emails: string[]
-): Promise<Auth0UserProfile[]> {
-  if (!emails.length) return []
+): Promise<Result<Auth0UserProfile[]>> {
+  if (!emails.length) {
+    return Result.success([])
+  }
 
-  const token = await getManagementToken()
-  const results = await Promise.all<Auth0UserProfile | null>(
-    Array.from(new Set(emails)).map((email) =>
-      fetchUserByEmail(token, email).catch(() => null)
-    )
+  return executeService(
+    SERVICE_NAME,
+    async () => {
+      const token = await getManagementToken()
+      const uniqueEmails = Array.from(new Set(emails))
+
+      const results = await Promise.all<Auth0UserProfile | null>(
+        uniqueEmails.map((email) => fetchUserByEmail(token, email))
+      )
+
+      const validUsers = results.filter(
+        (user): user is Auth0UserProfile => user !== null
+      )
+
+      ServiceLogger.info(
+        SERVICE_NAME,
+        `Fetched ${validUsers.length}/${uniqueEmails.length} users`,
+        {
+          requested: uniqueEmails.length,
+          found: validUsers.length,
+        }
+      )
+
+      return validUsers
+    },
+    { fallback: [] }
   )
-  return results.filter((user): user is Auth0UserProfile => user !== null)
 }

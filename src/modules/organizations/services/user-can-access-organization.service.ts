@@ -1,4 +1,8 @@
+import { Result } from '@core/entities'
+import { executeService } from '@core/lib/service-helpers'
 import { api } from '@lib/api'
+
+const SERVICE_NAME = 'userCanAccessOrganizationService'
 
 type HasAccessResponse = {
   hasAccess: boolean
@@ -6,18 +10,15 @@ type HasAccessResponse = {
 
 export async function userCanAccessOrganizationService(
   slug: string
-): Promise<boolean> {
-  try {
-    const response = await api.get<HasAccessResponse>(
-      `me/organizations/access/${slug}`
-    )
-
-    return response.hasAccess
-  } catch (error) {
-    const errorMessage = `[userCanAccessOrganizationService] ${
-      error instanceof Error ? error.message : 'Unknown error occurred'
-    }`
-    console.error(errorMessage)
-    return false
-  }
+): Promise<Result<boolean>> {
+  return executeService(
+    SERVICE_NAME,
+    async () => {
+      const response = await api.get<HasAccessResponse>(
+        `me/organizations/access/${slug}`
+      )
+      return response.hasAccess
+    },
+    { fallback: false }
+  )
 }

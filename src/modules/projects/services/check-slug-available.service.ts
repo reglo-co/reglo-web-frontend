@@ -1,4 +1,8 @@
+import { Result } from '@core/entities'
+import { executeService } from '@core/lib/service-helpers'
 import { api } from '@lib/api'
+
+const SERVICE_NAME = 'checkProjectSlugAvailableService'
 
 type AvailabilityResponse = {
   isAvailable: boolean
@@ -7,18 +11,15 @@ type AvailabilityResponse = {
 export async function checkProjectSlugAvailableService(
   organizationSlug: string,
   slug: string
-): Promise<boolean> {
-  try {
-    const response = await api.get<AvailabilityResponse>(
-      `projects/slug/available/${organizationSlug}/${slug}`
-    )
-
-    return response.isAvailable
-  } catch (error) {
-    const errorMessage = `[checkProjectSlugAvailableService] ${
-      error instanceof Error ? error.message : 'Unknown error occurred'
-    }`
-    console.error(errorMessage)
-    return false
-  }
+): Promise<Result<boolean>> {
+  return executeService(
+    SERVICE_NAME,
+    async () => {
+      const response = await api.get<AvailabilityResponse>(
+        `projects/slug/available/${organizationSlug}/${slug}`
+      )
+      return response.isAvailable
+    },
+    { fallback: false }
+  )
 }

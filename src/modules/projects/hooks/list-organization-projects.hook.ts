@@ -10,7 +10,7 @@ export function useListOrganizationProjects(organizationSlug?: string) {
       const result = await listMyProjectsByOrganizationService(
         organizationSlug!
       )
-      return result
+      return result.getDataOrDefault({ list: [], total: 0 })
     },
     enabled: !!organizationSlug,
   })

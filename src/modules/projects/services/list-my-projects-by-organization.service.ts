@@ -1,5 +1,9 @@
+import { Result } from '@core/entities'
+import { executeService } from '@core/lib/service-helpers'
 import { api } from '@lib/api'
 import type { ProjectTable } from '@projects/types'
+
+const SERVICE_NAME = 'listMyProjectsByOrganizationService'
 
 type ListMyProjectsByOrganizationResponse = {
   list: ProjectTable[]
@@ -8,19 +12,13 @@ type ListMyProjectsByOrganizationResponse = {
 
 export async function listMyProjectsByOrganizationService(
   organizationSlug: string
-): Promise<ListMyProjectsByOrganizationResponse> {
-  try {
-    const response = await api.get<ListMyProjectsByOrganizationResponse>(
-      `me/projects/availables/${organizationSlug}`
-    )
-    return response
-  } catch (error) {
-    console.error(error)
-    return {
-      list: [],
-      total: 0,
-    }
-  }
+): Promise<Result<ListMyProjectsByOrganizationResponse>> {
+  return executeService(
+    SERVICE_NAME,
+    () =>
+      api.get<ListMyProjectsByOrganizationResponse>(
+        `me/projects/availables/${organizationSlug}`
+      ),
+    { fallback: { list: [], total: 0 } }
+  )
 }
-
-

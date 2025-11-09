@@ -1,22 +1,18 @@
 import { Result } from '@core/entities'
+import { executeService } from '@core/lib/service-helpers'
 import { api } from '@lib/api'
 import { Project } from '@projects/types'
+
+const SERVICE_NAME = 'getProjectBySlugService'
 
 export async function getProjectBySlugService(
   organizationSlug: string,
   projectSlug: string
 ): Promise<Result<Project | null>> {
-  try {
-    const response = await api.get<Project | null>(
-      `projects/${organizationSlug}/${projectSlug}`
-    )
-
-    return Result.success(response)
-  } catch (error) {
-    const errorMessage = `[getProjectBySlugService] ${
-      error instanceof Error ? error.message : 'Unknown error occurred'
-    }`
-    return Result.failure(new Error(errorMessage))
-  }
+  return executeService(
+    SERVICE_NAME,
+    () =>
+      api.get<Project | null>(`projects/${organizationSlug}/${projectSlug}`),
+    { fallback: null }
+  )
 }
-

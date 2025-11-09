@@ -6,7 +6,10 @@ import { listMyPendingInvitesService } from '@invite/services'
 export function useListMyPendingInvites() {
   const response = useQuery({
     queryKey: ['list-my-pending-invites'],
-    queryFn: async () => listMyPendingInvitesService(),
+    queryFn: async () => {
+      const result = await listMyPendingInvitesService()
+      return result.getDataOrDefault({ list: [], total: 0 })
+    },
   })
 
   return {

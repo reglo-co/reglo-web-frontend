@@ -8,7 +8,7 @@ export function useListMyOrganizations() {
     queryKey: ['list-my-organizations'],
     queryFn: async () => {
       const result = await listMyOrganizationsService()
-      return result
+      return result.getDataOrDefault({ list: [], total: 0 })
     },
   })
 

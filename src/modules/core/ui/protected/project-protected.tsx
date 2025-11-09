@@ -7,7 +7,8 @@ export async function ProjectProtected({
   organization,
   project,
 }: PropsWithChildren & { organization: string; project: string }) {
-  const { list } = await listMyProjectsByOrganizationService(organization)
+  const result = await listMyProjectsByOrganizationService(organization)
+  const { list } = result.getDataOrDefault({ list: [], total: 0 })
   const hasProjectAccess = list.some((p) => p.slug === project)
 
   if (!hasProjectAccess) {

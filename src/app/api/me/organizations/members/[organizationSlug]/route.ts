@@ -14,7 +14,12 @@ import {
 import { getSessionData } from '@lib/api/session.helpers'
 
 function createProfileMap(
-  profiles: Awaited<ReturnType<typeof getAuth0UsersByEmailServer>>
+  profiles: Array<{
+    id: string
+    email: string
+    name: string
+    avatarUrl?: string
+  }>
 ) {
   return new Map(
     profiles.map((profile) => [profile.email.toLowerCase(), profile])
@@ -96,7 +101,8 @@ const handler = auth0.withApiAuthRequired(async function handler(
       )
     )
 
-    const profiles = await getAuth0UsersByEmailServer(emails)
+    const profilesResult = await getAuth0UsersByEmailServer(emails)
+    const profiles = profilesResult.getDataOrDefault([])
     const profilesByEmail = createProfileMap(profiles)
 
     const activeOwners = mapToOrganizationMembers(
