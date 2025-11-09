@@ -1,7 +1,7 @@
-import { ErrorBoundary } from '@ui/components/ErrorBoundary'
 import { Auth0Provider } from '@auth0/nextjs-auth0'
 import { Providers } from '@providers/index'
 import '@styles/globals.css'
+import { ErrorBoundary } from '@ui/components/ErrorBoundary'
 import type { Metadata } from 'next'
 import { ABeeZee } from 'next/font/google'
 import type { PropsWithChildren } from 'react'
@@ -20,17 +20,17 @@ export const metadata: Metadata = {
   icons: [
     {
       rel: 'icon',
-      url: '/favicon/light.svg',
+      url: '/favicon/favicon.svg',
       media: '(prefers-color-scheme: light)',
     },
     {
       rel: 'icon',
-      url: '/favicon/dark.svg',
+      url: '/favicon/favicon.svg',
       media: '(prefers-color-scheme: dark)',
     },
     {
       rel: 'icon',
-      url: '/favicon/light.svg',
+      url: '/favicon/favicon.svg',
     },
   ],
 }
