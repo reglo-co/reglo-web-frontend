@@ -1,49 +1,45 @@
 import { ApiResponse } from '@core/entities'
 import { OrganizationRepository } from '@organizations/repositories'
 import { auth0 } from '@lib/auth0'
+import {
+  getSingleParam,
+  handleApiError,
+  RouteContext,
+  ApiRouteHandler,
+} from '@lib/api'
+import { getSessionData } from '@lib/api/session.helpers'
 
 const handler = auth0.withApiAuthRequired(async function handler(
   _: Request,
-  context: { params?: Promise<Record<string, string | string[]>> }
+  context: RouteContext
 ) {
-  if (!context.params) {
-    return ApiResponse.badRequest('Missing slug parameter')
+  const paramResult = await getSingleParam(context, 'slug')
+
+  if (!paramResult.success) {
+    return paramResult.response
   }
 
-  const params = await context.params
-  const slug = params.slug
+  const { value: slug } = paramResult
 
-  if (!slug || typeof slug !== 'string') {
-    return ApiResponse.badRequest('Invalid slug parameter')
+  const sessionResult = await getSessionData()
+
+  if (!sessionResult.success) {
+    return sessionResult.response
   }
 
-  const session = await auth0.getSession()
-  const ownerEmail = session?.user?.email
-
-  if (!ownerEmail) {
-    return ApiResponse.unauthorized('Unauthorized')
-  }
-
-  const repository = new OrganizationRepository()
+  const { userEmail } = sessionResult.data
 
   try {
-    const hasAccess = await repository.me.userHasAccessToOrganization(slug, ownerEmail)
+    const repository = new OrganizationRepository()
+    const hasAccess = await repository.me.userHasAccessToOrganization(
+      slug,
+      userEmail
+    )
 
     return ApiResponse.ok({ hasAccess })
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return ApiResponse.internalServerError(
-        `[GET /me/organizations/access/${slug}] ${error.message}`
-      )
-    }
-
-    return ApiResponse.internalServerError(
-      `[GET /me/organizations/access/${slug}] ${error}`
-    )
+  } catch (error) {
+    return handleApiError(error, `GET /me/organizations/access/${slug}`)
   }
 })
 
-export const GET = handler as (
-  req: Request,
-  context: { params?: Promise<Record<string, string | string[]>> }
-) => Promise<Response> | Response
+export const GET = handler as ApiRouteHandler

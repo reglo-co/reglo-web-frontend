@@ -2,34 +2,40 @@ import { ApiResponse } from '@core/entities'
 import { auth0 } from '@lib/auth0'
 import { OrganizationRepository } from '@organizations/repositories'
 import { UpdatesRepository } from '@updates/repositories/updates.repo'
+import {
+  getSingleParam,
+  handleApiError,
+  RouteContext,
+  ApiRouteHandler,
+} from '@lib/api'
+import { getSessionData } from '@lib/api/session.helpers'
 
 const handler = auth0.withApiAuthRequired(async function handler(
   _: Request,
-  context: { params?: Promise<Record<string, string | string[]>> }
+  context: RouteContext
 ) {
-  if (!context.params) {
-    return ApiResponse.badRequest('Missing organization slug')
+  const paramResult = await getSingleParam(context, 'organizationSlug')
+
+  if (!paramResult.success) {
+    return paramResult.response
   }
 
-  const params = await context.params
-  const organizationSlug = params.organizationSlug
+  const { value: organizationSlug } = paramResult
 
-  if (!organizationSlug || typeof organizationSlug !== 'string') {
-    return ApiResponse.badRequest('Invalid organization slug')
+  const sessionResult = await getSessionData()
+
+  if (!sessionResult.success) {
+    return sessionResult.response
   }
 
-  const session = await auth0.getSession()
-  const userEmail = session?.user?.email
-
-  if (!userEmail) {
-    return ApiResponse.unauthorized('Unauthorized')
-  }
+  const { userEmail } = sessionResult.data
 
   const orgRepo = new OrganizationRepository()
   const canAccess = await orgRepo.me.userHasAccessToOrganization(
     organizationSlug,
     userEmail
   )
+
   if (!canAccess) {
     return ApiResponse.forbidden('Forbidden')
   }
@@ -39,18 +45,11 @@ const handler = auth0.withApiAuthRequired(async function handler(
     const list = await repo.findByOrganizationSlug(organizationSlug, 50)
     return ApiResponse.ok(list)
   } catch (error) {
-    if (error instanceof Error) {
-      return ApiResponse.internalServerError(
-        `[GET /me/organizations/updates/${organizationSlug}] ${error.message}`
-      )
-    }
-    return ApiResponse.internalServerError(
-      `[GET /me/organizations/updates/${organizationSlug}] ${error}`
+    return handleApiError(
+      error,
+      `GET /me/organizations/updates/${organizationSlug}`
     )
   }
 })
 
-export const GET = handler as (
-  req: Request,
-  context: { params?: Promise<Record<string, string | string[]>> }
-) => Promise<Response> | Response
+export const GET = handler as ApiRouteHandler

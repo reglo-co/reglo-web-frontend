@@ -2,50 +2,84 @@ import { ApiResponse } from '@core/entities'
 import { auth0 } from '@lib/auth0'
 import { OrganizationRepository } from '@organizations/repositories'
 import { MemberRepository } from '@users/repositories/member.repo'
+import { SimpleApiRouteHandler } from '@lib/api'
+import { getSessionData } from '@lib/api/session.helpers'
 
-const handler = auth0.withApiAuthRequired(async function handler() {
-  const session = await auth0.getSession()
-  const userEmail = session?.user?.email
-  const userId = (session?.user as { sub?: string } | undefined)?.sub
+type Organization = Awaited<
+  ReturnType<OrganizationRepository['findOneBySlug']>
+>
 
-  if (!userEmail || !userId) {
-    return ApiResponse.unauthorized('Unauthorized')
-  }
-
-  const organizationRepository = new OrganizationRepository()
-  const ownedOrganizations = await organizationRepository.me.findAllCreatedByOwner({ ownerEmail: userEmail })
-
-  const memberRepository = new MemberRepository()
+async function fetchMemberOrganizations(
+  memberRepository: MemberRepository,
+  organizationRepository: OrganizationRepository,
+  userId: string
+): Promise<Organization[]> {
   const userMemberships = await memberRepository.findByUserId(userId)
+  const organizationsBySlug = new Map<string, Organization>()
+  const memberOrganizations: Organization[] = []
 
-  const organizationsBySlug = new Map<string, Awaited<ReturnType<typeof organizationRepository.findOneBySlug>>>()
-  const memberOrganizations = []
-  
   for (const membership of userMemberships) {
     if (!organizationsBySlug.has(membership.orgSlug)) {
-      const organization = await organizationRepository.findOneBySlug(membership.orgSlug)
+      const organization = await organizationRepository.findOneBySlug(
+        membership.orgSlug
+      )
       organizationsBySlug.set(membership.orgSlug, organization)
     }
+
     const organization = organizationsBySlug.get(membership.orgSlug)
     if (organization) {
       memberOrganizations.push(organization)
     }
   }
 
-  const uniqueOrganizationsById = new Map<string, unknown>()
-  const allOrganizations = [...ownedOrganizations, ...memberOrganizations]
-  
-  for (const organization of allOrganizations) {
-    if (organization && typeof organization === 'object' && 'id' in organization && (organization as any).id) {
-      uniqueOrganizationsById.set((organization as any).id as string, organization)
+  return memberOrganizations
+}
+
+function deduplicateOrganizations(organizations: Organization[]) {
+  const uniqueOrganizationsById = new Map<string, Organization>()
+
+  for (const organization of organizations) {
+    if (
+      organization &&
+      typeof organization === 'object' &&
+      'id' in organization &&
+      organization.id
+    ) {
+      uniqueOrganizationsById.set(organization.id as string, organization)
     }
   }
-  
-  const list = Array.from(uniqueOrganizationsById.values())
+
+  return Array.from(uniqueOrganizationsById.values())
+}
+
+const handler = auth0.withApiAuthRequired(async function handler() {
+  const sessionResult = await getSessionData()
+
+  if (!sessionResult.success) {
+    return sessionResult.response
+  }
+
+  const { userEmail, userId } = sessionResult.data
+
+  const organizationRepository = new OrganizationRepository()
+  const ownedOrganizations =
+    await organizationRepository.me.findAllCreatedByOwner({
+      ownerEmail: userEmail,
+    })
+
+  const memberRepository = new MemberRepository()
+  const memberOrganizations = await fetchMemberOrganizations(
+    memberRepository,
+    organizationRepository,
+    userId
+  )
+
+  const allOrganizations = [...ownedOrganizations, ...memberOrganizations]
+  const list = deduplicateOrganizations(allOrganizations)
 
   return ApiResponse.ok({ list, total: list.length })
 })
 
-export const GET = handler as () => Promise<Response> | Response
+export const GET = handler as SimpleApiRouteHandler
 
 

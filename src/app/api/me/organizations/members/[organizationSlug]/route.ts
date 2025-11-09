@@ -5,31 +5,68 @@ import { OrganizationRepository } from '@organizations/repositories'
 import { MemberRepository } from '@users/repositories/member.repo'
 import { getAuth0UsersByEmailServer } from '@users/services'
 import { OrganizationMember } from '@users/types'
+import {
+  getSingleParam,
+  handleApiError,
+  RouteContext,
+  ApiRouteHandler,
+} from '@lib/api'
+import { getSessionData } from '@lib/api/session.helpers'
+
+function createProfileMap(
+  profiles: Awaited<ReturnType<typeof getAuth0UsersByEmailServer>>
+) {
+  return new Map(
+    profiles.map((profile) => [profile.email.toLowerCase(), profile])
+  )
+}
+
+function mapToOrganizationMembers<
+  T extends { email: string; joinedAt?: Date | string; createdAt?: Date | string }
+>(
+  records: T[],
+  profilesByEmail: ReturnType<typeof createProfileMap>,
+  getRoleAndId: (record: T) => { role: 'owner' | 'member'; id: string },
+  status: 'active' | 'pending'
+): OrganizationMember[] {
+  return records.map((record) => {
+    const profile = profilesByEmail.get(record.email.toLowerCase())
+    const { role, id } = getRoleAndId(record)
+    const joinedAt = record.joinedAt ?? record.createdAt
+
+    return {
+      id,
+      name: profile?.name ?? record.email,
+      email: record.email,
+      avatarUrl: profile?.avatarUrl ?? null,
+      role,
+      joinedAt: joinedAt instanceof Date ? joinedAt.toISOString() : (joinedAt as string),
+      status,
+    }
+  })
+}
 
 const handler = auth0.withApiAuthRequired(async function handler(
   _: Request,
-  context: { params?: Promise<Record<string, string | string[]>> }
+  context: RouteContext
 ) {
-  if (!context.params) {
-    return ApiResponse.badRequest('Missing organization slug')
+  const paramResult = await getSingleParam(context, 'organizationSlug')
+
+  if (!paramResult.success) {
+    return paramResult.response
   }
 
-  const params = await context.params
-  const organizationSlug = params.organizationSlug
+  const { value: organizationSlug } = paramResult
 
-  if (!organizationSlug || typeof organizationSlug !== 'string') {
-    return ApiResponse.badRequest('Invalid organization slug')
+  const sessionResult = await getSessionData()
+
+  if (!sessionResult.success) {
+    return sessionResult.response
   }
 
-  const session = await auth0.getSession()
-  const userEmail = session?.user?.email
-
-  if (!userEmail) {
-    return ApiResponse.unauthorized('Unauthorized')
-  }
+  const { userEmail } = sessionResult.data
 
   const repository = new OrganizationRepository()
-
   const canAccess = await repository.me.userHasAccessToOrganization(
     organizationSlug,
     userEmail
@@ -40,7 +77,7 @@ const handler = auth0.withApiAuthRequired(async function handler(
   }
 
   try {
-    const records = await repository.findMembers(organizationSlug)
+    const ownerRecords = await repository.findMembers(organizationSlug)
     const membersRepo = new MemberRepository()
     const invitesRepo = new InviteRepository()
 
@@ -48,8 +85,6 @@ const handler = auth0.withApiAuthRequired(async function handler(
       await membersRepo.findByOrganizationSlug(organizationSlug)
     const pendingInvites =
       await invitesRepo.findPendingByOrganizationSlug(organizationSlug)
-
-    const ownerRecords = [...records]
 
     const emails = Array.from(
       new Set(
@@ -62,48 +97,31 @@ const handler = auth0.withApiAuthRequired(async function handler(
     )
 
     const profiles = await getAuth0UsersByEmailServer(emails)
-    const profilesByEmail = new Map(
-      profiles.map((profile) => [profile.email.toLowerCase(), profile])
+    const profilesByEmail = createProfileMap(profiles)
+
+    const activeOwners = mapToOrganizationMembers(
+      ownerRecords,
+      profilesByEmail,
+      (record) => ({
+        role: (record.role === 'owner' ? 'owner' : 'member') as 'owner' | 'member',
+        id: record.email,
+      }),
+      'active'
     )
 
-    const activeOwners: OrganizationMember[] = ownerRecords.map((record) => {
-      const profile = profilesByEmail.get(record.email.toLowerCase())
-      return {
-        id: profile?.id ?? record.email,
-        name: profile?.name ?? record.email,
-        email: record.email,
-        avatarUrl: profile?.avatarUrl ?? null,
-        role: record.role,
-        joinedAt: record.joinedAt,
-        status: 'active',
-      }
-    })
+    const activeMembers = mapToOrganizationMembers(
+      memberRecords,
+      profilesByEmail,
+      (record) => ({ role: 'member' as const, id: record.id }),
+      'active'
+    )
 
-    const activeMembers: OrganizationMember[] = memberRecords.map((m) => {
-      const profile = profilesByEmail.get(m.email.toLowerCase())
-      return {
-        id: m.id,
-        name: profile?.name ?? m.email,
-        email: m.email,
-        avatarUrl: profile?.avatarUrl ?? null,
-        role: 'member',
-        joinedAt: m.joinedAt,
-        status: 'active',
-      }
-    })
-
-    const pendingList: OrganizationMember[] = pendingInvites.map((invite) => {
-      const profile = profilesByEmail.get(invite.email.toLowerCase())
-      return {
-        id: invite.id,
-        name: profile?.name ?? invite.email,
-        email: invite.email,
-        avatarUrl: profile?.avatarUrl ?? null,
-        role: 'member',
-        joinedAt: invite.createdAt,
-        status: 'pending',
-      }
-    })
+    const pendingList = mapToOrganizationMembers(
+      pendingInvites as Array<{ email: string; createdAt: Date | string; id: string }>,
+      profilesByEmail,
+      (record) => ({ role: 'member' as const, id: record.id }),
+      'pending'
+    )
 
     const list = [...activeOwners, ...activeMembers, ...pendingList]
 
@@ -112,19 +130,11 @@ const handler = auth0.withApiAuthRequired(async function handler(
       total: list.length,
     })
   } catch (error) {
-    if (error instanceof Error) {
-      return ApiResponse.internalServerError(
-        `[GET /me/organizations/members/${organizationSlug}] ${error.message}`
-      )
-    }
-
-    return ApiResponse.internalServerError(
-      `[GET /me/organizations/members/${organizationSlug}] ${error}`
+    return handleApiError(
+      error,
+      `GET /me/organizations/members/${organizationSlug}`
     )
   }
 })
 
-export const GET = handler as (
-  req: Request,
-  context: { params?: Promise<Record<string, string | string[]>> }
-) => Promise<Response> | Response
+export const GET = handler as ApiRouteHandler

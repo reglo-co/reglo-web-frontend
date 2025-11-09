@@ -3,35 +3,34 @@ import { auth0 } from '@lib/auth0'
 import { OrganizationRepository } from '@organizations/repositories'
 import { ProjectRepository } from '@projects/repositories'
 import { recordProjectCreated } from '@updates/api/record-update.api'
+import { handleApiError } from '@lib/api'
+import { getSessionData, getActorData } from '@lib/api/session.helpers'
 
 const handler = auth0.withApiAuthRequired(async function handler(
   request: Request
 ): Promise<Response> {
-  const session = await auth0.getSession()
-  const userEmail = session?.user?.email
-  const actorId =
-    (session?.user as { sub?: string } | undefined)?.sub ??
-    userEmail ??
-    'unknown'
-  const actorName =
-    (session?.user as { name?: string } | undefined)?.name ??
-    userEmail ??
-    'unknown'
-  const { name, slug, organizationSlug } = await request.json()
+  const sessionResult = await getSessionData()
 
-  if (!userEmail) {
-    return ApiResponse.unauthorized('Unauthorized')
+  if (!sessionResult.success) {
+    return sessionResult.response
   }
+
+  const { userEmail } = sessionResult.data
+
+  const { name, slug, organizationSlug } = await request.json()
 
   if (!name || !slug || !organizationSlug) {
     return ApiResponse.badRequest('Missing required fields')
   }
 
-  const repository = new ProjectRepository()
-  const orgRepo = new OrganizationRepository()
-  const organization = await orgRepo.findOneBySlug(organizationSlug)
-
   try {
+    const session = await auth0.getSession()
+    const { actorId, actorName } = getActorData(session, userEmail)
+
+    const orgRepo = new OrganizationRepository()
+    const organization = await orgRepo.findOneBySlug(organizationSlug)
+
+    const repository = new ProjectRepository()
     const result = await repository.create({
       name,
       slug,
@@ -50,13 +49,7 @@ const handler = auth0.withApiAuthRequired(async function handler(
 
     return ApiResponse.created(result)
   } catch (error) {
-    if (error instanceof Error) {
-      return ApiResponse.internalServerError(
-        `[POST /projects/create] ${error.message}`
-      )
-    }
-
-    return ApiResponse.internalServerError(`[POST /projects/create] ${error}`)
+    return handleApiError(error, 'POST /projects/create')
   }
 })
 

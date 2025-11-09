@@ -1,44 +1,43 @@
 import { ApiResponse } from '@core/entities'
 import { auth0 } from '@lib/auth0'
 import { ProjectRepository } from '@projects/repositories'
+import {
+  validateRouteParams,
+  handleApiError,
+  RouteContext,
+  ApiRouteHandler,
+} from '@lib/api'
 
 const handler = auth0.withApiAuthRequired(async function handler(
   _: Request,
-  context: { params?: Promise<Record<string, string | string[]>> }
+  context: RouteContext
 ) {
-  if (!context.params) {
-    return ApiResponse.badRequest('Missing parameters')
+  const paramsResult = await validateRouteParams<{
+    organization: string
+    project: string
+  }>(context, ['organization', 'project'])
+
+  if (!paramsResult.success) {
+    return paramsResult.response
   }
 
-  const params = await context.params
-  const organizationSlug = params.organization
-  const projectSlug = params.project
-
-  if (!organizationSlug || typeof organizationSlug !== 'string') {
-    return ApiResponse.badRequest('Invalid organization parameter')
-  }
-
-  if (!projectSlug || typeof projectSlug !== 'string') {
-    return ApiResponse.badRequest('Invalid project parameter')
-  }
-
-  const repository = new ProjectRepository()
+  const { organization: organizationSlug, project: projectSlug } =
+    paramsResult.params
 
   try {
+    const repository = new ProjectRepository()
     const result = await repository.findOneBySlug(
       organizationSlug,
       projectSlug
     )
     return ApiResponse.ok(result)
   } catch (error) {
-    return ApiResponse.internalServerError(
-      `[GET /projects/${organizationSlug}/${projectSlug}] ${error}`
+    return handleApiError(
+      error,
+      `GET /projects/${organizationSlug}/${projectSlug}`
     )
   }
 })
 
-export const GET = handler as (
-  req: Request,
-  context: { params?: Promise<Record<string, string | string[]>> }
-) => Promise<Response> | Response
+export const GET = handler as ApiRouteHandler
 

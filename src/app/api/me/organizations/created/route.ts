@@ -1,33 +1,32 @@
 import { ApiResponse } from '@core/entities'
 import { OrganizationRepository } from '@organizations/repositories'
 import { auth0 } from '@lib/auth0'
+import {
+  handleApiError,
+  SimpleApiRouteHandler,
+} from '@lib/api'
+import { getSessionData } from '@lib/api/session.helpers'
 
 const handler = auth0.withApiAuthRequired(async function handler() {
-  const session = await auth0.getSession()
-  const ownerEmail = session?.user?.email
+  const sessionResult = await getSessionData()
 
-  if (!ownerEmail) {
-    return ApiResponse.unauthorized('Unauthorized')
+  if (!sessionResult.success) {
+    return sessionResult.response
   }
 
-  const repository = new OrganizationRepository()
+  const { userEmail: ownerEmail } = sessionResult.data
 
   try {
+    const repository = new OrganizationRepository()
     const result = await repository.me.findAllCreatedByOwner({ ownerEmail })
 
     return ApiResponse.ok({
       list: result,
       total: result.length,
     })
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return ApiResponse.internalServerError(
-        `[GET /me/organizations] ${error.message}`
-      )
-    }
-
-    return ApiResponse.internalServerError(`[GET /me/organizations] ${error}`)
+  } catch (error) {
+    return handleApiError(error, 'GET /me/organizations/created')
   }
 })
 
-export const GET = handler as (req: Request) => Promise<Response> | Response
+export const GET = handler as SimpleApiRouteHandler

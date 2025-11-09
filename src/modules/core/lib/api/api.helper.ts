@@ -140,3 +140,11 @@ export async function apiDelete<TResponse>(
 ) {
   return kyInstance.delete(endpoint, options).json<TResponse>()
 }
+
+export const api = {
+  get: apiGet,
+  post: apiPost,
+  put: apiPut,
+  patch: apiPatch,
+  delete: apiDelete,
+}

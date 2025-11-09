@@ -2,29 +2,27 @@ import { ApiResponse } from '@core/entities'
 import { auth0 } from '@lib/auth0'
 import { OrganizationRepository } from '@organizations/repositories'
 import { recordOrganizationCreated } from '@updates/api/record-update.api'
+import { handleApiError } from '@lib/api'
+import { getSessionData, getActorData } from '@lib/api/session.helpers'
 
 const handler = auth0.withApiAuthRequired(async function handler(
   request: Request
 ) {
-  const session = await auth0.getSession()
-  const ownerEmail = session?.user?.email
-  const actorId =
-    (session?.user as { sub?: string } | undefined)?.sub ??
-    ownerEmail ??
-    'unknown'
-  const actorName =
-    (session?.user as { name?: string } | undefined)?.name ??
-    ownerEmail ??
-    'unknown'
-  const { name, slug } = await request.json()
+  const sessionResult = await getSessionData()
 
-  if (!ownerEmail) {
-    return ApiResponse.unauthorized('Unauthorized')
+  if (!sessionResult.success) {
+    return sessionResult.response
   }
 
-  const repository = new OrganizationRepository()
+  const { userEmail: ownerEmail } = sessionResult.data
+
+  const { name, slug } = await request.json()
 
   try {
+    const session = await auth0.getSession()
+    const { actorId, actorName } = getActorData(session, ownerEmail)
+
+    const repository = new OrganizationRepository()
     const orgId = await repository.create({
       name,
       slug,
@@ -41,15 +39,7 @@ const handler = auth0.withApiAuthRequired(async function handler(
 
     return ApiResponse.created(orgId)
   } catch (error) {
-    if (error instanceof Error) {
-      return ApiResponse.internalServerError(
-        `[POST /organizations/create] ${error.message}`
-      )
-    }
-
-    return ApiResponse.internalServerError(
-      `[POST /organizations/create] ${error}`
-    )
+    return handleApiError(error, 'POST /organizations/create')
   }
 })
 

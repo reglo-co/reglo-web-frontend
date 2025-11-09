@@ -1,39 +1,37 @@
 import { ApiResponse } from '@core/entities'
 import { auth0 } from '@lib/auth0'
 import { OrganizationRepository } from '@organizations/repositories'
+import {
+  getSingleParam,
+  handleApiError,
+  RouteContext,
+  ApiRouteHandler,
+} from '@lib/api'
 
 const handler = auth0.withApiAuthRequired(async function handler(
   _: Request,
-  context: { params?: Promise<Record<string, string | string[]>> }
+  context: RouteContext
 ) {
-  if (!context.params) {
-    return ApiResponse.badRequest('Missing slug parameter')
+  const paramResult = await getSingleParam(context, 'slug')
+
+  if (!paramResult.success) {
+    return paramResult.response
   }
 
-  const params = await context.params
-  const slug = params.slug
-
-  if (!slug || typeof slug !== 'string') {
-    return ApiResponse.badRequest('Invalid slug parameter')
-  }
-
-  const repository = new OrganizationRepository()
+  const { value: slug } = paramResult
 
   try {
+    const repository = new OrganizationRepository()
     const result = await repository.findOwnerEmail(slug)
+
     if (!result) {
       return ApiResponse.notFound('Organization not found')
     }
 
     return ApiResponse.ok({ ownerEmail: result })
   } catch (error) {
-    return ApiResponse.internalServerError(
-      `[GET /organizations/owner-email/${slug}] ${error}`
-    )
+    return handleApiError(error, `GET /organizations/owner-email/${slug}`)
   }
 })
 
-export const GET = handler as (
-  req: Request,
-  context: { params?: Promise<Record<string, string | string[]>> }
-) => Promise<Response> | Response
+export const GET = handler as ApiRouteHandler
