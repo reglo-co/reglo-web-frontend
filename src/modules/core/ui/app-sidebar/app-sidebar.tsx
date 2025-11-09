@@ -100,7 +100,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const organizationSlug = pathnames[0]
   const projectSlug = pathnames[1]
 
-  const hasReservedPathname = ['settings', 'peoples', 'projects'].includes(
+  const hasReservedPathname = ['settings', 'people', 'projects'].includes(
     projectSlug
   )
 
