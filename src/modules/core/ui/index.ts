@@ -1,4 +1,5 @@
 export * from './app-sidebar'
+export * from './breadcrumb-auto'
 export * from './components'
 export * from './container'
 export * from './external-icons'

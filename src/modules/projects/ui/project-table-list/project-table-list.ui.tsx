@@ -70,9 +70,9 @@ export function ProjectTableList({
   }
 
   return (
-    <div className="flex flex-col gap-12">
+    <div className="container-lg flex flex-col gap-12">
       <div className="flex w-full items-center justify-between">
-        <h2 className="type-h3 font-bold tracking-wide">Projetos</h2>
+        <h2 className="type-h4 pl-4 font-bold tracking-wide">Projetos</h2>
         <div className="flex items-center gap-2">
           <Button size="icon" variant="ghost" onClick={refetch}>
             {isFetchingDelayed ? (

@@ -18,8 +18,8 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <Container>
-        <div className="flex flex-col gap-12">
+      <Container className="pt-10">
+        <div className="container-lg flex flex-col gap-12">
           <div className="flex w-full justify-between gap-4">
             <Skeleton className="h-10 w-48" />
             <Skeleton className="h-10 w-32" />
@@ -36,7 +36,7 @@ export default function Page() {
 
   if (!hasProjects) {
     return (
-      <Container>
+      <Container className="pt-10">
         <ProjectEmpty className="-mt-18" />
         <CreateProjectDialog />
       </Container>
@@ -44,7 +44,7 @@ export default function Page() {
   }
 
   return (
-    <Container>
+    <Container className="pt-10">
       <ProjectTableList
         list={list}
         organization={organization}

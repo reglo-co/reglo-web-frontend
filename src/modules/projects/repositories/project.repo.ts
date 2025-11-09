@@ -32,6 +32,23 @@ export class ProjectRepository {
     this.me = new MeProjectRepository()
   }
 
+  public async oneBySlug(
+    organizationSlug: string,
+    slug: string
+  ): Promise<Project | null> {
+    const collection = new FirebaseCollection('projects')
+    const result = await collection.query
+      .equal('slug', slug)
+      .equal('organizationSlug', organizationSlug)
+      .build()
+
+    if (result.length === 0) {
+      return null
+    }
+
+    return result[0] as Project
+  }
+
   public async create(
     project: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>
   ) {
