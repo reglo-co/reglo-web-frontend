@@ -12,16 +12,61 @@ export class MeProjectRepository {
     userEmail,
   }: MeAvailablesParams): Promise<Project[]> {
     const collection = new FirebaseCollection('projects')
-    const result = await collection.query
+    const owned = await collection.query
       .equal('organizationSlug', organizationSlug)
       .equal('ownerEmail', userEmail)
       .build()
 
-    if (result.length === 0) {
-      return []
+    // include projects where user is a member (projects_members)
+    const { ProjectMemberRepository } = await import(
+      '@projects-members/repositories'
+    )
+    const memberRepo = new ProjectMemberRepository()
+    const memberships = await memberRepo.byUserInOrganization(
+      organizationSlug,
+      userEmail
+    )
+    const memberProjectSlugs = Array.from(
+      new Set(memberships.map((m) => m.projectSlug))
+    )
+
+    let memberProjects: Project[] = []
+    if (memberProjectSlugs.length > 0) {
+      memberProjects = await this.manyBySlugs(organizationSlug, memberProjectSlugs)
     }
 
-    return result as Project[]
+    const all = [...(owned as Project[]), ...memberProjects]
+    const seen = new Set<string>()
+    const deduped = all.filter((p) => {
+      const key = `${p.organizationSlug}:${p.slug}`
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+
+    return deduped
+  }
+
+  private async manyBySlugs(
+    organizationSlug: string,
+    slugs: string[]
+  ): Promise<Project[]> {
+    if (!slugs.length) return []
+    const collection = new FirebaseCollection('projects')
+    // Firestore 'in' supports up to 10 elements; if more, chunk
+    const chunks: string[][] = []
+    for (let i = 0; i < slugs.length; i += 10) {
+      chunks.push(slugs.slice(i, i + 10))
+    }
+    const results: Project[] = []
+    for (const chunk of chunks) {
+      const res = (await collection.query
+        .equal('organizationSlug', organizationSlug)
+        .in('slug', chunk)
+        .build()) as Project[]
+      results.push(...res)
+    }
+    return results
   }
 }
 

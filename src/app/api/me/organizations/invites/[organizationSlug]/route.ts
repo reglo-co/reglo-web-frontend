@@ -69,6 +69,7 @@ const handler = auth0.withApiAuthRequired(async function handler(
     .map((email) => ({
       orgId: organization.id,
       orgSlug: organization.slug,
+      orgName: organization.name,
       email,
     }))
 

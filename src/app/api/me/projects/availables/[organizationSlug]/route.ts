@@ -3,6 +3,7 @@ import { ProjectRepository } from '@projects/repositories'
 import { ProjectTable } from '@projects/types'
 import { getAuth0UsersByEmailServer } from '@users/services/get-auth0-users-by-email.server'
 import { auth0 } from '@lib/auth0'
+import { ProjectMemberRepository } from '@projects-members/repositories'
 
 const handler = auth0.withApiAuthRequired(async function handler(
   _: Request,
@@ -34,33 +35,50 @@ const handler = auth0.withApiAuthRequired(async function handler(
       userEmail,
     })
 
-    const emails = Array.from(
-      new Set(list.map((project) => project.ownerEmail).filter(Boolean))
-    )
-    const users = await getAuth0UsersByEmailServer(emails)
+    const membersRepo = new ProjectMemberRepository()
+    // collect all emails (owners + project members across all projects)
+    const emailsSet = new Set<string>()
+    for (const project of list) {
+      if (project.ownerEmail) emailsSet.add(project.ownerEmail.toLowerCase())
+      const projectMembers = await membersRepo.byProject(
+        organizationSlug,
+        project.slug
+      )
+      for (const m of projectMembers) {
+        if (m.email) emailsSet.add(m.email.toLowerCase())
+      }
+    }
+    const users = await getAuth0UsersByEmailServer(Array.from(emailsSet))
     const usersByEmail = new Map(
       users.map((user) => [user.email.toLowerCase(), user])
     )
 
-    const projects: ProjectTable[] = list.map((project) => {
-      const owner =
-        usersByEmail.get(project.ownerEmail.toLowerCase()) ?? null
-      const members = owner
-        ? [
-            {
-              id: owner.id,
-              name: owner.name,
-              avatarUrl: owner.avatarUrl,
-            },
-          ]
-        : []
+    const projects: ProjectTable[] = []
+    for (const project of list) {
+      const projectMembers = await membersRepo.byProject(
+        organizationSlug,
+        project.slug
+      )
+      const allEmails = Array.from(
+        new Set([
+          project.ownerEmail.toLowerCase(),
+          ...projectMembers.map((m) => m.email.toLowerCase()),
+        ])
+      )
+      const members = allEmails.map((email) => {
+        const u = usersByEmail.get(email)
+        if (!u) {
+          return { id: email, name: email, avatarUrl: undefined }
+        }
+        return { id: u.id, name: u.name, avatarUrl: u.avatarUrl }
+      })
 
-      return {
+      projects.push({
         ...project,
         members,
         rulesCount: 0,
-      }
-    })
+      })
+    }
 
     return ApiResponse.ok({
       list: projects,

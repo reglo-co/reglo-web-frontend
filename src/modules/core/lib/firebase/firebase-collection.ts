@@ -14,6 +14,7 @@ export type FirebaseCollectionName =
   | 'projects'
   | 'invite'
   | 'members'
+  | 'projects_members'
   | 'updates'
 
 export class FirebaseCollection {

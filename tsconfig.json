@@ -38,6 +38,8 @@
       "@plans/*": ["./src/modules/plans/*"],
       "@projects": ["./src/modules/projects/index"],
       "@projects/*": ["./src/modules/projects/*"],
+      "@projects-members": ["./src/modules/projects-members/index"],
+      "@projects-members/*": ["./src/modules/projects-members/*"],
       "@users": ["./src/modules/users/index"],
       "@users/*": ["./src/modules/users/*"],
       "@invite": ["./src/modules/invite/index"],

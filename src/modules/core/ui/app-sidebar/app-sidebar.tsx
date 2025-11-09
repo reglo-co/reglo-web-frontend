@@ -83,7 +83,7 @@ const data = {
     },
     {
       title: 'Equipe',
-      url: '/team',
+      url: '/teams',
       icon: Users,
     },
     {

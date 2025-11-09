@@ -20,6 +20,7 @@ export type API_ENDPOINTS =
   | `projects/slug/available/${string}/${string}`
   | 'projects/create'
   | `me/projects/availables/${string}`
+  | `projects/members/${string}/${string}`
   | `projects/${string}/${string}`
   | 'users/by-email'
   | `me/organizations/updates/${string}`
