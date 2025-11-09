@@ -126,14 +126,14 @@ export function AppSidebar({
       <SidebarContent className="pt-4">
         <NavMain title="" urlPrefix={organizationSlug} items={data.navMain} />
         <NavMain
-          title="Minha organização"
+          title="Organização"
           urlPrefix={organizationSlug}
           items={data.navOrganization}
         />
 
         <React.Activity mode={isProject ? 'visible' : 'hidden'}>
           <NavMain
-            title="Meu projeto"
+            title="Projeto"
             urlPrefix={`${organizationSlug}/${projectSlug}`}
             items={data.navProject}
           />

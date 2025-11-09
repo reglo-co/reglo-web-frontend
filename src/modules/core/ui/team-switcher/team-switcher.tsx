@@ -8,9 +8,6 @@ import {
   useCurrentOrganization,
   useListMyAvailablesOrganizations,
 } from '@organizations'
-import { ChevronsUpDown, Mailbox, Plus } from 'lucide-react'
-import Link from 'next/link'
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,8 +17,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@ui/primitives/dropdown-menu'
+import { ChevronsUpDown, Mailbox, Plus } from 'lucide-react'
+import Link from 'next/link'
+import { Fragment } from 'react'
 
-import { useListOrganizationProjects } from '@projects/hooks'
+import { useCurrentProject, useListOrganizationProjects } from '@projects/hooks'
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -32,10 +32,14 @@ import {
 export function TeamSwitcher() {
   const { open } = useModal()
   const organization = useCurrentOrganization()
+  const project = useCurrentProject()
   const { list: teams } = useListMyAvailablesOrganizations()
   const { list: projects } = useListOrganizationProjects(organization?.slug)
   const { isMobile } = useSidebar()
   const mounted = useMounted()
+
+  console.log('organization', organization)
+  console.log('project', project)
 
   if (!organization) {
     return <Skeleton className="h-10 w-full" />
@@ -50,7 +54,20 @@ export function TeamSwitcher() {
               <Logo.Symbol className="size-4" />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{organization.name}</span>
+              {project ? (
+                <Fragment>
+                  <span className="truncate pt-0.5 font-medium">
+                    {project.name}
+                  </span>
+                  <span className="truncate pt-0.5 font-medium">
+                    {organization.name}
+                  </span>
+                </Fragment>
+              ) : (
+                <span className="truncate font-medium">
+                  {organization.name}
+                </span>
+              )}
             </div>
             <ChevronsUpDown className="ml-auto" />
           </SidebarMenuButton>
@@ -66,14 +83,25 @@ export function TeamSwitcher() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-10 gap-2.5"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-12 gap-2.5"
             >
-              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-6 items-center justify-center rounded-lg">
-                <Logo.Symbol className="size-3" />
+              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                <Logo.Symbol className="size-4" />
               </div>
-              <span className="truncate pt-0.5 font-medium">
-                {organization.name}
-              </span>
+              {project ? (
+                <div className="flex flex-col">
+                  <span className="truncate pt-0.5 font-medium">
+                    {project.name}
+                  </span>
+                  <span className="text-support truncate text-xs font-medium">
+                    {organization.name}
+                  </span>
+                </div>
+              ) : (
+                <span className="truncate pt-1 font-medium">
+                  {organization.name}
+                </span>
+              )}
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
