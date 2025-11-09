@@ -3,17 +3,10 @@
 import { ChevronsUpDown } from 'lucide-react'
 import { useState } from 'react'
 
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-} from '@ui/primitives/dropdown-menu'
+import { DropdownMenu, DropdownMenuTrigger } from '@ui/primitives/dropdown-menu'
 
+import { NavUserDropdown, NavUserHeader, ThemeSwitcher } from '@core/ui'
 import { useMounted } from '@hooks/use-mounted'
-import {
-  NavUserDropdown,
-  NavUserHeader,
-  ThemeSwitcher,
-} from '@core/ui'
 import {
   Dialog,
   DialogContent,
@@ -27,7 +20,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@ui/primitives/sidebar'
-
 export function NavUser() {
   const [configModal, setConfigModal] = useState(false)
   const mounted = useMounted()

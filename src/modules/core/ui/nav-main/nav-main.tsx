@@ -2,6 +2,7 @@
 
 import { ChevronRight, type LucideIcon } from 'lucide-react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { PropsWithChildren } from 'react'
 
 import {
@@ -19,6 +20,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from '@ui/primitives/sidebar'
 
 type NavMainProps = {
@@ -41,6 +43,13 @@ function NavText({ children }: PropsWithChildren) {
 }
 
 export function NavMain({ items, title, urlPrefix }: NavMainProps) {
+  const pathname = usePathname()
+  const { isMobile, setOpenMobile } = useSidebar()
+
+  const handleNavigate = () => {
+    if (isMobile) setOpenMobile(false)
+  }
+
   const getUrl = (url: string) => {
     const sanitize = (s: string) => s.replace(/^\/+|\/+$/g, '')
     const target = sanitize(url)
@@ -62,6 +71,16 @@ export function NavMain({ items, title, urlPrefix }: NavMainProps) {
     return target ? `/${target}` : '/'
   }
 
+  const isActivePath = (url: string) => {
+    const target = getUrl(url)
+    const isRootUrl = url.replace(/^\/+|\/+$/g, '') === ''
+    if (target === '/') return pathname === '/'
+    if (isRootUrl && urlPrefix) {
+      return pathname === target
+    }
+    return pathname === target || pathname.startsWith(`${target}/`)
+  }
+
   return (
     <SidebarGroup>
       {title && <SidebarGroupLabel>{title}</SidebarGroupLabel>}
@@ -70,11 +89,22 @@ export function NavMain({ items, title, urlPrefix }: NavMainProps) {
           <SidebarMenuItem key={item.title}>
             {item.items ? (
               <Collapsible
-                defaultOpen={item.isActive}
+                defaultOpen={
+                  item.isActive ??
+                  (item.items.some((s) => isActivePath(s.url)) ||
+                    isActivePath(item.url))
+                }
                 className="group/collapsible"
               >
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={item.title}>
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    isActive={
+                      (item.items &&
+                        item.items.some((s) => isActivePath(s.url))) ||
+                      isActivePath(item.url)
+                    }
+                  >
                     {item.icon && <item.icon className="text-support" />}
                     <NavText>{item.title}</NavText>
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -84,8 +114,14 @@ export function NavMain({ items, title, urlPrefix }: NavMainProps) {
                   <SidebarMenuSub>
                     {item.items.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title}>
-                        <SidebarMenuSubButton asChild>
-                          <Link href={getUrl(subItem.url)}>
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={isActivePath(subItem.url)}
+                        >
+                          <Link
+                            href={getUrl(subItem.url)}
+                            onClick={handleNavigate}
+                          >
                             <NavText>{subItem.title}</NavText>
                           </Link>
                         </SidebarMenuSubButton>
@@ -95,8 +131,12 @@ export function NavMain({ items, title, urlPrefix }: NavMainProps) {
                 </CollapsibleContent>
               </Collapsible>
             ) : (
-              <SidebarMenuButton asChild tooltip={item.title}>
-                <Link href={getUrl(item.url)}>
+              <SidebarMenuButton
+                asChild
+                tooltip={item.title}
+                isActive={isActivePath(item.url)}
+              >
+                <Link href={getUrl(item.url)} onClick={handleNavigate}>
                   {item.icon && <item.icon className="text-support" />}
                   <NavText>{item.title}</NavText>
                 </Link>

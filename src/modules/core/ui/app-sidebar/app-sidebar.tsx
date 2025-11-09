@@ -1,5 +1,8 @@
 'use client'
 
+import { NavMain } from '@ui/nav-main/nav-main'
+import { NavUser } from '@ui/nav-user/nav-user'
+import { TeamSwitcher } from '@ui/team-switcher/team-switcher'
 import { usePathname } from 'next/navigation'
 import * as React from 'react'
 
@@ -16,15 +19,12 @@ import {
   Users,
 } from 'lucide-react'
 
-import { NavMain } from '@ui/nav-main/nav-main'
-import { NavUser } from '@ui/nav-user/nav-user'
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
 } from '@ui/primitives/sidebar'
-import { TeamSwitcher } from '@ui/team-switcher/team-switcher'
 
 // This is sample data.
 const data = {
@@ -83,17 +83,17 @@ const data = {
     },
     {
       title: 'Equipe',
-      url: '/',
+      url: '/team',
       icon: Users,
     },
     {
       title: 'Revisões',
-      url: '/',
+      url: '/reviews',
       icon: FileText,
     },
     {
       title: 'Versões',
-      url: '/',
+      url: '/versions',
       icon: GitBranch,
     },
   ],
@@ -109,9 +109,12 @@ export function AppSidebar({
   const organizationSlug = pathnames[0]
   const projectSlug = pathnames[1]
 
-  const hasReservedPathname = ['settings', 'people', 'projects'].includes(
-    projectSlug
-  )
+  const hasReservedPathname = [
+    'settings',
+    'people',
+    'projects',
+    'updates',
+  ].includes(projectSlug)
 
   const isProject = pathnames.length >= 2 && !hasReservedPathname
 
@@ -129,7 +132,11 @@ export function AppSidebar({
         />
 
         <React.Activity mode={isProject ? 'visible' : 'hidden'}>
-          <NavMain title="Meu projeto" items={data.navProject} />
+          <NavMain
+            title="Meu projeto"
+            urlPrefix={`${organizationSlug}/${projectSlug}`}
+            items={data.navProject}
+          />
         </React.Activity>
       </SidebarContent>
       <SidebarFooter>

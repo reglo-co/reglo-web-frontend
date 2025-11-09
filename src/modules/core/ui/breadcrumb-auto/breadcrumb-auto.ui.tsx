@@ -20,7 +20,7 @@ export function BreadcrumbAuto({ breadcrumb }: BreadcrumbAutoProps) {
           <Fragment key={item.title}>
             {index > 0 && <BreadcrumbSeparator />}
             <BreadcrumbItem className="text-support">
-              {breadcrumb.length === index + 1 ? (
+              {breadcrumb.length === index + 1 || !item.url ? (
                 <span className="text-foreground cursor-default">
                   {item.title}
                 </span>

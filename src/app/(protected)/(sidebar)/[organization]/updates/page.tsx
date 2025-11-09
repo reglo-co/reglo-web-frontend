@@ -16,7 +16,7 @@ export default function Page() {
 
   const organization = useCurrentOrganization()
   const orgSlug = organization?.slug
-  const { isEnabled } = useFeatureFlag('updates', { orgSlug })
+  const isEnabled = useFeatureFlag('updates', { orgSlug })
   const { updates, isLoading } = useListUpdates(orgSlug)
 
   if (!isEnabled) return null

@@ -123,4 +123,17 @@ export class OrganizationRepository {
       },
     ]
   }
+
+  public async getOwnerEmail(organizationSlug: string): Promise<string | null> {
+    const collection = new FirebaseCollection('organizations')
+    const result = await collection.query
+      .equal('slug', organizationSlug)
+      .build()
+
+    if (result.length === 0) {
+      return null
+    }
+
+    return result[0].ownerEmail
+  }
 }

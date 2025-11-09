@@ -6,7 +6,16 @@ export function useProjectBreadcrumb() {
   const project = useCurrentProject()
 
   return [
-    { title: organization?.name, url: `/${organization?.slug}` },
-    { title: project?.name, url: `/${organization?.slug}/${project?.slug}` },
+    {
+      title: organization?.name,
+      url: organization?.slug ? `/${organization.slug}` : undefined,
+    },
+    {
+      title: project?.name,
+      url:
+        organization?.slug && project?.slug
+          ? `/${organization.slug}/${project.slug}`
+          : undefined,
+    },
   ]
 }

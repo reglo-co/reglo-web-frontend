@@ -8,7 +8,7 @@ import { Input } from '@ui/primitives/input'
 import { Separator } from '@ui/primitives/separator'
 import { Skeleton } from '@ui/primitives/skeleton'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { PanelLeftIcon } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import * as React from 'react'
 
 import {
@@ -274,7 +274,7 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <PanelLeftIcon />
+      <Menu />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )
