@@ -38,25 +38,14 @@ async function collectProjectsWithMembers(
       allEmails.add(project.ownerEmail.toLowerCase())
     }
 
-    console.log(`[DEBUG] Searching members for project: ${project.slug}`)
-    console.log(`[DEBUG] organizationSlug param: "${organizationSlug}"`)
-    console.log(
-      `[DEBUG] project.organizationSlug: "${project.organizationSlug}"`
-    )
-
     const projectMembers = await membersRepo.findByProject(
       organizationSlug,
       project.slug
     )
 
-    console.log(`[DEBUG] Project: ${project.slug}`)
-    console.log(`[DEBUG] ProjectMembers found:`, projectMembers)
-
     const memberEmails = projectMembers
-      .filter((m) => m.email)
-      .map((m) => m.email.toLowerCase())
-
-    console.log(`[DEBUG] Member emails:`, memberEmails)
+      .filter((me) => me.email)
+      .map((member) => member.email.toLowerCase())
 
     memberEmails.forEach((email) => allEmails.add(email))
 
@@ -78,19 +67,12 @@ function enrichProjectsWithUserData(
       new Set([project.ownerEmail.toLowerCase(), ...memberEmails])
     )
 
-    console.log(`[DEBUG] Enriching project: ${project.slug}`)
-    console.log(`[DEBUG] All emails for project:`, allEmails)
-    console.log(`[DEBUG] Users by email map size:`, usersByEmail.size)
-
     const members = allEmails.map((email) => {
       const user = usersByEmail.get(email)
-      console.log(`[DEBUG] Email: ${email}, User found:`, user ? 'YES' : 'NO')
       return user
         ? { id: user.id, name: user.name, avatarUrl: user.avatarUrl }
         : { id: email, name: email, avatarUrl: undefined }
     })
-
-    console.log(`[DEBUG] Final members for ${project.slug}:`, members)
 
     return {
       ...project,
@@ -135,13 +117,8 @@ const handler = auth0.withApiAuthRequired(async function handler(
       membersRepo
     )
 
-    console.log('[DEBUG] All unique emails collected:', Array.from(allEmails))
-
     const usersResult = await getAuth0UsersByEmailServer(Array.from(allEmails))
     const users = usersResult.getDataOrDefault([])
-
-    console.log('[DEBUG] Users found from Auth0:', users.length)
-    console.log('[DEBUG] Users data:', users)
 
     const usersByEmail = new Map(
       users.map((user) => [user.email.toLowerCase(), user])
@@ -150,12 +127,6 @@ const handler = auth0.withApiAuthRequired(async function handler(
     const enrichedProjects = enrichProjectsWithUserData(
       projectsData,
       usersByEmail
-    )
-
-    console.log('[DEBUG] Enriched projects count:', enrichedProjects.length)
-    console.log(
-      '[DEBUG] Enriched projects:',
-      JSON.stringify(enrichedProjects, null, 2)
     )
 
     return ApiResponse.ok({
