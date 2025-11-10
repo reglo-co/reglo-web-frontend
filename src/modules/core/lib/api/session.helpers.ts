@@ -1,10 +1,12 @@
 import { ApiResponse } from '@core/entities'
 import { auth0 } from '@lib/auth0'
-import { Auth0Session, SessionData, Auth0User } from './types'
+import { Auth0Session, SessionData } from './types'
 
-export async function getSessionData(): Promise<
-  { success: true; data: SessionData } | { success: false; response: Response }
-> {
+type GetSessionDataResult =
+  | { success: true; data: SessionData }
+  | { success: false; response: Response }
+
+export async function getSessionData(): Promise<GetSessionDataResult> {
   const session = (await auth0.getSession()) as Auth0Session | null
 
   const userEmail = session?.user?.email
@@ -34,4 +36,3 @@ export function getActorData(session: Auth0Session | null, userEmail?: string) {
 
   return { actorId, actorName }
 }
-

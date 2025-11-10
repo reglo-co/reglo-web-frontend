@@ -1,84 +1,103 @@
 import { ApiResponse } from '@core/entities'
+import { getSessionData } from '@lib/api/session.helpers'
+import { auth0 } from '@lib/auth0'
+import { ProjectMemberRepository } from '@projects-members/repositories'
 import { ProjectRepository } from '@projects/repositories'
 import { ProjectTable } from '@projects/types'
 import { getAuth0UsersByEmailServer } from '@users/services/get-auth0-users-by-email.server'
-import { auth0 } from '@lib/auth0'
-import { ProjectMemberRepository } from '@projects-members/repositories'
+
 import {
+  ApiRouteHandler,
+  RouteContext,
   getSingleParam,
   handleApiError,
-  RouteContext,
-  ApiRouteHandler,
 } from '@lib/api'
-import { getSessionData } from '@lib/api/session.helpers'
 
-async function collectAllProjectEmails(
+type ProjectWithMembersEmails = {
+  project: Awaited<
+    ReturnType<ProjectRepository['me']['availablesByOrganization']>
+  >[number]
+  memberEmails: string[]
+}
+
+async function collectProjectsWithMembers(
   projects: Awaited<
     ReturnType<ProjectRepository['me']['availablesByOrganization']>
   >,
   organizationSlug: string,
   membersRepo: ProjectMemberRepository
-): Promise<Set<string>> {
-  const emailsSet = new Set<string>()
+): Promise<{
+  projectsData: ProjectWithMembersEmails[]
+  allEmails: Set<string>
+}> {
+  const projectsData: ProjectWithMembersEmails[] = []
+  const allEmails = new Set<string>()
 
   for (const project of projects) {
     if (project.ownerEmail) {
-      emailsSet.add(project.ownerEmail.toLowerCase())
+      allEmails.add(project.ownerEmail.toLowerCase())
     }
+
+    console.log(`[DEBUG] Searching members for project: ${project.slug}`)
+    console.log(`[DEBUG] organizationSlug param: "${organizationSlug}"`)
+    console.log(
+      `[DEBUG] project.organizationSlug: "${project.organizationSlug}"`
+    )
 
     const projectMembers = await membersRepo.findByProject(
       organizationSlug,
       project.slug
     )
 
-    for (const member of projectMembers) {
-      if (member.email) {
-        emailsSet.add(member.email.toLowerCase())
-      }
-    }
+    console.log(`[DEBUG] Project: ${project.slug}`)
+    console.log(`[DEBUG] ProjectMembers found:`, projectMembers)
+
+    const memberEmails = projectMembers
+      .filter((m) => m.email)
+      .map((m) => m.email.toLowerCase())
+
+    console.log(`[DEBUG] Member emails:`, memberEmails)
+
+    memberEmails.forEach((email) => allEmails.add(email))
+
+    projectsData.push({
+      project,
+      memberEmails,
+    })
   }
 
-  return emailsSet
+  return { projectsData, allEmails }
 }
 
-async function enrichProjectsWithMembers(
-  projects: Awaited<
-    ReturnType<ProjectRepository['me']['availablesByOrganization']>
-  >,
-  organizationSlug: string,
-  membersRepo: ProjectMemberRepository,
+function enrichProjectsWithUserData(
+  projectsData: ProjectWithMembersEmails[],
   usersByEmail: Map<string, { id: string; name: string; avatarUrl?: string }>
-): Promise<ProjectTable[]> {
-  const enrichedProjects: ProjectTable[] = []
-
-  for (const project of projects) {
-    const projectMembers = await membersRepo.findByProject(
-      organizationSlug,
-      project.slug
-    )
-
+): ProjectTable[] {
+  return projectsData.map(({ project, memberEmails }) => {
     const allEmails = Array.from(
-      new Set([
-        project.ownerEmail.toLowerCase(),
-        ...projectMembers.map((m) => m.email.toLowerCase()),
-      ])
+      new Set([project.ownerEmail.toLowerCase(), ...memberEmails])
     )
+
+    console.log(`[DEBUG] Enriching project: ${project.slug}`)
+    console.log(`[DEBUG] All emails for project:`, allEmails)
+    console.log(`[DEBUG] Users by email map size:`, usersByEmail.size)
 
     const members = allEmails.map((email) => {
       const user = usersByEmail.get(email)
+      console.log(`[DEBUG] Email: ${email}, User found:`, user ? 'YES' : 'NO')
       return user
         ? { id: user.id, name: user.name, avatarUrl: user.avatarUrl }
         : { id: email, name: email, avatarUrl: undefined }
     })
 
-    enrichedProjects.push({
+    console.log(`[DEBUG] Final members for ${project.slug}:`, members)
+
+    return {
       ...project,
       members,
       rulesCount: 0,
-    })
-  }
-
-  return enrichedProjects
+    }
+  })
 }
 
 const handler = auth0.withApiAuthRequired(async function handler(
@@ -103,29 +122,40 @@ const handler = auth0.withApiAuthRequired(async function handler(
 
   try {
     const repository = new ProjectRepository()
+    const membersRepo = new ProjectMemberRepository()
+
     const projects = await repository.me.availablesByOrganization({
       organizationSlug,
       userEmail,
     })
 
-    const membersRepo = new ProjectMemberRepository()
-    const emailsSet = await collectAllProjectEmails(
+    const { projectsData, allEmails } = await collectProjectsWithMembers(
       projects,
       organizationSlug,
       membersRepo
     )
 
-    const usersResult = await getAuth0UsersByEmailServer(Array.from(emailsSet))
+    console.log('[DEBUG] All unique emails collected:', Array.from(allEmails))
+
+    const usersResult = await getAuth0UsersByEmailServer(Array.from(allEmails))
     const users = usersResult.getDataOrDefault([])
+
+    console.log('[DEBUG] Users found from Auth0:', users.length)
+    console.log('[DEBUG] Users data:', users)
+
     const usersByEmail = new Map(
       users.map((user) => [user.email.toLowerCase(), user])
     )
 
-    const enrichedProjects = await enrichProjectsWithMembers(
-      projects,
-      organizationSlug,
-      membersRepo,
+    const enrichedProjects = enrichProjectsWithUserData(
+      projectsData,
       usersByEmail
+    )
+
+    console.log('[DEBUG] Enriched projects count:', enrichedProjects.length)
+    console.log(
+      '[DEBUG] Enriched projects:',
+      JSON.stringify(enrichedProjects, null, 2)
     )
 
     return ApiResponse.ok({
@@ -141,5 +171,3 @@ const handler = auth0.withApiAuthRequired(async function handler(
 })
 
 export const GET = handler as ApiRouteHandler
-
-

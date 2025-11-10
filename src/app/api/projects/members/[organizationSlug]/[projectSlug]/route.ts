@@ -1,27 +1,28 @@
 import { ApiResponse } from '@core/entities'
+import { ApiRouteHandler, RouteContext, validateRouteParams } from '@lib/api'
+import { getSessionData } from '@lib/api/session.helpers'
 import { auth0 } from '@lib/auth0'
 import { OrganizationRepository } from '@organizations/repositories'
 import { ProjectMemberRepository } from '@projects-members/repositories'
 import { ProjectRepository } from '@projects/repositories'
-import {
-  validateRouteParams,
-  RouteContext,
-  ApiRouteHandler,
-} from '@lib/api'
-import { getSessionData } from '@lib/api/session.helpers'
 
-async function validateProjectAccess(
-  organizationSlug: string,
-  projectSlug: string,
-  userEmail: string
-): Promise<
-  | { hasAccess: false; response: Response; project?: never }
+type ValidateProjectAccessResult =
+  | {
+      hasAccess: false
+      response: Response
+      project?: never
+    }
   | {
       hasAccess: true
       response?: never
       project: Awaited<ReturnType<ProjectRepository['findOneBySlug']>>
     }
-> {
+
+async function validateProjectAccess(
+  organizationSlug: string,
+  projectSlug: string,
+  userEmail: string
+): Promise<ValidateProjectAccessResult> {
   const orgRepo = new OrganizationRepository()
   const canAccessOrg = await orgRepo.me.userHasAccessToOrganization(
     organizationSlug,

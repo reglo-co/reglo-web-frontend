@@ -25,10 +25,15 @@ export class ProjectMemberRepository {
     orgSlug: string,
     projectSlug: string
   ): Promise<ProjectMemberRecord[]> {
+    console.log('[DEBUG ProjectMemberRepo] findByProject called with:', {
+      orgSlug,
+      projectSlug,
+    })
     const result = await this.collection.query
       .equal('orgSlug', orgSlug)
       .equal('projectSlug', projectSlug)
       .build()
+    console.log('[DEBUG ProjectMemberRepo] Query result:', result)
     return result as ProjectMemberRecord[]
   }
 

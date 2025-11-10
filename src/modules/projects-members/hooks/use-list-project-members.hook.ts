@@ -16,7 +16,11 @@ export function useListProjectMembers(
           total: 0,
         }
       }
-      const result = await listProjectMembersService(organizationSlug, projectSlug)
+      const result = await listProjectMembersService(
+        organizationSlug,
+        projectSlug
+      )
+
       return result.getDataOrDefault({ list: [], total: 0 })
     },
     enabled: !!organizationSlug && !!projectSlug,

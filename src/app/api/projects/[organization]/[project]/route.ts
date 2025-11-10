@@ -1,11 +1,12 @@
 import { ApiResponse } from '@core/entities'
 import { auth0 } from '@lib/auth0'
 import { ProjectRepository } from '@projects/repositories'
+
 import {
-  validateRouteParams,
-  handleApiError,
-  RouteContext,
   ApiRouteHandler,
+  RouteContext,
+  handleApiError,
+  validateRouteParams,
 } from '@lib/api'
 
 const handler = auth0.withApiAuthRequired(async function handler(
@@ -21,23 +22,15 @@ const handler = auth0.withApiAuthRequired(async function handler(
     return paramsResult.response
   }
 
-  const { organization: organizationSlug, project: projectSlug } =
-    paramsResult.params
+  const { organization, project } = paramsResult.params
 
   try {
     const repository = new ProjectRepository()
-    const result = await repository.findOneBySlug(
-      organizationSlug,
-      projectSlug
-    )
+    const result = await repository.findOneBySlug(organization, project)
     return ApiResponse.ok(result)
   } catch (error) {
-    return handleApiError(
-      error,
-      `GET /projects/${organizationSlug}/${projectSlug}`
-    )
+    return handleApiError(error, `GET /projects/${organization}/${project}`)
   }
 })
 
 export const GET = handler as ApiRouteHandler
-
